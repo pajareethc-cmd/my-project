@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ความเชื่อมโยงของ Core Business Enablers</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Sarabun', 'Kanit', sans-serif;
+    background: #f7f7f5;
+    color: #2a2a28;
+    margin: 0;
+    padding: 24px 16px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .cbe3-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .cbe3-title { font-size: 22px; font-weight: 600; margin: 0 0 4px; color: #1a1a18; }
+  .cbe3-sub { font-size: 13px; color: #6b6b66; margin: 0; }
+  .cbe3-legend {
+    display: flex; gap: 16px; font-size: 12px; color: #6b6b66;
+    flex-wrap: wrap; align-items: center;
+    background: #fff; padding: 8px 14px; border-radius: 10px; border: 1px solid #e8e8e4;
+  }
+  .cbe3-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .cbe3-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .dot-ok { background: #1D9E75; }
+  .dot-warn { background: #BA7517; }
+  .dot-risk { background: #E24B4A; }
+
+  .cbe3-stage {
+    position: relative; width: 100%;
+    background: #fff;
+    border: 1px solid #e8e8e4;
+    border-radius: 14px;
+    padding: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .cbe3-stage svg { width: 100%; height: auto; display: block; }
+  .cbe3-node { cursor: pointer; transition: transform 0.2s ease; }
+  .cbe3-node:hover { transform: translateY(-1px); }
+
+  .cbe3-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 14px; margin-top: 18px;
+  }
+  .cbe3-card {
+    background: #fff;
+    border: 1px solid #e8e8e4;
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+    border-top: 3px solid var(--accent, #ccc);
+  }
+  .cbe3-card.active {
+    border: 2px solid var(--accent, #378ADD);
+    border-top: 4px solid var(--accent, #378ADD);
+    padding: 13px 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .cbe3-card h4 {
+    margin: 0 0 2px; font-size: 15px; font-weight: 600;
+    color: var(--accent-dark, #2a2a28);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cbe3-card .en { font-size: 11px; color: #9a9994; margin: 0 0 10px; }
+  .cbe3-score { font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 8px; }
+  .cbe3-section {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed #e8e8e4;
+  }
+  .cbe3-section-title {
+    font-size: 11px; font-weight: 600;
+    color: var(--accent-dark, #6b6b66);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cbe3-section-title .i {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+    background: var(--accent-bg, #f0f0ec);
+    color: var(--accent-dark, #6b6b66);
+    font-size: 11px; font-weight: 600;
+  }
+  .cbe3-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cbe3-chip {
+    font-size: 11px; padding: 3px 9px; border-radius: 10px;
+    background: var(--chip-bg, #f0f0ec);
+    color: var(--chip-color, #6b6b66);
+    cursor: pointer; transition: all 0.15s;
+    border: 1px solid transparent;
+    font-weight: 500;
+  }
+  .cbe3-chip:hover { filter: brightness(0.95); border-color: var(--chip-color, #ccc); }
+
+  .cbe3-doc {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 11px;
+    background: var(--accent-bg, #f0f0ec);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer; transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .cbe3-doc:hover { filter: brightness(0.97); border-color: var(--accent, #ccc); }
+  .cbe3-doc-icon {
+    width: 24px; height: 28px; flex-shrink: 0; position: relative;
+    background: #fff;
+    border: 1px solid var(--accent, #ccc);
+    border-radius: 3px;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 2px;
+  }
+  .cbe3-doc-icon::before {
+    content: ''; position: absolute; top: -1px; right: -1px;
+    width: 8px; height: 8px;
+    background: var(--accent-bg, #f0f0ec);
+    border-left: 1px solid var(--accent, #ccc);
+    border-bottom: 1px solid var(--accent, #ccc);
+  }
+  .cbe3-doc-icon span {
+    font-size: 7px; font-weight: 600;
+    color: var(--accent-dark, #888);
+    letter-spacing: 0.02em;
+  }
+  .cbe3-doc-name { font-size: 12px; color: #2a2a28; line-height: 1.35; flex: 1; font-weight: 500; }
+  .cbe3-doc-attach {
+    font-size: 10px;
+    color: var(--accent-dark, #888);
+    padding: 3px 9px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid var(--accent, #e8e8e4);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cbe3-hintbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-top: 12px;
+    font-size: 12px; color: #6b6b66; flex-wrap: wrap;
+    padding: 0 4px;
+  }
+  .cbe3-toggle {
+    display: inline-flex; gap: 4px;
+    background: #f0f0ec; padding: 3px; border-radius: 8px;
+  }
+  .cbe3-toggle button {
+    border: none; background: transparent;
+    font-size: 12px; padding: 5px 12px;
+    border-radius: 6px; cursor: pointer;
+    color: #6b6b66; transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .cbe3-toggle button.on {
+    background: #fff; color: #2a2a28; font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .cbe3-link { fill: none; transition: opacity 0.3s, stroke-width 0.3s; }
+  .cbe3-link.dim { opacity: 0.06; }
+  .cbe3-link.active { opacity: 0.95; stroke-width: 2.4; }
+  .cbe3-link.flow {
+    stroke-dasharray: 6 6;
+    animation: cbe3dash 1.2s linear infinite;
+  }
+  @keyframes cbe3dash { to { stroke-dashoffset: -24; } }
+  .cbe3-ring { fill: none; stroke: #d8d8d3; stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .cbe3-hub-glow { animation: cbe3pulse 3.5s ease-in-out infinite; transform-origin: center; }
+  @keyframes cbe3pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.55; } }
+
+  @media (max-width: 700px) {
+    .cbe3-head { flex-direction: column; align-items: stretch; }
+    .cbe3-legend { font-size: 11px; }
+    body { padding: 16px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cbe3-head">
+    <div>
+      <p class="cbe3-title">ความเชื่อมโยงของ Core Business Enablers</p>
+      <p class="cbe3-sub">Strategy-driven CBE Linkage Map · SP เป็นศูนย์กลาง ถ่ายทอด KPI สู่ทุก enabler</p>
+    </div>
+    <div class="cbe3-legend">
+      <span><i class="cbe3-dot dot-ok"></i>ปกติ ≥ 3.00</span>
+      <span><i class="cbe3-dot dot-warn"></i>เฝ้าระวัง 2.50–2.99</span>
+      <span><i class="cbe3-dot dot-risk"></i>เสี่ยง &lt; 2.50</span>
+    </div>
+  </div>
+
+  <div class="cbe3-stage">
+    <svg viewBox="0 0 860 640" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Core Business Enablers linkage — SP centered</title>
+      <desc>SP hub at (430,320) with eight enablers placed exactly on radius 220 at 45-degree intervals.</desc>
+      <defs>
+        <marker id="cbe3-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <radialGradient id="cbe3-hubg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#BA7517" stop-opacity=".32"/>
+          <stop offset="70%" stop-color="#BA7517" stop-opacity=".08"/>
+          <stop offset="100%" stop-color="#BA7517" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <circle class="cbe3-ring" cx="430" cy="320" r="220"/>
+      <circle class="cbe3-ring" cx="430" cy="320" r="150" style="opacity:.25"/>
+      <circle class="cbe3-ring" cx="430" cy="320" r="90" style="opacity:.2"/>
+
+      <circle class="cbe3-hub-glow" cx="430" cy="320" r="105" fill="url(#cbe3-hubg)"/>
+
+      <g id="cbe3-links" stroke-linecap="round">
+        <!-- SP hub spokes -->
+        <path class="cbe3-link" data-link="SP-CG" d="M 430 262 Q 420 180 430 142" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-CM" d="M 471 279 Q 520 220 558 193" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-SM" d="M 488 320 Q 560 310 608 320" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-IA" d="M 471 361 Q 520 420 558 447" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-IM" d="M 430 378 Q 440 460 430 498" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-KM" d="M 389 361 Q 340 420 302 447" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-HCM" d="M 372 320 Q 300 330 252 320" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+        <path class="cbe3-link" data-link="SP-RMIC" d="M 389 279 Q 340 220 302 193" stroke="#BA7517" stroke-width="1.3" opacity=".35"/>
+
+        <!-- Outer orbit business flow -->
+        <path class="cbe3-link" data-link="CG-CM" d="M 471 114 A 220 220 0 0 1 558 193" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="CM-SM" d="M 613 193 A 220 220 0 0 1 608 320" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="SM-IA" d="M 608 320 A 220 220 0 0 1 613 447" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="IA-IM" d="M 558 447 A 220 220 0 0 1 471 526" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="IM-KM" d="M 389 526 A 220 220 0 0 1 302 447" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="KM-HCM" d="M 247 447 A 220 220 0 0 1 252 320" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="HCM-RMIC" d="M 252 320 A 220 220 0 0 1 247 193" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+        <path class="cbe3-link" data-link="RMIC-CG" d="M 302 193 A 220 220 0 0 1 389 114" stroke="#1D9E75" stroke-width="1.3" opacity=".3"/>
+
+        <!-- Cross links -->
+        <path class="cbe3-link" data-link="HCM-KM" d="M 220 360 Q 245 440 290 470" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+        <path class="cbe3-link" data-link="KM-IM" d="M 302 473 Q 360 520 388 526" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+        <path class="cbe3-link" data-link="CM-DT" d="M 570 190 Q 480 290 478 408" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+        <path class="cbe3-link" data-link="DT-IM" d="M 430 435 Q 430 470 430 498" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+        <path class="cbe3-link" data-link="CG-RMIC" d="M 389 114 A 220 220 0 0 0 302 193" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+        <path class="cbe3-link" data-link="IA-RMIC" d="M 540 440 Q 380 470 290 200" stroke="#534AB7" stroke-width="1" opacity=".22" stroke-dasharray="4 5"/>
+      </g>
+
+      <!-- Central hub: SP -->
+      <g class="cbe3-node" data-id="SP" onclick="cbe3Select('SP')">
+        <circle cx="430" cy="320" r="58" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.5"/>
+        <circle cx="430" cy="320" r="50" fill="none" stroke="#BA7517" stroke-width=".5" opacity=".4"/>
+        <text x="430" y="308" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:17px;fill:#633806">SP</text>
+        <text x="430" y="326" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:10px;fill:#854F0B;opacity:.8">STRATEGY HUB</text>
+        <text x="430" y="344" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:12px;fill:#633806">2.5400</text>
+        <circle cx="468" cy="290" r="5" fill="#BA7517" stroke="#FAEEDA" stroke-width="1.5"/>
+      </g>
+
+      <!-- CG at 270° (top) -->
+      <g class="cbe3-node" data-id="CG" onclick="cbe3Select('CG')">
+        <circle cx="430" cy="100" r="42" fill="#F0E5D3" stroke="#BA7517" stroke-width="1"/>
+        <text x="430" y="92" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#633806">CG</text>
+        <text x="430" y="112" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#854F0B">2.8315</text>
+        <circle cx="458" cy="78" r="4" fill="#BA7517" stroke="#F0E5D3" stroke-width="1"/>
+      </g>
+      <!-- CM at 315° -->
+      <g class="cbe3-node" data-id="CM" onclick="cbe3Select('CM')">
+        <circle cx="585.56" cy="164.44" r="42" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+        <text x="585.56" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#085041">CM</text>
+        <text x="585.56" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#0F6E56">3.2512</text>
+        <circle cx="613" cy="142" r="4" fill="#1D9E75" stroke="#E1F5EE" stroke-width="1"/>
+      </g>
+      <!-- SM at 0° (right) -->
+      <g class="cbe3-node" data-id="SM" onclick="cbe3Select('SM')">
+        <circle cx="650" cy="320" r="42" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1"/>
+        <text x="650" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#3C3489">SM</text>
+        <text x="650" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#534AB7">3.2512</text>
+        <circle cx="678" cy="298" r="4" fill="#1D9E75" stroke="#EEEDFE" stroke-width="1"/>
+      </g>
+      <!-- IA at 45° -->
+      <g class="cbe3-node" data-id="IA" onclick="cbe3Select('IA')">
+        <circle cx="585.56" cy="475.56" r="42" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+        <text x="585.56" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#0C447C">IA</text>
+        <text x="585.56" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#185FA5">2.7549</text>
+        <circle cx="613" cy="453" r="4" fill="#BA7517" stroke="#E6F1FB" stroke-width="1"/>
+      </g>
+      <!-- IM at 90° (bottom) -->
+      <g class="cbe3-node" data-id="IM" onclick="cbe3Select('IM')">
+        <circle cx="430" cy="540" r="42" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1"/>
+        <text x="430" y="532" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#791F1F">IM</text>
+        <text x="430" y="552" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#A32D2D">1.9893</text>
+        <circle cx="458" cy="518" r="4" fill="#E24B4A" stroke="#FCEBEB" stroke-width="1"/>
+      </g>
+      <!-- KM at 135° -->
+      <g class="cbe3-node" data-id="KM" onclick="cbe3Select('KM')">
+        <circle cx="274.44" cy="475.56" r="42" fill="#FBEAF0" stroke="#D4537E" stroke-width="1"/>
+        <text x="274.44" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#72243E">KM</text>
+        <text x="274.44" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#993556">2.7575</text>
+        <circle cx="302" cy="453" r="4" fill="#BA7517" stroke="#FBEAF0" stroke-width="1"/>
+      </g>
+      <!-- HCM at 180° (left) -->
+      <g class="cbe3-node" data-id="HCM" onclick="cbe3Select('HCM')">
+        <circle cx="210" cy="320" r="42" fill="#EAF3DE" stroke="#639922" stroke-width="1"/>
+        <text x="210" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#27500A">HCM</text>
+        <text x="210" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#3B6D11">3.0740</text>
+        <circle cx="238" cy="298" r="4" fill="#1D9E75" stroke="#EAF3DE" stroke-width="1"/>
+      </g>
+      <!-- RMIC at 225° -->
+      <g class="cbe3-node" data-id="RMIC" onclick="cbe3Select('RMIC')">
+        <circle cx="274.44" cy="164.44" r="42" fill="#FAECE7" stroke="#D85A30" stroke-width="1.2"/>
+        <text x="274.44" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:13px;fill:#4A1B0C">RM&amp;IC</text>
+        <text x="274.44" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#712B13">1.9800</text>
+        <circle cx="302" cy="142" r="4" fill="#E24B4A" stroke="#FAECE7" stroke-width="1"/>
+      </g>
+
+      <!-- DT cross-cutting pill -->
+      <g class="cbe3-node" data-id="DT" onclick="cbe3Select('DT')">
+        <rect x="388" y="398" width="84" height="28" rx="14" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="430" y="412" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:12px;fill:#0F6E56">DT · 2.7565</text>
+      </g>
+      <text x="430" y="444" text-anchor="middle" style="font-family:inherit;font-size:10px;fill:#9a9994;font-style:italic">cross-cutting enabler</text>
+    </svg>
+  </div>
+
+  <div class="cbe3-hintbar">
+    <span id="cbe3-hint">💡 คลิก enabler บนแผนผังเพื่อดูรายละเอียด · เส้นเชื่อมที่เลือกจะมีอนิเมชัน flow</span>
+    <div class="cbe3-toggle" role="group" aria-label="Filter mode">
+      <button class="on" data-mode="all" onclick="cbe3Mode('all')">ทั้งหมด</button>
+      <button data-mode="out" onclick="cbe3Mode('out')">ส่งออก</button>
+      <button data-mode="in" onclick="cbe3Mode('in')">รับเข้า</button>
+    </div>
+  </div>
+
+  <div class="cbe3-panel" id="cbe3-panel"></div>
+</div>
+
+<script>
+(function() {
+  const THEME = {
+    CG:   {accent:'#BA7517', dark:'#633806', bg:'#FAEEDA', chipBg:'#F0E5D3', chipColor:'#633806'},
+    SP:   {accent:'#BA7517', dark:'#633806', bg:'#FAEEDA', chipBg:'#F0E5D3', chipColor:'#633806'},
+    RMIC: {accent:'#D85A30', dark:'#4A1B0C', bg:'#FAECE7', chipBg:'#F5C4B3', chipColor:'#4A1B0C'},
+    CM:   {accent:'#1D9E75', dark:'#085041', bg:'#E1F5EE', chipBg:'#9FE1CB', chipColor:'#085041'},
+    SM:   {accent:'#7F77DD', dark:'#26215C', bg:'#EEEDFE', chipBg:'#CECBF6', chipColor:'#26215C'},
+    IA:   {accent:'#378ADD', dark:'#042C53', bg:'#E6F1FB', chipBg:'#B5D4F4', chipColor:'#042C53'},
+    IM:   {accent:'#E24B4A', dark:'#501313', bg:'#FCEBEB', chipBg:'#F7C1C1', chipColor:'#501313'},
+    KM:   {accent:'#D4537E', dark:'#4B1528', bg:'#FBEAF0', chipBg:'#F4C0D1', chipColor:'#4B1528'},
+    HCM:  {accent:'#639922', dark:'#173404', bg:'#EAF3DE', chipBg:'#C0DD97', chipColor:'#173404'},
+    DT:   {accent:'#1D9E75', dark:'#04342C', bg:'#E1F5EE', chipBg:'#9FE1CB', chipColor:'#04342C'}
+  };
+
+  const DATA = {
+    CG:   {name:'การกำกับดูแล', en:'Corporate Governance', score:2.8315, status:'warn',
+           out:['RMIC','SP','IA'], in:['SM','IM','IA'],
+           highlight:'ควบคุมดูแลให้โปร่งใสและมีธรรมาภิบาล · ออก policy กำกับทิศทางองค์กร',
+           doc:'แผนแม่บทการกำกับดูแลกิจการที่ดี'},
+    SP:   {name:'แผนกลยุทธ์', en:'Strategic Planning', score:2.5400, status:'warn',
+           out:['HCM','KM','IM','IA','CM','RMIC','CG','SM'], in:['CG','RMIC'],
+           highlight:'ประกาศ Direction และถ่ายทอด KPI ระดับองค์กรสู่สายงาน/บุคคล (Hub กลยุทธ์)',
+           doc:'แผนแม่บทวิสาหกิจ ปี 2566–2570'},
+    RMIC: {name:'บริหารความเสี่ยง', en:'Risk Mgmt & Internal Control', score:1.9800, status:'risk',
+           out:['CG','SP','IA'], in:['IA','CG','SP'],
+           highlight:'บริหารความเสี่ยงและควบคุมภายในทั่วทั้งองค์กร · คะแนนต่ำกว่าเกณฑ์',
+           doc:'แผนแม่บทบริหารความเสี่ยงองค์กร (ERM)'},
+    CM:   {name:'บริหารลูกค้า', en:'Customer Management', score:3.2512, status:'ok',
+           out:['KM','SM','DT'], in:['DT','SP','SM'],
+           highlight:'นำข้อมูลลูกค้ามาพัฒนาด้วยระบบ IT เพื่อสร้างรายได้และการบริการ',
+           doc:'แผนแม่บทบริหารลูกค้าสัมพันธ์ (CRM)'},
+    SM:   {name:'การตลาด', en:'Sales & Marketing', score:3.2512, status:'ok',
+           out:['CM','CG','IA'], in:['IM','DT','CM','SP'],
+           highlight:'สื่อสารไปยังผู้ใช้บริการ · นำ insight กลับสู่ CM และ CG',
+           doc:'แผนแม่บทการตลาดองค์กร'},
+    DT:   {name:'เทคโนโลยีดิจิทัล', en:'Digital Technology', score:2.7565, status:'warn',
+           out:['HCM','KM','CM','SM','IM'], in:['SP'],
+           highlight:'สนับสนุนเทคโนโลยีในทุก enabler · เป็น bridge ส่งต่อข้อมูลอัตโนมัติ',
+           doc:'แผนแม่บทเทคโนโลยีสารสนเทศ (IT Master Plan)'},
+    HCM:  {name:'บริหารทรัพยากรบุคคล', en:'Human Capital Management', score:3.0740, status:'ok',
+           out:['KM','SM'], in:['SP','DT'],
+           highlight:'พัฒนาพนักงานให้สอดคล้องกับทิศทางที่ SP ตั้งไว้',
+           doc:'แผนแม่บทการบริหารทรัพยากรบุคคล'},
+    KM:   {name:'จัดการความรู้', en:'Knowledge Management', score:2.7575, status:'warn',
+           out:['IM','CM'], in:['HCM','DT','SP','CM'],
+           highlight:'นำ DATA CM มาใส่พลังสร้างองค์ความรู้ · ถอดบทเรียน AAR สู่ระบบดิจิทัล',
+           doc:'แผนแม่บทการจัดการความรู้ (KM)'},
+    IM:   {name:'บริหารนวัตกรรม', en:'Innovation Management', score:1.9893, status:'risk',
+           out:['SM','CG'], in:['KM','DT','SP'],
+           highlight:'หยิบชุด DATA KM มาพัฒนาและสร้างมูลค่าเพิ่มด้วยระบบนวัตกรรม · ต่ำกว่าเกณฑ์',
+           doc:'แผนแม่บทนวัตกรรมองค์กร'},
+    IA:   {name:'การตรวจสอบภายใน', en:'Internal Audit', score:2.7549, status:'warn',
+           out:['CG','RMIC','SP'], in:['CG','RMIC','SP','SM'],
+           highlight:'ให้คำปรึกษาและคำแนะนำเพื่อป้องกันให้ผลลัพธ์ในแต่ละกิจกรรมมีความเหมาะสม',
+           doc:'แผนแม่บทการตรวจสอบภายใน (IA Charter)'}
+  };
+
+  const STATUS_COLOR = {ok:'#1D9E75', warn:'#BA7517', risk:'#E24B4A'};
+
+  let currentId = null;
+  let currentMode = 'all';
+
+  function displayName(id) { return id === 'RMIC' ? 'RM&amp;IC' : id; }
+  function plainName(id) { return id === 'RMIC' ? 'RM&IC' : id; }
+
+  function cardHtml(id, v, isActive, fromId) {
+    const t = THEME[id];
+    const styleVars = `--accent:${t.accent};--accent-dark:${t.dark};--accent-bg:${t.bg};--chip-bg:${t.chipBg};--chip-color:${t.chipColor};`;
+
+    const outChips = v.out.map(x => {
+      const tt = THEME[x] || {};
+      return `<span class="cbe3-chip" style="background:${tt.chipBg||'#eee'};color:${tt.chipColor||'#333'}" onclick="cbe3Select('${x}')">→ ${displayName(x)}</span>`;
+    }).join('');
+
+    const inChips = v.in.map(x => {
+      const tt = THEME[x] || {};
+      return `<span class="cbe3-chip" style="background:${tt.chipBg||'#eee'};color:${tt.chipColor||'#333'}" onclick="cbe3Select('${x}')">← ${displayName(x)}</span>`;
+    }).join('');
+
+    const docBlock = v.doc ? `
+      <div class="cbe3-doc" onclick="alert('แนบเอกสาร: ${v.doc.replace(/'/g,'\\\'')}')">
+        <div class="cbe3-doc-icon"><span>PDF</span></div>
+        <div class="cbe3-doc-name">${v.doc}</div>
+        <span class="cbe3-doc-attach">แนบ</span>
+      </div>` : '';
+
+    let relTag = '';
+    if (fromId) {
+      if (DATA[fromId].out.includes(id)) relTag += `<span style="font-size:10px;color:${t.dark};background:${t.bg};padding:2px 8px;border-radius:10px;border:1px solid ${t.accent};font-weight:500">⬅ รับเข้าจาก ${displayName(fromId)}</span>`;
+      if (DATA[fromId].in.includes(id)) relTag += `<span style="font-size:10px;color:${t.dark};background:${t.bg};padding:2px 8px;border-radius:10px;border:1px solid ${t.accent};margin-left:4px;font-weight:500">➡ ส่งออกให้ ${displayName(fromId)}</span>`;
+    }
+
+    return `
+      <div class="cbe3-card ${isActive?'active':''}" style="${styleVars}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:2px">
+          <div>
+            <h4><span class="cbe3-dot" style="background:${STATUS_COLOR[v.status]}"></span> ${displayName(id)} · ${v.name}</h4>
+            <p class="en">${v.en}</p>
+          </div>
+          <span class="cbe3-score" style="background:${t.bg};color:${t.dark}">${v.score.toFixed(4)}</span>
+        </div>
+        <div style="font-size:12px;color:#2a2a28;line-height:1.55;margin:4px 0 2px">${v.highlight}</div>
+        ${relTag ? `<div style="margin:8px 0 0">${relTag}</div>` : ''}
+
+        <div class="cbe3-section">
+          <div class="cbe3-section-title"><span class="i">📄</span>แผนแม่บทที่สำคัญ</div>
+          ${docBlock || '<div style="font-size:11px;color:#9a9994">—</div>'}
+        </div>
+
+        <div class="cbe3-section">
+          <div class="cbe3-section-title"><span class="i">↗</span>ส่งออกข้อมูลไปยัง</div>
+          <div class="cbe3-chips">${outChips||'<span style="font-size:11px;color:#9a9994">—</span>'}</div>
+        </div>
+
+        <div class="cbe3-section">
+          <div class="cbe3-section-title"><span class="i">↙</span>รับข้อมูลจาก</div>
+          <div class="cbe3-chips">${inChips||'<span style="font-size:11px;color:#9a9994">—</span>'}</div>
+        </div>
+      </div>`;
+  }
+
+  function render(id) {
+    const panel = document.getElementById('cbe3-panel');
+    if (!id) {
+      panel.innerHTML = Object.entries(DATA).map(([k,v]) => cardHtml(k,v,false)).join('');
+      document.getElementById('cbe3-hint').textContent = '💡 คลิก enabler บนแผนผังเพื่อดูรายละเอียด · เส้นเชื่อมที่เลือกจะมีอนิเมชัน flow';
+      return;
+    }
+    const v = DATA[id];
+    const active = cardHtml(id, v, true);
+    const related = [...new Set([...v.out, ...v.in])];
+    const others = related.map(k => DATA[k] ? cardHtml(k, DATA[k], false, id) : '').join('');
+    panel.innerHTML = active + others;
+    document.getElementById('cbe3-hint').textContent = `🔗 กำลังดู ${plainName(id)} · ส่งออก ${v.out.length} เส้น · รับเข้า ${v.in.length} เส้น`;
+  }
+
+  function linkKey(a, b) { return `${a}-${b}`; }
+
+  function highlightLinks(id, mode) {
+    const links = document.querySelectorAll('#cbe3-links .cbe3-link');
+    links.forEach(l => l.classList.remove('active','flow','dim'));
+    if (!id) {
+      document.querySelectorAll('.cbe3-node').forEach(n => n.style.opacity = '1');
+      return;
+    }
+    const v = DATA[id];
+    const outKeys = v.out.flatMap(t => [linkKey(id,t), linkKey(t,id)]);
+    const inKeys = v.in.flatMap(s => [linkKey(s,id), linkKey(id,s)]);
+    let show = [];
+    if (mode === 'out') show = outKeys;
+    else if (mode === 'in') show = inKeys;
+    else show = [...outKeys, ...inKeys];
+
+    links.forEach(l => {
+      const k = l.getAttribute('data-link');
+      if (show.includes(k)) { l.classList.add('active','flow'); }
+      else { l.classList.add('dim'); }
+    });
+
+    document.querySelectorAll('.cbe3-node').forEach(n => {
+      const nid = n.getAttribute('data-id');
+      const related = nid === id || v.out.includes(nid) || v.in.includes(nid);
+      n.style.opacity = related ? '1' : '.3';
+      n.style.transition = 'opacity .3s';
+    });
+  }
+
+  window.cbe3Select = function(id) {
+    if (!DATA[id]) return;
+    currentId = id;
+    render(id);
+    highlightLinks(id, currentMode);
+    // Scroll to panel on mobile
+    if (window.innerWidth < 700) {
+      document.getElementById('cbe3-panel').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  };
+
+  window.cbe3Mode = function(m) {
+    currentMode = m;
+    document.querySelectorAll('.cbe3-toggle button').forEach(b => b.classList.toggle('on', b.getAttribute('data-mode') === m));
+    if (currentId) highlightLinks(currentId, m);
+  };
+
+  render(null);
+})();
+</script>
+</body>
+</html>
