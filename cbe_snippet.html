@@ -1,0 +1,391 @@
+<!-- ============================================================
+     CBE ENABLER LINKAGE MAP — DARK THEME SNIPPET
+     วิธีใช้: ให้นักพัฒนาวาง 3 ส่วนนี้ในหน้าเว็บของคุณ
+     1) <style>...</style>  → วางใน <head> หรือไฟล์ CSS
+     2) <div class="cbe-linkage">...</div>  → วางในตำแหน่งที่ต้องการให้แสดง
+     3) <script>...</script>  → วางก่อนปิด </body>
+     ============================================================ -->
+
+<!-- ========== PART 1: CSS ========== -->
+<style>
+  .cbe-linkage { --cbe-bg: #0b1220; --cbe-surface: #111b2e; --cbe-surface-2: #162138; --cbe-border: #243049; --cbe-border-strong: #334266; --cbe-text: #e6eaf2; --cbe-text-muted: #9aa4b8; --cbe-text-dim: #6c778f; --cbe-status-ok: #22c55e; --cbe-status-warn: #f59e0b; --cbe-status-risk: #ef4444; font-family: inherit; color: var(--cbe-text); padding: 8px 0; }
+  .cbe-linkage * { box-sizing: border-box; }
+  .cbe-linkage .cbe-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .cbe-linkage .cbe-title { font-size: 17px; font-weight: 600; margin: 0 0 3px; color: var(--cbe-text); }
+  .cbe-linkage .cbe-sub { font-size: 12px; color: var(--cbe-text-muted); margin: 0; }
+  .cbe-linkage .cbe-legend { display: flex; gap: 14px; font-size: 11px; color: var(--cbe-text-muted); flex-wrap: wrap; align-items: center; background: var(--cbe-surface); padding: 7px 12px; border-radius: 8px; border: 1px solid var(--cbe-border); }
+  .cbe-linkage .cbe-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .cbe-linkage .cbe-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  .cbe-linkage .cbe-stage { position: relative; width: 100%; background: var(--cbe-surface); border: 1px solid var(--cbe-border); border-radius: 12px; padding: 12px; overflow: hidden; }
+  .cbe-linkage .cbe-stage svg { width: 100%; height: auto; display: block; }
+  .cbe-linkage .cbe-node { cursor: pointer; transition: transform 0.2s ease; }
+  .cbe-linkage .cbe-node:hover { transform: translateY(-1px); }
+
+  .cbe-linkage .cbe-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 14px; }
+  .cbe-linkage .cbe-card { background: var(--cbe-surface); border: 1px solid var(--cbe-border); border-radius: 10px; padding: 13px 15px; transition: all 0.2s; border-top: 3px solid var(--accent, var(--cbe-border)); }
+  .cbe-linkage .cbe-card.active { border: 2px solid var(--accent, var(--cbe-border-strong)); border-top: 4px solid var(--accent, var(--cbe-border-strong)); padding: 12px 14px; background: var(--cbe-surface-2); }
+  .cbe-linkage .cbe-card h4 { margin: 0 0 2px; font-size: 14px; font-weight: 600; color: var(--accent-light, var(--cbe-text)); display: flex; align-items: center; gap: 8px; }
+  .cbe-linkage .cbe-card .en { font-size: 10px; color: var(--cbe-text-dim); margin: 0 0 10px; letter-spacing: 0.02em; }
+  .cbe-linkage .cbe-score { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 6px; font-variant-numeric: tabular-nums; }
+  .cbe-linkage .cbe-highlight { font-size: 12px; color: var(--cbe-text); line-height: 1.55; margin: 4px 0 2px; }
+  .cbe-linkage .cbe-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--cbe-border); }
+  .cbe-linkage .cbe-section-title { font-size: 10px; font-weight: 600; color: var(--accent-light, var(--cbe-text-muted)); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .cbe-linkage .cbe-section-title .i { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; background: var(--accent-bg, var(--cbe-surface-2)); color: var(--accent-light, var(--cbe-text-muted)); font-size: 10px; font-weight: 600; }
+  .cbe-linkage .cbe-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cbe-linkage .cbe-chip { font-size: 10px; padding: 3px 9px; border-radius: 10px; background: var(--chip-bg, var(--cbe-surface-2)); color: var(--chip-color, var(--cbe-text-muted)); cursor: pointer; transition: all 0.15s; border: 1px solid transparent; font-weight: 600; }
+  .cbe-linkage .cbe-chip:hover { filter: brightness(1.2); border-color: var(--chip-color, var(--cbe-border-strong)); }
+
+  .cbe-linkage .cbe-doc { display: flex; align-items: center; gap: 10px; padding: 9px 11px; background: var(--accent-bg, var(--cbe-surface-2)); border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+  .cbe-linkage .cbe-doc:hover { filter: brightness(1.15); border-color: var(--accent, var(--cbe-border-strong)); }
+  .cbe-linkage .cbe-doc-icon { width: 24px; height: 28px; flex-shrink: 0; position: relative; background: var(--cbe-bg); border: 1px solid var(--accent, var(--cbe-border-strong)); border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; }
+  .cbe-linkage .cbe-doc-icon::before { content: ''; position: absolute; top: -1px; right: -1px; width: 8px; height: 8px; background: var(--accent-bg, var(--cbe-surface-2)); border-left: 1px solid var(--accent, var(--cbe-border-strong)); border-bottom: 1px solid var(--accent, var(--cbe-border-strong)); }
+  .cbe-linkage .cbe-doc-icon span { font-size: 7px; font-weight: 600; color: var(--accent-light, var(--cbe-text-muted)); letter-spacing: 0.02em; }
+  .cbe-linkage .cbe-doc-name { font-size: 12px; color: var(--cbe-text); line-height: 1.35; flex: 1; font-weight: 500; }
+  .cbe-linkage .cbe-doc-attach { font-size: 10px; color: var(--accent-light, var(--cbe-text-muted)); padding: 3px 9px; border-radius: 8px; background: var(--cbe-bg); border: 1px solid var(--accent, var(--cbe-border)); font-weight: 600; white-space: nowrap; }
+
+  .cbe-linkage .cbe-hintbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 11px; color: var(--cbe-text-muted); flex-wrap: wrap; padding: 0 4px; }
+  .cbe-linkage .cbe-toggle { display: inline-flex; gap: 4px; background: var(--cbe-surface-2); padding: 3px; border-radius: 8px; border: 1px solid var(--cbe-border); }
+  .cbe-linkage .cbe-toggle button { border: none; background: transparent; font-size: 11px; padding: 5px 12px; border-radius: 6px; cursor: pointer; color: var(--cbe-text-muted); transition: all 0.15s; font-family: inherit; font-weight: 500; }
+  .cbe-linkage .cbe-toggle button.on { background: var(--cbe-bg); color: var(--cbe-text); font-weight: 600; }
+
+  .cbe-linkage .cbe-link { fill: none; transition: opacity 0.3s, stroke-width 0.3s; }
+  .cbe-linkage .cbe-link.dim { opacity: 0.08; }
+  .cbe-linkage .cbe-link.active { opacity: 1; stroke-width: 2.4; }
+  .cbe-linkage .cbe-link.flow { stroke-dasharray: 6 6; animation: cbe-dash 1.2s linear infinite; }
+  @keyframes cbe-dash { to { stroke-dashoffset: -24; } }
+  .cbe-linkage .cbe-ring { fill: none; stroke: var(--cbe-border); stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .cbe-linkage .cbe-hub-glow { animation: cbe-pulse 3.5s ease-in-out infinite; transform-origin: center; }
+  @keyframes cbe-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.65; } }
+
+  @media (max-width: 700px) {
+    .cbe-linkage .cbe-head { flex-direction: column; align-items: stretch; }
+    .cbe-linkage .cbe-legend { font-size: 10px; }
+  }
+</style>
+
+<!-- ========== PART 2: HTML ========== -->
+<!-- วางใน <div> ที่ต้องการให้แสดงความเชื่อมโยง -->
+<div class="cbe-linkage">
+  <div class="cbe-head">
+    <div>
+      <p class="cbe-title">ความเชื่อมโยงของ Core Business Enablers</p>
+      <p class="cbe-sub">Strategy-driven CBE Linkage Map · SP เป็นศูนย์กลาง ถ่ายทอด KPI สู่ทุก enabler</p>
+    </div>
+    <div class="cbe-legend">
+      <span><i class="cbe-dot" style="background:#22c55e"></i>ปกติ ≥ 3.00</span>
+      <span><i class="cbe-dot" style="background:#f59e0b"></i>เฝ้าระวัง 2.50–2.99</span>
+      <span><i class="cbe-dot" style="background:#ef4444"></i>เสี่ยง &lt; 2.50</span>
+    </div>
+  </div>
+
+  <div class="cbe-stage">
+    <svg viewBox="0 0 860 640" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Core Business Enablers linkage — SP centered</title>
+      <desc>SP hub at center with eight enablers on radius 220 at 45-degree intervals.</desc>
+      <defs>
+        <radialGradient id="cbe-hubg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fbbf24" stop-opacity=".4"/>
+          <stop offset="70%" stop-color="#fbbf24" stop-opacity=".1"/>
+          <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <circle class="cbe-ring" cx="430" cy="320" r="220"/>
+      <circle class="cbe-ring" cx="430" cy="320" r="150" style="opacity:.25"/>
+      <circle class="cbe-ring" cx="430" cy="320" r="90" style="opacity:.2"/>
+
+      <circle class="cbe-hub-glow" cx="430" cy="320" r="105" fill="url(#cbe-hubg)"/>
+
+      <g id="cbe-links" stroke-linecap="round">
+        <path class="cbe-link" data-link="SP-CG" d="M 430 262 Q 420 180 430 142" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-CM" d="M 471 279 Q 520 220 558 193" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-SM" d="M 488 320 Q 560 310 608 320" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-IA" d="M 471 361 Q 520 420 558 447" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-IM" d="M 430 378 Q 440 460 430 498" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-KM" d="M 389 361 Q 340 420 302 447" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-HCM" d="M 372 320 Q 300 330 252 320" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+        <path class="cbe-link" data-link="SP-RMIC" d="M 389 279 Q 340 220 302 193" stroke="#fbbf24" stroke-width="1.3" opacity=".45"/>
+
+        <path class="cbe-link" data-link="CG-CM" d="M 471 114 A 220 220 0 0 1 558 193" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="CM-SM" d="M 613 193 A 220 220 0 0 1 608 320" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="SM-IA" d="M 608 320 A 220 220 0 0 1 613 447" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="IA-IM" d="M 558 447 A 220 220 0 0 1 471 526" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="IM-KM" d="M 389 526 A 220 220 0 0 1 302 447" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="KM-HCM" d="M 247 447 A 220 220 0 0 1 252 320" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="HCM-RMIC" d="M 252 320 A 220 220 0 0 1 247 193" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+        <path class="cbe-link" data-link="RMIC-CG" d="M 302 193 A 220 220 0 0 1 389 114" stroke="#34d399" stroke-width="1.3" opacity=".4"/>
+
+        <path class="cbe-link" data-link="HCM-KM" d="M 220 360 Q 245 440 290 470" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+        <path class="cbe-link" data-link="KM-IM" d="M 302 473 Q 360 520 388 526" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+        <path class="cbe-link" data-link="CM-DT" d="M 570 190 Q 480 290 478 408" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+        <path class="cbe-link" data-link="DT-IM" d="M 430 435 Q 430 470 430 498" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+        <path class="cbe-link" data-link="CG-RMIC" d="M 389 114 A 220 220 0 0 0 302 193" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+        <path class="cbe-link" data-link="IA-RMIC" d="M 540 440 Q 380 470 290 200" stroke="#a78bfa" stroke-width="1" opacity=".3" stroke-dasharray="4 5"/>
+      </g>
+
+      <g class="cbe-node" data-id="SP" onclick="cbeSelect('SP')">
+        <circle cx="430" cy="320" r="58" fill="#1e1b04" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle cx="430" cy="320" r="50" fill="none" stroke="#fbbf24" stroke-width=".5" opacity=".4"/>
+        <text x="430" y="308" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:17px;fill:#fcd34d">SP</text>
+        <text x="430" y="326" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:9px;fill:#fbbf24;opacity:.85;letter-spacing:.05em">STRATEGY HUB</text>
+        <text x="430" y="344" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:12px;fill:#fde68a">2.5400</text>
+        <circle cx="468" cy="290" r="5" fill="#f59e0b" stroke="#1e1b04" stroke-width="1.5"/>
+      </g>
+
+      <g class="cbe-node" data-id="CG" onclick="cbeSelect('CG')">
+        <circle cx="430" cy="100" r="42" fill="#1e1b04" stroke="#fbbf24" stroke-width="1"/>
+        <text x="430" y="92" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#fcd34d">CG</text>
+        <text x="430" y="112" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#fde68a">2.8315</text>
+        <circle cx="458" cy="78" r="4" fill="#f59e0b" stroke="#1e1b04" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="CM" onclick="cbeSelect('CM')">
+        <circle cx="585.56" cy="164.44" r="42" fill="#042f23" stroke="#34d399" stroke-width="1"/>
+        <text x="585.56" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#6ee7b7">CM</text>
+        <text x="585.56" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#a7f3d0">3.2512</text>
+        <circle cx="613" cy="142" r="4" fill="#22c55e" stroke="#042f23" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="SM" onclick="cbeSelect('SM')">
+        <circle cx="650" cy="320" r="42" fill="#1e1b4b" stroke="#a78bfa" stroke-width="1"/>
+        <text x="650" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#c4b5fd">SM</text>
+        <text x="650" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#ddd6fe">3.2512</text>
+        <circle cx="678" cy="298" r="4" fill="#22c55e" stroke="#1e1b4b" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="IA" onclick="cbeSelect('IA')">
+        <circle cx="585.56" cy="475.56" r="42" fill="#0b243d" stroke="#60a5fa" stroke-width="1"/>
+        <text x="585.56" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#93c5fd">IA</text>
+        <text x="585.56" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#bfdbfe">2.7549</text>
+        <circle cx="613" cy="453" r="4" fill="#f59e0b" stroke="#0b243d" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="IM" onclick="cbeSelect('IM')">
+        <circle cx="430" cy="540" r="42" fill="#3b0a0a" stroke="#f87171" stroke-width="1"/>
+        <text x="430" y="532" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#fca5a5">IM</text>
+        <text x="430" y="552" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#fecaca">1.9893</text>
+        <circle cx="458" cy="518" r="4" fill="#ef4444" stroke="#3b0a0a" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="KM" onclick="cbeSelect('KM')">
+        <circle cx="274.44" cy="475.56" r="42" fill="#3b0a1f" stroke="#f472b6" stroke-width="1"/>
+        <text x="274.44" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#f9a8d4">KM</text>
+        <text x="274.44" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#fbcfe8">2.7575</text>
+        <circle cx="302" cy="453" r="4" fill="#f59e0b" stroke="#3b0a1f" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="HCM" onclick="cbeSelect('HCM')">
+        <circle cx="210" cy="320" r="42" fill="#0a2a0a" stroke="#86efac" stroke-width="1"/>
+        <text x="210" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:14px;fill:#bbf7d0">HCM</text>
+        <text x="210" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#dcfce7">3.0740</text>
+        <circle cx="238" cy="298" r="4" fill="#22c55e" stroke="#0a2a0a" stroke-width="1"/>
+      </g>
+      <g class="cbe-node" data-id="RMIC" onclick="cbeSelect('RMIC')">
+        <circle cx="274.44" cy="164.44" r="42" fill="#3b1505" stroke="#fb923c" stroke-width="1.2"/>
+        <text x="274.44" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:13px;fill:#fdba74">RM&amp;IC</text>
+        <text x="274.44" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-size:11px;fill:#fed7aa">1.9800</text>
+        <circle cx="302" cy="142" r="4" fill="#ef4444" stroke="#3b1505" stroke-width="1"/>
+      </g>
+
+      <g class="cbe-node" data-id="DT" onclick="cbeSelect('DT')">
+        <rect x="388" y="398" width="84" height="28" rx="14" fill="#042f23" stroke="#34d399" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="430" y="412" text-anchor="middle" dominant-baseline="central" style="font-family:inherit;font-weight:600;font-size:12px;fill:#6ee7b7">DT · 2.7565</text>
+      </g>
+      <text x="430" y="444" text-anchor="middle" style="font-family:inherit;font-size:10px;fill:#6c778f;font-style:italic">cross-cutting enabler</text>
+    </svg>
+  </div>
+
+  <div class="cbe-hintbar">
+    <span id="cbe-hint">💡 คลิก enabler บนแผนผังเพื่อดูรายละเอียด · เส้นเชื่อมที่เลือกจะมีอนิเมชัน flow</span>
+    <div class="cbe-toggle" role="group" aria-label="Filter mode">
+      <button class="on" data-mode="all" onclick="cbeMode('all')">ทั้งหมด</button>
+      <button data-mode="out" onclick="cbeMode('out')">ส่งออก</button>
+      <button data-mode="in" onclick="cbeMode('in')">รับเข้า</button>
+    </div>
+  </div>
+
+  <div class="cbe-panel" id="cbe-panel"></div>
+</div>
+
+<!-- ========== PART 3: JAVASCRIPT ========== -->
+<script>
+(function() {
+  // ธีมสีของแต่ละ enabler (dark mode)
+  const THEME = {
+    CG:   {accent:'#fbbf24', light:'#fde68a', bg:'#1e1b04', chipBg:'#1e1b04', chipColor:'#fcd34d'},
+    SP:   {accent:'#fbbf24', light:'#fde68a', bg:'#1e1b04', chipBg:'#1e1b04', chipColor:'#fcd34d'},
+    RMIC: {accent:'#fb923c', light:'#fed7aa', bg:'#3b1505', chipBg:'#3b1505', chipColor:'#fdba74'},
+    CM:   {accent:'#34d399', light:'#a7f3d0', bg:'#042f23', chipBg:'#042f23', chipColor:'#6ee7b7'},
+    SM:   {accent:'#a78bfa', light:'#ddd6fe', bg:'#1e1b4b', chipBg:'#1e1b4b', chipColor:'#c4b5fd'},
+    IA:   {accent:'#60a5fa', light:'#bfdbfe', bg:'#0b243d', chipBg:'#0b243d', chipColor:'#93c5fd'},
+    IM:   {accent:'#f87171', light:'#fecaca', bg:'#3b0a0a', chipBg:'#3b0a0a', chipColor:'#fca5a5'},
+    KM:   {accent:'#f472b6', light:'#fbcfe8', bg:'#3b0a1f', chipBg:'#3b0a1f', chipColor:'#f9a8d4'},
+    HCM:  {accent:'#86efac', light:'#dcfce7', bg:'#0a2a0a', chipBg:'#0a2a0a', chipColor:'#bbf7d0'},
+    DT:   {accent:'#34d399', light:'#a7f3d0', bg:'#042f23', chipBg:'#042f23', chipColor:'#6ee7b7'}
+  };
+
+  // ข้อมูลของ enabler แต่ละด้าน — แก้ไขตรงนี้ได้เลย
+  const DATA = {
+    CG:   {name:'การกำกับดูแล', en:'Corporate Governance', score:2.8315, status:'warn',
+           out:['RMIC','SP','IA'], in:['SM','IM','IA'],
+           highlight:'ควบคุมดูแลให้โปร่งใสและมีธรรมาภิบาล · ออก policy กำกับทิศทางองค์กร',
+           doc:'แผนแม่บทการกำกับดูแลกิจการที่ดี'},
+    SP:   {name:'แผนกลยุทธ์', en:'Strategic Planning', score:2.5400, status:'warn',
+           out:['HCM','KM','IM','IA','CM','RMIC','CG','SM'], in:['CG','RMIC'],
+           highlight:'ประกาศ Direction และถ่ายทอด KPI ระดับองค์กรสู่สายงาน/บุคคล (Hub กลยุทธ์)',
+           doc:'แผนแม่บทวิสาหกิจ ปี 2566–2570'},
+    RMIC: {name:'บริหารความเสี่ยง', en:'Risk Mgmt & Internal Control', score:1.9800, status:'risk',
+           out:['CG','SP','IA'], in:['IA','CG','SP'],
+           highlight:'บริหารความเสี่ยงและควบคุมภายในทั่วทั้งองค์กร · คะแนนต่ำกว่าเกณฑ์',
+           doc:'แผนแม่บทบริหารความเสี่ยงองค์กร (ERM)'},
+    CM:   {name:'บริหารลูกค้า', en:'Customer Management', score:3.2512, status:'ok',
+           out:['KM','SM','DT'], in:['DT','SP','SM'],
+           highlight:'นำข้อมูลลูกค้ามาพัฒนาด้วยระบบ IT เพื่อสร้างรายได้และการบริการ',
+           doc:'แผนแม่บทบริหารลูกค้าสัมพันธ์ (CRM)'},
+    SM:   {name:'การตลาด', en:'Sales & Marketing', score:3.2512, status:'ok',
+           out:['CM','CG','IA'], in:['IM','DT','CM','SP'],
+           highlight:'สื่อสารไปยังผู้ใช้บริการ · นำ insight กลับสู่ CM และ CG',
+           doc:'แผนแม่บทการตลาดองค์กร'},
+    DT:   {name:'เทคโนโลยีดิจิทัล', en:'Digital Technology', score:2.7565, status:'warn',
+           out:['HCM','KM','CM','SM','IM'], in:['SP'],
+           highlight:'สนับสนุนเทคโนโลยีในทุก enabler · เป็น bridge ส่งต่อข้อมูลอัตโนมัติ',
+           doc:'แผนแม่บทเทคโนโลยีสารสนเทศ (IT Master Plan)'},
+    HCM:  {name:'บริหารทรัพยากรบุคคล', en:'Human Capital Management', score:3.0740, status:'ok',
+           out:['KM','SM'], in:['SP','DT'],
+           highlight:'พัฒนาพนักงานให้สอดคล้องกับทิศทางที่ SP ตั้งไว้',
+           doc:'แผนแม่บทการบริหารทรัพยากรบุคคล'},
+    KM:   {name:'จัดการความรู้', en:'Knowledge Management', score:2.7575, status:'warn',
+           out:['IM','CM'], in:['HCM','DT','SP','CM'],
+           highlight:'นำ DATA CM มาใส่พลังสร้างองค์ความรู้ · ถอดบทเรียน AAR สู่ระบบดิจิทัล',
+           doc:'แผนแม่บทการจัดการความรู้ (KM)'},
+    IM:   {name:'บริหารนวัตกรรม', en:'Innovation Management', score:1.9893, status:'risk',
+           out:['SM','CG'], in:['KM','DT','SP'],
+           highlight:'หยิบชุด DATA KM มาพัฒนาและสร้างมูลค่าเพิ่มด้วยระบบนวัตกรรม · ต่ำกว่าเกณฑ์',
+           doc:'แผนแม่บทนวัตกรรมองค์กร'},
+    IA:   {name:'การตรวจสอบภายใน', en:'Internal Audit', score:2.7549, status:'warn',
+           out:['CG','RMIC','SP'], in:['CG','RMIC','SP','SM'],
+           highlight:'ให้คำปรึกษาและคำแนะนำเพื่อป้องกันให้ผลลัพธ์ในแต่ละกิจกรรมมีความเหมาะสม',
+           doc:'แผนแม่บทการตรวจสอบภายใน (IA Charter)'}
+  };
+
+  const STATUS_COLOR = {ok:'#22c55e', warn:'#f59e0b', risk:'#ef4444'};
+
+  let currentId = null;
+  let currentMode = 'all';
+
+  function displayName(id) { return id === 'RMIC' ? 'RM&amp;IC' : id; }
+  function plainName(id) { return id === 'RMIC' ? 'RM&IC' : id; }
+
+  function cardHtml(id, v, isActive, fromId) {
+    const t = THEME[id];
+    const styleVars = `--accent:${t.accent};--accent-light:${t.light};--accent-bg:${t.bg};--chip-bg:${t.chipBg};--chip-color:${t.chipColor};`;
+
+    const outChips = v.out.map(x => {
+      const tt = THEME[x] || {};
+      return `<span class="cbe-chip" style="background:${tt.chipBg||'#162138'};color:${tt.chipColor||'#9aa4b8'}" onclick="cbeSelect('${x}')">→ ${displayName(x)}</span>`;
+    }).join('');
+
+    const inChips = v.in.map(x => {
+      const tt = THEME[x] || {};
+      return `<span class="cbe-chip" style="background:${tt.chipBg||'#162138'};color:${tt.chipColor||'#9aa4b8'}" onclick="cbeSelect('${x}')">← ${displayName(x)}</span>`;
+    }).join('');
+
+    const docBlock = v.doc ? `
+      <div class="cbe-doc" onclick="alert('แนบเอกสาร: ${v.doc.replace(/'/g,'\\\'')}')">
+        <div class="cbe-doc-icon"><span>PDF</span></div>
+        <div class="cbe-doc-name">${v.doc}</div>
+        <span class="cbe-doc-attach">แนบ</span>
+      </div>` : '';
+
+    let relTag = '';
+    if (fromId) {
+      if (DATA[fromId].out.includes(id)) relTag += `<span style="font-size:10px;color:${t.light};background:${t.bg};padding:2px 8px;border-radius:10px;border:1px solid ${t.accent};font-weight:600">⬅ รับเข้าจาก ${displayName(fromId)}</span>`;
+      if (DATA[fromId].in.includes(id)) relTag += `<span style="font-size:10px;color:${t.light};background:${t.bg};padding:2px 8px;border-radius:10px;border:1px solid ${t.accent};margin-left:4px;font-weight:600">➡ ส่งออกให้ ${displayName(fromId)}</span>`;
+    }
+
+    return `
+      <div class="cbe-card ${isActive?'active':''}" style="${styleVars}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:2px">
+          <div>
+            <h4><span class="cbe-dot" style="background:${STATUS_COLOR[v.status]}"></span> ${displayName(id)} · ${v.name}</h4>
+            <p class="en">${v.en}</p>
+          </div>
+          <span class="cbe-score" style="background:${t.bg};color:${t.light};border:1px solid ${t.accent}">${v.score.toFixed(4)}</span>
+        </div>
+        <div class="cbe-highlight">${v.highlight}</div>
+        ${relTag ? `<div style="margin:8px 0 0">${relTag}</div>` : ''}
+
+        <div class="cbe-section">
+          <div class="cbe-section-title"><span class="i">📄</span>แผนแม่บทที่สำคัญ</div>
+          ${docBlock || '<div style="font-size:11px;color:#6c778f">—</div>'}
+        </div>
+
+        <div class="cbe-section">
+          <div class="cbe-section-title"><span class="i">↗</span>ส่งออกข้อมูลไปยัง</div>
+          <div class="cbe-chips">${outChips||'<span style="font-size:11px;color:#6c778f">—</span>'}</div>
+        </div>
+
+        <div class="cbe-section">
+          <div class="cbe-section-title"><span class="i">↙</span>รับข้อมูลจาก</div>
+          <div class="cbe-chips">${inChips||'<span style="font-size:11px;color:#6c778f">—</span>'}</div>
+        </div>
+      </div>`;
+  }
+
+  function render(id) {
+    const panel = document.getElementById('cbe-panel');
+    if (!id) {
+      panel.innerHTML = Object.entries(DATA).map(([k,v]) => cardHtml(k,v,false)).join('');
+      document.getElementById('cbe-hint').textContent = '💡 คลิก enabler บนแผนผังเพื่อดูรายละเอียด · เส้นเชื่อมที่เลือกจะมีอนิเมชัน flow';
+      return;
+    }
+    const v = DATA[id];
+    const active = cardHtml(id, v, true);
+    const related = [...new Set([...v.out, ...v.in])];
+    const others = related.map(k => DATA[k] ? cardHtml(k, DATA[k], false, id) : '').join('');
+    panel.innerHTML = active + others;
+    document.getElementById('cbe-hint').textContent = `🔗 กำลังดู ${plainName(id)} · ส่งออก ${v.out.length} เส้น · รับเข้า ${v.in.length} เส้น`;
+  }
+
+  function linkKey(a, b) { return `${a}-${b}`; }
+
+  function highlightLinks(id, mode) {
+    const links = document.querySelectorAll('#cbe-links .cbe-link');
+    links.forEach(l => l.classList.remove('active','flow','dim'));
+    if (!id) {
+      document.querySelectorAll('.cbe-node').forEach(n => n.style.opacity = '1');
+      return;
+    }
+    const v = DATA[id];
+    const outKeys = v.out.flatMap(t => [linkKey(id,t), linkKey(t,id)]);
+    const inKeys = v.in.flatMap(s => [linkKey(s,id), linkKey(id,s)]);
+    let show = [];
+    if (mode === 'out') show = outKeys;
+    else if (mode === 'in') show = inKeys;
+    else show = [...outKeys, ...inKeys];
+
+    links.forEach(l => {
+      const k = l.getAttribute('data-link');
+      if (show.includes(k)) { l.classList.add('active','flow'); }
+      else { l.classList.add('dim'); }
+    });
+
+    document.querySelectorAll('.cbe-node').forEach(n => {
+      const nid = n.getAttribute('data-id');
+      const related = nid === id || v.out.includes(nid) || v.in.includes(nid);
+      n.style.opacity = related ? '1' : '.3';
+      n.style.transition = 'opacity .3s';
+    });
+  }
+
+  window.cbeSelect = function(id) {
+    if (!DATA[id]) return;
+    currentId = id;
+    render(id);
+    highlightLinks(id, currentMode);
+  };
+
+  window.cbeMode = function(m) {
+    currentMode = m;
+    document.querySelectorAll('.cbe-toggle button').forEach(b => b.classList.toggle('on', b.getAttribute('data-mode') === m));
+    if (currentId) highlightLinks(currentId, m);
+  };
+
+  render(null);
+})();
+</script>
