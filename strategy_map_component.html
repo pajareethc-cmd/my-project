@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategy Map & Document Alignment — CBE ปี 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   DESIGN TOKENS — ต่อจากไฟล์เดิม index_cm_smaller_v2.html
+   ===================================================== */
+:root{
+  --navy:#0B1F3A; --navy-mid:#132744; --navy-light:#1A3560;
+  --teal:#00C4B8; --teal-light:#4DD9D0; --teal-dim:rgba(0,196,184,0.12);
+  --gold:#F0B429; --red:#EF4444; --red-dim:rgba(239,68,68,0.12);
+  --orange:#F97316; --orange-dim:rgba(249,115,22,0.12);
+  --green:#22C55E; --green-dim:rgba(34,197,94,0.12);
+  --purple:#A78BFA; --purple-dim:rgba(167,139,250,0.12);
+  --blue:#60A5FA; --blue-dim:rgba(96,165,250,0.12);
+  --pink:#F472B6; --pink-dim:rgba(244,114,182,0.12);
+
+  --text:#E2EDF9; --text-dim:rgba(226,237,249,0.55);
+  --border:rgba(0,196,184,0.2);
+
+  /* Perspective colors — แยกตามมิติ Balanced Scorecard */
+  --p-financial:#F0B429;       /* Gold */
+  --p-customer:#22C55E;        /* Green */
+  --p-process:#60A5FA;         /* Blue */
+  --p-learning:#A78BFA;        /* Purple */
+  --p-foundation:#F97316;      /* Orange — RM/IC/CG เป็นฐานราก */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Sarabun',sans-serif;
+  background:var(--navy);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,196,184,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,100,180,0.07) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.02) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.02) 40px);
+}
+
+.app{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.sm-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;margin-bottom:20px;
+  background:rgba(19,39,68,0.7);
+  border:1px solid var(--border);
+  border-radius:14px;
+  backdrop-filter:blur(12px);
+}
+.sm-header-left{display:flex;align-items:center;gap:16px}
+.sm-logo{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,var(--teal),#006E6A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;color:#fff;
+  box-shadow:0 0 24px rgba(0,196,184,0.35);
+}
+.sm-title h1{
+  font-size:20px;font-weight:700;color:var(--teal);
+  letter-spacing:-0.01em;
+}
+.sm-title p{font-size:13px;color:var(--text-dim);margin-top:2px}
+
+.view-toggle{display:flex;gap:4px;background:rgba(11,31,58,0.6);padding:4px;border-radius:10px;border:1px solid var(--border)}
+.view-btn{
+  padding:7px 14px;border-radius:7px;border:none;
+  background:transparent;color:var(--text-dim);
+  font-family:'Sarabun';font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.view-btn.active{background:var(--teal);color:var(--navy)}
+.view-btn:not(.active):hover{color:var(--teal)}
+
+/* =============================================
+   PROGRESS OVERVIEW
+   ============================================= */
+.progress-row{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;
+}
+.progress-card{
+  padding:14px 16px;border-radius:12px;
+  background:rgba(19,39,68,0.5);
+  border:1px solid rgba(255,255,255,0.06);
+  border-left:3px solid var(--accent,var(--teal));
+  transition:transform .2s, border-color .2s;
+}
+.progress-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.pc-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.pc-name{font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.4;min-height:36px}
+.pc-bar{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.pc-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pc-stats{display:flex;justify-content:space-between;align-items:baseline;font-family:'IBM Plex Mono'}
+.pc-count{font-size:15px;font-weight:700;color:var(--accent)}
+.pc-total{font-size:12px;color:var(--text-dim)}
+
+/* =============================================
+   STRATEGY MAP — VIEW 1
+   ============================================= */
+.strategy-view{display:none}
+.strategy-view.active{display:block}
+
+.sm-container{
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(240,180,41,0.04) 0%,rgba(34,197,94,0.04) 25%,rgba(96,165,250,0.04) 50%,rgba(167,139,250,0.04) 75%,rgba(249,115,22,0.04) 100%);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  margin-bottom:24px;
+  overflow:hidden;
+}
+
+.sm-svg-layer{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+}
+
+.perspective-row{
+  display:grid;
+  gap:14px;
+  margin-bottom:14px;
+  position:relative;
+  z-index:2;
+}
+.perspective-row:last-child{margin-bottom:0}
+
+.p-label{
+  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+}
+.p-label-tag{
+  padding:3px 10px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;font-family:'IBM Plex Mono';
+  background:var(--p-color-dim);color:var(--p-color);
+  border:1px solid var(--p-color);
+}
+.p-label-name{font-size:14px;font-weight:600;color:var(--p-color)}
+.p-label-desc{font-size:12px;color:var(--text-dim);flex:1;text-align:right}
+
+.plan-cards{
+  display:grid;
+  gap:12px;
+}
+.plan-cards.cols-1{grid-template-columns:1fr}
+.plan-cards.cols-2{grid-template-columns:1fr 1fr}
+.plan-cards.cols-3{grid-template-columns:repeat(3,1fr)}
+.plan-cards.cols-5{grid-template-columns:repeat(5,1fr)}
+
+.plan-card{
+  position:relative;
+  padding:14px;
+  border-radius:12px;
+  background:rgba(11,31,58,0.75);
+  border:1.5px solid var(--p-color);
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.plan-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--p-color-dim) 0%,transparent 60%);
+  opacity:0.5;pointer-events:none;
+}
+.plan-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.25),0 0 0 2px var(--p-color);
+}
+.plan-card.highlighted{
+  box-shadow:0 0 0 2px var(--p-color),0 0 24px var(--p-color-dim);
+  z-index:5;
+}
+.plan-card.dimmed{opacity:0.28}
+.plan-card.linked{
+  box-shadow:0 0 0 2px var(--teal),0 0 18px rgba(0,196,184,0.3);
+  z-index:4;
+}
+
+.pc-head{
+  display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;
+  position:relative;z-index:1;
+}
+.pc-code{
+  padding:3px 8px;border-radius:6px;
+  font-size:12px;font-weight:700;font-family:'IBM Plex Mono';
+  background:var(--p-color);color:var(--navy);
+  flex-shrink:0;
+}
+.pc-info{flex:1;min-width:0}
+.pc-title{
+  font-size:14px;font-weight:700;color:var(--text);
+  line-height:1.35;margin-bottom:2px;
+}
+.pc-subtitle{
+  font-size:12px;color:var(--text-dim);
+  line-height:1.4;
+}
+.pc-status-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;
+  box-shadow:0 0 8px currentColor;
+}
+.pc-status-dot.done{background:var(--green);color:var(--green)}
+.pc-status-dot.partial{background:var(--gold);color:var(--gold)}
+.pc-status-dot.empty{background:rgba(255,255,255,0.2);box-shadow:none}
+
+.pc-mini-bar{
+  height:3px;background:rgba(255,255,255,0.08);border-radius:2px;
+  overflow:hidden;margin-bottom:8px;position:relative;z-index:1;
+}
+.pc-mini-fill{height:100%;background:var(--p-color);border-radius:2px;transition:width .5s}
+
+.pc-actions{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  position:relative;z-index:1;
+}
+.pc-count-text{
+  font-size:12px;color:var(--text-dim);
+  font-family:'IBM Plex Mono';
+}
+.pc-count-text b{color:var(--p-color)}
+.pc-upload-btn{
+  padding:5px 11px;border-radius:6px;
+  background:var(--p-color-dim);
+  border:1px solid var(--p-color);
+  color:var(--p-color);
+  font-family:'Sarabun';font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
+}
+.pc-upload-btn:hover{background:var(--p-color);color:var(--navy)}
+
+/* Foundation row — แนวเส้นฐาน */
+.foundation-row{
+  margin-top:18px;padding-top:18px;
+  border-top:2px dashed rgba(249,115,22,0.3);
+  position:relative;
+}
+.foundation-row::before{
+  content:'ฐานรากยุทธศาสตร์ · Governance & Risk Foundation';
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  padding:2px 10px;background:var(--navy);
+  font-size:11px;font-weight:700;color:var(--p-foundation);
+  letter-spacing:1px;text-transform:uppercase;
+}
+
+/* =============================================
+   LEGEND
+   ============================================= */
+.legend-bar{
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  padding:12px 16px;
+  background:rgba(19,39,68,0.5);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;
+  margin-bottom:20px;
+  font-size:12px;
+}
+.legend-item{display:flex;align-items:center;gap:6px;color:var(--text-dim)}
+.legend-swatch{width:14px;height:14px;border-radius:4px}
+.legend-note{
+  margin-left:auto;font-size:12px;color:var(--text-dim);font-style:italic;
+}
+
+/* =============================================
+   TABLE VIEW — VIEW 2
+   ============================================= */
+.table-wrap{
+  background:rgba(19,39,68,0.5);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.dash-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+.dash-table thead{
+  background:rgba(0,196,184,0.08);
+  border-bottom:2px solid var(--teal);
+}
+.dash-table th{
+  padding:12px 14px;text-align:left;
+  font-size:12px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--teal);
+}
+.dash-table tbody tr{
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  transition:background .15s;
+}
+.dash-table tbody tr:hover{background:rgba(0,196,184,0.04)}
+.dash-table td{padding:12px 14px;vertical-align:middle}
+
+.td-code{
+  font-family:'IBM Plex Mono';font-weight:700;font-size:13px;
+  padding:3px 8px;border-radius:5px;
+  display:inline-block;
+}
+.td-perspective{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 9px;border-radius:20px;
+  font-size:12px;font-weight:600;
+  background:var(--p-color-dim);color:var(--p-color);
+  border:1px solid var(--p-color);
+}
+.td-status-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;
+}
+.td-status-badge.done{background:var(--green-dim);color:var(--green);border:1px solid var(--green)}
+.td-status-badge.partial{background:rgba(240,180,41,0.12);color:var(--gold);border:1px solid var(--gold)}
+.td-status-badge.empty{background:rgba(255,255,255,0.05);color:var(--text-dim);border:1px solid rgba(255,255,255,0.1)}
+
+.td-actions{display:flex;gap:6px}
+.mini-btn{
+  padding:4px 9px;border-radius:5px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:transparent;color:var(--text-dim);
+  font-family:'Sarabun';font-size:12px;cursor:pointer;
+  transition:all .15s;
+}
+.mini-btn:hover{border-color:var(--teal);color:var(--teal)}
+.mini-btn.primary{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
+.mini-btn.primary:hover{background:var(--teal);color:var(--navy)}
+
+/* =============================================
+   UPLOAD PANEL — Side sheet
+   ============================================= */
+.upload-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:500;backdrop-filter:blur(4px);
+}
+.upload-overlay.show{display:block}
+.upload-panel{
+  position:fixed;top:0;right:0;bottom:0;
+  width:min(520px,100%);
+  background:var(--navy-mid);
+  border-left:1px solid var(--border);
+  z-index:501;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  box-shadow:-12px 0 40px rgba(0,0,0,0.4);
+}
+.upload-panel.open{transform:translateX(0)}
+.up-head{
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.up-head-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--p-color-dim,var(--teal-dim));
+  border:1.5px solid var(--p-color,var(--teal));
+  color:var(--p-color,var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;font-family:'IBM Plex Mono';
+  flex-shrink:0;
+}
+.up-head-text{flex:1}
+.up-head-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px}
+.up-head-sub{font-size:13px;color:var(--text-dim);line-height:1.4}
+.up-close{
+  background:none;border:none;color:var(--text-dim);
+  font-size:20px;cursor:pointer;padding:4px;
+}
+.up-close:hover{color:var(--text)}
+
+.up-body{flex:1;overflow-y:auto;padding:18px 20px}
+.up-body::-webkit-scrollbar{width:4px}
+.up-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.up-section{margin-bottom:22px}
+.up-section-label{
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--teal);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.up-section-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+}
+
+/* Key Enablers */
+.enabler-item{
+  padding:10px 12px;border-radius:8px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  margin-bottom:6px;
+  display:flex;align-items:center;gap:10px;
+  transition:border-color .2s;
+}
+.enabler-item.done{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.04)}
+.enabler-check{
+  width:18px;height:18px;border-radius:5px;
+  border:1.5px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+  background:transparent;
+}
+.enabler-check.checked{
+  background:var(--green);border-color:var(--green);
+  color:#fff;font-size:12px;
+}
+.enabler-text{flex:1;font-size:14px;line-height:1.4;color:var(--text)}
+.enabler-item.done .enabler-text{color:var(--text-dim);text-decoration:line-through}
+
+/* Linked perspectives */
+.linkage-list{display:flex;flex-direction:column;gap:6px}
+.linkage-row{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:7px;
+  background:rgba(255,255,255,0.02);
+  font-size:13px;line-height:1.4;
+}
+.linkage-arrow{
+  color:var(--teal);font-family:'IBM Plex Mono';
+  font-size:13px;flex-shrink:0;
+}
+.linkage-target{
+  padding:2px 7px;border-radius:4px;
+  font-family:'IBM Plex Mono';font-size:12px;font-weight:700;
+  background:var(--p-color-dim);color:var(--p-color);
+}
+.linkage-desc{color:var(--text-dim);flex:1}
+
+/* Upload zone */
+.drop-zone{
+  border:1.5px dashed var(--border);
+  border-radius:10px;
+  padding:22px 18px;
+  text-align:center;
+  background:rgba(0,196,184,0.03);
+  cursor:pointer;
+  transition:all .2s;
+  margin-bottom:10px;
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:var(--teal);
+  background:var(--teal-dim);
+}
+.drop-zone-icon{font-size:26px;margin-bottom:6px;color:var(--teal)}
+.drop-zone-text{font-size:13px;color:var(--text)}
+.drop-zone-text b{color:var(--teal)}
+.drop-zone-hint{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+/* Link-by-URL form */
+.url-form{
+  display:flex;gap:6px;margin-bottom:10px;
+}
+.url-input{
+  flex:1;padding:8px 10px;border-radius:7px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);
+  color:var(--text);font-family:'Sarabun';font-size:13px;
+  outline:none;transition:border-color .15s;
+}
+.url-input:focus{border-color:var(--teal)}
+.url-input::placeholder{color:var(--text-dim)}
+.url-btn{
+  padding:8px 14px;border-radius:7px;
+  border:none;background:var(--teal);color:var(--navy);
+  font-family:'Sarabun';font-size:13px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+}
+.url-btn:hover{background:var(--teal-light)}
+
+/* Document list */
+.doc-list{display:flex;flex-direction:column;gap:6px}
+.doc-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 11px;border-radius:7px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+}
+.doc-icon{
+  width:32px;height:32px;border-radius:7px;
+  background:var(--teal-dim);color:var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.doc-info{flex:1;min-width:0}
+.doc-name{
+  font-size:13px;color:var(--text);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.doc-name a{color:var(--teal-light);text-decoration:none}
+.doc-name a:hover{text-decoration:underline}
+.doc-meta{font-size:11px;color:var(--text-dim);margin-top:1px}
+.doc-del{
+  background:none;border:none;color:var(--text-dim);
+  cursor:pointer;font-size:14px;padding:4px;
+}
+.doc-del:hover{color:var(--red)}
+.doc-empty{
+  text-align:center;padding:20px;
+  font-size:13px;color:var(--text-dim);font-style:italic;
+}
+
+/* Progress chip */
+.up-progress{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:9px;
+  background:rgba(0,196,184,0.06);
+  border:1px solid var(--border);
+  margin-bottom:16px;
+}
+.up-progress-label{font-size:12px;color:var(--text-dim);flex-shrink:0}
+.up-progress-bar{
+  flex:1;height:6px;background:rgba(255,255,255,0.08);
+  border-radius:3px;overflow:hidden;
+}
+.up-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));
+  border-radius:3px;transition:width .4s;
+}
+.up-progress-pct{
+  font-size:13px;font-weight:700;font-family:'IBM Plex Mono';
+  color:var(--teal);min-width:40px;text-align:right;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);
+  padding:10px 18px;border-radius:8px;
+  background:var(--teal);color:var(--navy);
+  font-size:13px;font-weight:700;
+  box-shadow:0 10px 30px rgba(0,196,184,0.4);
+  z-index:600;transition:transform .3s;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media(max-width:900px){
+  .progress-row{grid-template-columns:repeat(2,1fr)}
+  .plan-cards.cols-5,.plan-cards.cols-3{grid-template-columns:repeat(2,1fr)}
+  .plan-cards.cols-2{grid-template-columns:1fr}
+  .upload-panel{width:100%}
+  .sm-header{flex-direction:column;align-items:flex-start;gap:14px}
+  .dash-table{font-size:12px}
+  .dash-table th,.dash-table td{padding:8px 10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="sm-header">
+    <div class="sm-header-left">
+      <div class="sm-logo">SM</div>
+      <div class="sm-title">
+        <h1>Strategy Map & Document Alignment</h1>
+        <p>แผนแม่บทตามหลัก Balanced Scorecard · แสดง Cause & Effect และสถานะเอกสาร · ปี 2569</p>
+      </div>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="map" onclick="switchView('map',this)">🗺️ Strategy Map</button>
+      <button class="view-btn" data-view="table" onclick="switchView('table',this)">📊 Dashboard</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS OVERVIEW -->
+  <div class="progress-row" id="progressRow"></div>
+
+  <!-- LEGEND -->
+  <div class="legend-bar">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--p-financial)"></div>Financial</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--p-customer)"></div>Customer</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--p-process)"></div>Internal Process</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--p-learning)"></div>Learning & Growth</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--p-foundation)"></div>Foundation (GRC)</div>
+    <div class="legend-note">💡 Hover การ์ดเพื่อดูเส้นความเชื่อมโยง · คลิกเพื่ออัปโหลดเอกสาร</div>
+  </div>
+
+  <!-- ============== VIEW 1: STRATEGY MAP ============== -->
+  <div class="strategy-view active" id="view-map">
+    <div class="sm-container" id="smContainer">
+      <!-- SVG layer สำหรับเส้นเชื่อมโยง -->
+      <svg class="sm-svg-layer" id="smSvg" preserveAspectRatio="none"></svg>
+
+      <!-- Financial Perspective -->
+      <div class="perspective-row" id="row-financial" style="--p-color:var(--p-financial);--p-color-dim:rgba(240,180,41,0.12)">
+        <div class="p-label">
+          <span class="p-label-tag">Financial</span>
+          <span class="p-label-name">มิติการเงินและผลลัพธ์องค์กร</span>
+          <span class="p-label-desc">"เพื่อบรรลุผลทางการเงิน องค์กรต้องสร้างคุณค่าอะไร?"</span>
+        </div>
+        <div class="plan-cards cols-2" id="cards-financial"></div>
+      </div>
+
+      <!-- Customer Perspective -->
+      <div class="perspective-row" id="row-customer" style="--p-color:var(--p-customer);--p-color-dim:rgba(34,197,94,0.12)">
+        <div class="p-label">
+          <span class="p-label-tag">Customer</span>
+          <span class="p-label-name">มิติลูกค้าและผู้มีส่วนได้ส่วนเสีย</span>
+          <span class="p-label-desc">"ลูกค้ามองเห็น Value Proposition อย่างไร?"</span>
+        </div>
+        <div class="plan-cards cols-2" id="cards-customer"></div>
+      </div>
+
+      <!-- Internal Process -->
+      <div class="perspective-row" id="row-process" style="--p-color:var(--p-process);--p-color-dim:rgba(96,165,250,0.12)">
+        <div class="p-label">
+          <span class="p-label-tag">Process</span>
+          <span class="p-label-name">มิติกระบวนการภายใน</span>
+          <span class="p-label-desc">"กระบวนการใดที่ต้องเป็นเลิศ เพื่อส่งมอบคุณค่า?"</span>
+        </div>
+        <div class="plan-cards cols-3" id="cards-process"></div>
+      </div>
+
+      <!-- Learning & Growth -->
+      <div class="perspective-row" id="row-learning" style="--p-color:var(--p-learning);--p-color-dim:rgba(167,139,250,0.12)">
+        <div class="p-label">
+          <span class="p-label-tag">Learning & Growth</span>
+          <span class="p-label-name">มิติการเรียนรู้และเติบโต</span>
+          <span class="p-label-desc">"คน ระบบ วัฒนธรรม ต้องพัฒนาอะไร?"</span>
+        </div>
+        <div class="plan-cards cols-2" id="cards-learning"></div>
+      </div>
+
+      <!-- Foundation -->
+      <div class="foundation-row">
+        <div class="perspective-row" id="row-foundation" style="--p-color:var(--p-foundation);--p-color-dim:rgba(249,115,22,0.12)">
+          <div class="p-label" style="margin-top:4px">
+            <span class="p-label-tag">Foundation</span>
+            <span class="p-label-name">ฐานราก · การกำกับดูแลและบริหารความเสี่ยง</span>
+            <span class="p-label-desc">"Intelligent Risk + Governance = รากฐานทุกแผน"</span>
+          </div>
+          <div class="plan-cards cols-3" id="cards-foundation"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== VIEW 2: TABLE DASHBOARD ============== -->
+  <div class="strategy-view" id="view-table">
+    <div class="table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th style="width:80px">รหัส</th>
+            <th>แผนแม่บท / Master Plan</th>
+            <th style="width:180px">มิติยุทธศาสตร์</th>
+            <th style="width:110px">สถานะ</th>
+            <th style="width:140px">ความคืบหน้า</th>
+            <th style="width:170px">การดำเนินการ</th>
+          </tr>
+        </thead>
+        <tbody id="dashTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     UPLOAD PANEL (side sheet)
+     ===================================================== -->
+<div class="upload-overlay" id="upOverlay" onclick="closeUpload()"></div>
+<div class="upload-panel" id="upPanel">
+  <div class="up-head" id="upHead">
+    <div class="up-head-icon" id="upIcon">—</div>
+    <div class="up-head-text">
+      <div class="up-head-title" id="upTitle">—</div>
+      <div class="up-head-sub" id="upSub">—</div>
+    </div>
+    <button class="up-close" onclick="closeUpload()">✕</button>
+  </div>
+  <div class="up-body">
+    <!-- Progress -->
+    <div class="up-progress">
+      <div class="up-progress-label">ความคืบหน้า</div>
+      <div class="up-progress-bar"><div class="up-progress-fill" id="upProgFill"></div></div>
+      <div class="up-progress-pct" id="upProgPct">0%</div>
+    </div>
+
+    <!-- Key Enablers -->
+    <div class="up-section">
+      <div class="up-section-label">Key Enablers · องค์ประกอบหลักที่ต้องมี</div>
+      <div id="upEnablers"></div>
+    </div>
+
+    <!-- Cause-Effect Linkages -->
+    <div class="up-section">
+      <div class="up-section-label">Cause & Effect · ความเชื่อมโยงกับแผนอื่น</div>
+      <div class="linkage-list" id="upLinkages"></div>
+    </div>
+
+    <!-- Document Upload -->
+    <div class="up-section">
+      <div class="up-section-label">📎 แนบเอกสารแผนแม่บท</div>
+
+      <div class="drop-zone" id="upDrop" onclick="document.getElementById('upFile').click()">
+        <div class="drop-zone-icon">⬆</div>
+        <div class="drop-zone-text">ลากไฟล์มาวาง หรือ <b>คลิกเพื่อเลือกไฟล์</b></div>
+        <div class="drop-zone-hint">รองรับ PDF, DOCX, XLSX, PPTX · สูงสุด 25 MB</div>
+        <input type="file" id="upFile" style="display:none" onchange="onFilePick(event)" />
+      </div>
+
+      <div class="url-form">
+        <input type="url" class="url-input" id="upUrl" placeholder="https://drive.google.com/... หรือลิงก์เอกสาร" />
+        <input type="text" class="url-input" id="upUrlLabel" placeholder="ชื่อเอกสาร" style="max-width:140px" />
+        <button class="url-btn" onclick="addUrlDoc()">แนบลิงก์</button>
+      </div>
+
+      <div class="doc-list" id="upDocs"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">บันทึกแล้ว ✓</div>
+
+<!-- =====================================================
+     SCRIPT
+     ===================================================== -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+// ใช้ Supabase ตัวเดิมจากไฟล์ index_cm_smaller_v2.html
+const SUPA_URL='https://rqkzupyakyryhsftlled.supabase.co';
+const SUPA_KEY='sb_publishable_Y1GaR2fMC1VvKmwpqsy6Dg_neCid4g9';
+const db=createClient(SUPA_URL,SUPA_KEY);
+
+// =====================================================
+// DATA MODEL — แผนแม่บท 10 ตัว แยกตาม Perspective
+// =====================================================
+const MASTER_PLANS = [
+  // FINANCIAL
+  { id:'SP', code:'SP', name:'Strategic Planning',
+    nameTH:'แผนวางแผนยุทธศาสตร์', perspective:'financial',
+    desc:'กำหนดทิศทางและเป้าหมายองค์กรระยะยาว',
+    enablers:[
+      'Scenario Planning ครบ 3 กรณี (Best/Base/Worst)',
+      'Strategy Map แสดง Key Activities + Impact',
+      'Bottom-up KPI Alignment Check',
+      'Trigger Point ผูกกับ Leading Indicator',
+    ],
+    sends:[
+      {to:'HCM', desc:'Future Competency → IDP + KPI Targets'},
+      {to:'DT',  desc:'ทิศทางยุทธศาสตร์ → โครงการดิจิทัล'},
+      {to:'RM',  desc:'Intelligent Risk + ความเสี่ยงแผน'},
+      {to:'SM',  desc:'ทิศทางและแผนปฏิบัติการสื่อสาร Stakeholder'},
+    ],
+    receives:[
+      {from:'CG', desc:'นโยบายและทิศทางจากบอร์ด'},
+      {from:'SM', desc:'ความคาดหวัง Stakeholders → SO'},
+    ]},
+  { id:'IM', code:'IM', name:'Innovation Management',
+    nameTH:'แผนการจัดการนวัตกรรม', perspective:'financial',
+    desc:'เปลี่ยน Idea → Revenue · สร้างมูลค่าเพิ่ม',
+    enablers:[
+      'Data Analytics พยากรณ์ความต้องการ',
+      'พิสูจน์ผลนวัตกรรมดีกว่าเป้า + คู่เทียบ',
+      'Process KPI วัดวัฒนธรรมนวัตกรรม',
+      'Open Innovation ครอบคลุมพันธมิตรภายนอก',
+    ],
+    sends:[
+      {to:'CM', desc:'นวัตกรรมบริการที่ตอบ Unmet Needs'},
+      {to:'SP', desc:'ผลนวัตกรรม → ต่อยอดยุทธศาสตร์'},
+      {to:'KM', desc:'Lesson Learned จากนวัตกรรม'},
+    ],
+    receives:[
+      {from:'CM',  desc:'Unmet Need → โจทย์นวัตกรรม'},
+      {from:'KM',  desc:'องค์ความรู้ → พัฒนานวัตกรรม'},
+      {from:'HCM', desc:'Talent รุ่นใหม่ + แรงจูงใจ'},
+    ]},
+
+  // CUSTOMER
+  { id:'CM', code:'CM', name:'Customer Management',
+    nameTH:'แผนการมุ่งเน้นลูกค้า', perspective:'customer',
+    desc:'Value Proposition · Sub-segment · NPS',
+    enablers:[
+      'Customer Segment Profile (Special/Premium/Standard)',
+      'NPS Score ≥ 8.00',
+      'VOC/CRM/SLA สอดคล้อง Sub-segment',
+      'Customer Journey Mapping',
+    ],
+    sends:[
+      {to:'IM', desc:'Unmet Need + Journey → นวัตกรรมบริการ'},
+      {to:'SP', desc:'VOC + Unmet Needs → SWOT'},
+      {to:'KM', desc:'Pain Points + Customer AAR'},
+    ],
+    receives:[
+      {from:'HCM', desc:'บุคลากรพัฒนาแล้ว + Incentive'},
+      {from:'DT',  desc:'AI Analytics + PAT VOC Center'},
+      {from:'KM',  desc:'Best Practice แก้ปัญหาลูกค้า'},
+    ]},
+  { id:'SM', code:'SM', name:'Stakeholder Management',
+    nameTH:'แผนผู้มีส่วนได้ส่วนเสีย', perspective:'customer',
+    desc:'Materiality Matrix · AA1000SES',
+    enablers:[
+      'Materiality Matrix ลดกลุ่ม Stakeholder 14→10',
+      'Process KPI วัดความสัมพันธ์',
+      'KM ดิจิทัล ครบถ้วน',
+      'Resources & Capacity ระดับฝ่าย',
+    ],
+    sends:[
+      {to:'SP', desc:'Stakeholder Insights + VOC'},
+      {to:'RM', desc:'ข้อร้องเรียน (EWS Trigger)'},
+      {to:'KM', desc:'Pain Points + AAR'},
+    ],
+    receives:[
+      {from:'DT', desc:'AI Analytics + ฐานข้อมูล'},
+      {from:'KM', desc:'Best Practice + แนวทางแก้'},
+    ]},
+
+  // INTERNAL PROCESS
+  { id:'DT', code:'DT', name:'Digital Technology',
+    nameTH:'แผนพัฒนาเทคโนโลยีดิจิทัล', perspective:'process',
+    desc:'IT · Big Data · EA · ISO 27001',
+    enablers:[
+      'Enterprise Architecture ครอบคลุม',
+      'Quality Management System (QMS)',
+      'AI และ Big Data เชิงรุก',
+      'ตัวชี้วัด Outcome (ไม่ใช่ Output)',
+    ],
+    sends:[
+      {to:'SP',  desc:'Dashboard ติดตามผลแผน'},
+      {to:'CM',  desc:'AI Analytics + VOC Center'},
+      {to:'HCM', desc:'HRIS + Digital Skill Tools'},
+      {to:'KM',  desc:'Knowledge Platform + AI'},
+    ],
+    receives:[
+      {from:'SP', desc:'ทิศทางยุทธศาสตร์ → โครงการดิจิทัล'},
+      {from:'RM', desc:'BIA + ความเสี่ยงองค์กร'},
+    ]},
+  { id:'KM', code:'KM', name:'Knowledge Management',
+    nameTH:'แผนการจัดการความรู้', perspective:'process',
+    desc:'AAR · Lesson Learned · NotebookLM',
+    enablers:[
+      'Knowledge Map ครบถ้วน',
+      'พิสูจน์มูลค่าเพิ่มทางการเงิน',
+      'บูรณาการ KM ↔ RM',
+      'AAR ถอดบทเรียนระบบดิจิทัล',
+    ],
+    sends:[
+      {to:'IM',  desc:'องค์ความรู้ → ต่อยอดนวัตกรรม'},
+      {to:'HCM', desc:'IDP ทักษะนวัตกรรม'},
+      {to:'CM',  desc:'Best Practice แก้ปัญหาลูกค้า'},
+    ],
+    receives:[
+      {from:'SM', desc:'Pain Points + AAR'},
+      {from:'RM', desc:'Critical Steps + Intelligent Risk'},
+      {from:'CM', desc:'Pain Points + Customer AAR'},
+    ]},
+  { id:'IA', code:'IA', name:'Internal Audit',
+    nameTH:'แผนการตรวจสอบภายใน', perspective:'process',
+    desc:'GIAS 2024 · A2S · Audit Committee',
+    enablers:[
+      'AC สรรหาทันเวลา ไม่ทับซ้อน',
+      'กฎบัตรสอดคล้อง GIAS 2024',
+      'บุคลากรผ่าน CIA/CPIAT',
+      'งานให้คำปรึกษาเชิงรุก',
+    ],
+    sends:[
+      {to:'CG', desc:'รายงานตรวจสอบ + ยืนยันความโปร่งใส'},
+      {to:'RM', desc:'Risk Universe + Risk Profile'},
+      {to:'KM', desc:'AAR + Lesson Learned จากการตรวจ'},
+    ],
+    receives:[
+      {from:'CG', desc:'COI/RPT ส่งให้ IA สุ่มตรวจ'},
+      {from:'DT', desc:'ระบบ A2S + IT Audit Data'},
+    ]},
+
+  // LEARNING & GROWTH
+  { id:'HCM', code:'HCM', name:'Human Capital Management',
+    nameTH:'แผนบริหารทุนมนุษย์', perspective:'learning',
+    desc:'IDP · Training · FutureSkill',
+    enablers:[
+      'Joint Operation ข้าม Enablers',
+      'Time & Motion Study Front-line',
+      'Young Talent (≤35) แผนดูแลเฉพาะ',
+      'HR Audit เชิง Preventive',
+    ],
+    sends:[
+      {to:'SP', desc:'HR Plan + ตำแหน่งยุทธศาสตร์'},
+      {to:'CM', desc:'บุคลากรพัฒนาแล้ว + Incentive'},
+      {to:'IM', desc:'Talent รุ่นใหม่'},
+      {to:'KM', desc:'Talent วิทยากร'},
+    ],
+    receives:[
+      {from:'SP', desc:'Future CC + KPI Targets'},
+      {from:'DT', desc:'HRIS + เครื่องมือดิจิทัล'},
+    ]},
+
+  // FOUNDATION
+  { id:'CG', code:'CG', name:'Corporate Governance',
+    nameTH:'การกำกับดูแลกิจการ', perspective:'foundation',
+    desc:'Board · Compliance · Sustainability',
+    enablers:[
+      'เอกสารประชุมบอร์ดส่งล่วงหน้า 7 วัน',
+      'Strategic Guidance จากบอร์ด',
+      'RPT Report ครบถ้วน',
+      'Sustainability Report ตามมาตรฐานสากล',
+    ],
+    sends:[
+      {to:'SP', desc:'นโยบายและทิศทางยุทธศาสตร์'},
+      {to:'IA', desc:'COI/RPT ส่งให้ IA สุ่มตรวจ'},
+      {to:'RM', desc:'นโยบาย GRC + ข้อสั่งการ Board'},
+    ],
+    receives:[
+      {from:'IA', desc:'รายงานตรวจสอบ + ยืนยันความโปร่งใส'},
+      {from:'RM', desc:'Risk Profile + KRI'},
+    ]},
+  { id:'RM', code:'RM', name:'Risk Management & IC',
+    nameTH:'การบริหารความเสี่ยงและควบคุมภายใน', perspective:'foundation',
+    desc:'ISO 22301 · EWS · Intelligent Risk',
+    enablers:[
+      'ปัจจัยเสี่ยงครอบคลุม MOU ทลฉ.',
+      'EWS ใช้งานได้จริง',
+      'Risk Correlation Map เชิงปริมาณ',
+      'Value Creation สะท้อนมูลค่าเพิ่ม',
+    ],
+    sends:[
+      {to:'CG',  desc:'รายงาน GRC + ปัจจัยเสี่ยงกฎหมาย'},
+      {to:'SP',  desc:'แผนบริหารความเสี่ยงรองรับแผน'},
+      {to:'HCM', desc:'ผลประเมินความเสี่ยงรายสายงาน'},
+      {to:'KM',  desc:'Critical Steps + Intelligent Risk'},
+    ],
+    receives:[
+      {from:'SM', desc:'VOC + ข้อร้องเรียน (EWS Trigger)'},
+      {from:'DT', desc:'BCM/DRP + Big Data'},
+      {from:'IA', desc:'รายงานประเมินประสิทธิผล RM&IC'},
+    ]},
+];
+
+const PERSPECTIVE_CONFIG = {
+  financial:  { key:'financial',  label:'Financial',         color:'var(--p-financial)',  dim:'rgba(240,180,41,0.12)',  container:'cards-financial'  },
+  customer:   { key:'customer',   label:'Customer',          color:'var(--p-customer)',   dim:'rgba(34,197,94,0.12)',   container:'cards-customer'   },
+  process:    { key:'process',    label:'Process',           color:'var(--p-process)',    dim:'rgba(96,165,250,0.12)',  container:'cards-process'    },
+  learning:   { key:'learning',   label:'Learning & Growth', color:'var(--p-learning)',   dim:'rgba(167,139,250,0.12)', container:'cards-learning'   },
+  foundation: { key:'foundation', label:'Foundation',        color:'var(--p-foundation)', dim:'rgba(249,115,22,0.12)',  container:'cards-foundation' },
+};
+
+// =====================================================
+// STATE — sync กับ Supabase ใช้ key ใหม่เพื่อไม่ทับข้อมูลเดิม
+// =====================================================
+let smState = {};   // { [planId]: { enablers:{[i]:bool}, docs:[{url,label,ts}] } }
+let currentPlanId = null;
+
+async function sbLoad(){
+  try{
+    const {data} = await db.from('cbe_data').select('value').eq('id','cbe_strategy_map').single();
+    smState = (data && data.value) || {};
+  }catch(e){ smState = {}; }
+}
+async function sbSave(){
+  try{
+    await db.from('cbe_data').upsert(
+      { id:'cbe_strategy_map', value:smState, updated_at:new Date().toISOString() },
+      { onConflict:'id' }
+    );
+  }catch(e){ console.error('sbSave',e); }
+}
+
+// Real-time subscription
+db.channel('cbe_sm_rt').on('postgres_changes',
+  {event:'*',schema:'public',table:'cbe_data',filter:'id=eq.cbe_strategy_map'},
+  (p)=>{
+    smState = (p.new && p.new.value) || {};
+    renderAll();
+    if(currentPlanId) renderUploadPanel();
+  }
+).subscribe();
+
+// =====================================================
+// HELPERS
+// =====================================================
+function getPlanState(id){
+  if(!smState[id]) smState[id] = { enablers:{}, docs:[] };
+  if(!smState[id].enablers) smState[id].enablers = {};
+  if(!smState[id].docs) smState[id].docs = [];
+  return smState[id];
+}
+function planProgress(plan){
+  const s = getPlanState(plan.id);
+  const checked = plan.enablers.filter((_,i)=>s.enablers[i]).length;
+  const hasDoc  = s.docs.length > 0;
+  // progress = (checked enablers + doc bonus) / total
+  const total = plan.enablers.length + 1;
+  const got   = checked + (hasDoc ? 1 : 0);
+  return {
+    checked, total:plan.enablers.length,
+    hasDoc, docCount:s.docs.length,
+    pct: Math.round((got/total)*100),
+  };
+}
+function planStatus(plan){
+  const p = planProgress(plan);
+  if(p.pct >= 100) return 'done';
+  if(p.pct >  0)   return 'partial';
+  return 'empty';
+}
+function getPlan(id){ return MASTER_PLANS.find(p=>p.id===id); }
+
+// =====================================================
+// RENDER — Progress cards (top summary)
+// =====================================================
+function renderProgressCards(){
+  const wrap = document.getElementById('progressRow');
+  const html = Object.values(PERSPECTIVE_CONFIG).map(cfg=>{
+    const plans = MASTER_PLANS.filter(p=>p.perspective===cfg.key);
+    const totalItems = plans.reduce((s,p)=>s+p.enablers.length+1,0);
+    const gotItems = plans.reduce((s,p)=>{
+      const st = getPlanState(p.id);
+      return s + p.enablers.filter((_,i)=>st.enablers[i]).length + (st.docs.length>0?1:0);
+    },0);
+    const pct = totalItems? Math.round((gotItems/totalItems)*100) : 0;
+    return `
+      <div class="progress-card" style="--accent:${cfg.color}">
+        <div class="pc-label">${cfg.label}</div>
+        <div class="pc-name">${plans.map(p=>p.code).join(' · ')}</div>
+        <div class="pc-bar"><div class="pc-fill" style="width:${pct}%"></div></div>
+        <div class="pc-stats">
+          <span class="pc-count">${pct}%</span>
+          <span class="pc-total">${gotItems}/${totalItems} items</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+  wrap.innerHTML = html;
+}
+
+// =====================================================
+// RENDER — Strategy Map cards
+// =====================================================
+function renderStrategyMap(){
+  Object.values(PERSPECTIVE_CONFIG).forEach(cfg=>{
+    const container = document.getElementById(cfg.container);
+    const plans = MASTER_PLANS.filter(p=>p.perspective===cfg.key);
+    container.innerHTML = plans.map(p=>{
+      const prog = planProgress(p);
+      const status = planStatus(p);
+      return `
+        <div class="plan-card" data-plan="${p.id}"
+             onmouseenter="highlightLinks('${p.id}')"
+             onmouseleave="clearLinks()"
+             onclick="openUpload('${p.id}')">
+          <div class="pc-head">
+            <div class="pc-code">${p.code}</div>
+            <div class="pc-info">
+              <div class="pc-title">${p.name}</div>
+              <div class="pc-subtitle">${p.desc}</div>
+            </div>
+            <div class="pc-status-dot ${status}" title="${status}"></div>
+          </div>
+          <div class="pc-mini-bar"><div class="pc-mini-fill" style="width:${prog.pct}%"></div></div>
+          <div class="pc-actions">
+            <span class="pc-count-text">
+              <b>${prog.checked}/${prog.total}</b> Enablers · <b>${prog.docCount}</b> เอกสาร
+            </span>
+            <button class="pc-upload-btn" onclick="event.stopPropagation();openUpload('${p.id}')">
+              📎 ${prog.docCount>0 ? 'จัดการ' : 'อัปโหลด'}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  });
+}
+
+// =====================================================
+// RENDER — Table / Dashboard
+// =====================================================
+function renderTable(){
+  const tbody = document.getElementById('dashTableBody');
+  tbody.innerHTML = MASTER_PLANS.map(p=>{
+    const cfg = PERSPECTIVE_CONFIG[p.perspective];
+    const prog = planProgress(p);
+    const status = planStatus(p);
+    const statusLabel = status==='done'?'✓ เสร็จสมบูรณ์':status==='partial'?'◐ ดำเนินการ':'○ ยังไม่เริ่ม';
+    return `
+      <tr>
+        <td><span class="td-code" style="background:${cfg.dim};color:${cfg.color}">${p.code}</span></td>
+        <td>
+          <div style="font-weight:600;color:var(--text)">${p.name}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:2px">${p.nameTH}</div>
+        </td>
+        <td>
+          <span class="td-perspective" style="--p-color:${cfg.color};--p-color-dim:${cfg.dim}">
+            ${cfg.label}
+          </span>
+        </td>
+        <td><span class="td-status-badge ${status}">${statusLabel}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${prog.pct}%;background:${cfg.color};border-radius:3px"></div>
+            </div>
+            <span style="font-size:12px;font-family:'IBM Plex Mono';color:${cfg.color};font-weight:700;min-width:34px">${prog.pct}%</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:3px">${prog.docCount} เอกสาร · ${prog.checked}/${prog.total} enablers</div>
+        </td>
+        <td>
+          <div class="td-actions">
+            <button class="mini-btn primary" onclick="openUpload('${p.id}')">📎 อัปโหลด</button>
+            <button class="mini-btn" onclick="openUpload('${p.id}')">👁 ดู</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// =====================================================
+// CAUSE-EFFECT LINKAGE LINES (SVG)
+// =====================================================
+function highlightLinks(planId){
+  const plan = getPlan(planId);
+  if(!plan) return;
+
+  const connected = new Set();
+  plan.sends.forEach(s=>connected.add(s.to));
+  plan.receives.forEach(r=>connected.add(r.from));
+
+  document.querySelectorAll('.plan-card').forEach(card=>{
+    const id = card.dataset.plan;
+    if(id === planId){
+      card.classList.add('highlighted');
+      card.classList.remove('dimmed','linked');
+    } else if(connected.has(id)){
+      card.classList.add('linked');
+      card.classList.remove('dimmed','highlighted');
+    } else {
+      card.classList.add('dimmed');
+      card.classList.remove('highlighted','linked');
+    }
+  });
+
+  drawLines(planId);
+}
+
+function clearLinks(){
+  document.querySelectorAll('.plan-card').forEach(card=>{
+    card.classList.remove('highlighted','linked','dimmed');
+  });
+  document.getElementById('smSvg').innerHTML = '';
+}
+
+function drawLines(planId){
+  const svg = document.getElementById('smSvg');
+  const container = document.getElementById('smContainer');
+  const containerRect = container.getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${containerRect.width} ${containerRect.height}`);
+  svg.style.width = containerRect.width+'px';
+  svg.style.height = containerRect.height+'px';
+
+  const sourceEl = document.querySelector(`.plan-card[data-plan="${planId}"]`);
+  if(!sourceEl) return;
+
+  const srcRect = sourceEl.getBoundingClientRect();
+  const plan = getPlan(planId);
+
+  let svgContent = `
+    <defs>
+      <marker id="arrow-send" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--teal)"/>
+      </marker>
+      <marker id="arrow-recv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"/>
+      </marker>
+    </defs>
+  `;
+
+  function getCenter(rect){
+    return {
+      x: rect.left - containerRect.left + rect.width/2,
+      y: rect.top  - containerRect.top  + rect.height/2,
+    };
+  }
+  const src = getCenter(srcRect);
+
+  // Outgoing (sends) — teal
+  plan.sends.forEach(s=>{
+    const targetEl = document.querySelector(`.plan-card[data-plan="${s.to}"]`);
+    if(!targetEl) return;
+    const tgt = getCenter(targetEl.getBoundingClientRect());
+    const mx = (src.x + tgt.x)/2;
+    const curve = Math.abs(src.y - tgt.y) * 0.3 + 20;
+    svgContent += `
+      <path d="M ${src.x} ${src.y} Q ${mx} ${(src.y+tgt.y)/2 - curve} ${tgt.x} ${tgt.y}"
+            fill="none" stroke="var(--teal)" stroke-width="2" stroke-dasharray="0"
+            marker-end="url(#arrow-send)" opacity="0.8">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.8s" repeatCount="indefinite" />
+      </path>
+    `;
+  });
+
+  // Incoming (receives) — gold
+  plan.receives.forEach(r=>{
+    const targetEl = document.querySelector(`.plan-card[data-plan="${r.from}"]`);
+    if(!targetEl) return;
+    const tgt = getCenter(targetEl.getBoundingClientRect());
+    const mx = (src.x + tgt.x)/2;
+    const curve = Math.abs(src.y - tgt.y) * 0.3 + 20;
+    svgContent += `
+      <path d="M ${tgt.x} ${tgt.y} Q ${mx} ${(src.y+tgt.y)/2 + curve} ${src.x} ${src.y}"
+            fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5,4"
+            marker-end="url(#arrow-recv)" opacity="0.7"/>
+    `;
+  });
+
+  svg.innerHTML = svgContent;
+}
+
+// =====================================================
+// UPLOAD PANEL
+// =====================================================
+window.openUpload = function(planId){
+  currentPlanId = planId;
+  const plan = getPlan(planId);
+  if(!plan) return;
+  const cfg = PERSPECTIVE_CONFIG[plan.perspective];
+
+  // ตั้ง CSS vars บน panel ให้ตรงกับสี perspective
+  const panel = document.getElementById('upPanel');
+  panel.style.setProperty('--p-color',cfg.color);
+  panel.style.setProperty('--p-color-dim',cfg.dim);
+
+  document.getElementById('upIcon').textContent = plan.code;
+  document.getElementById('upIcon').style.setProperty('--p-color',cfg.color);
+  document.getElementById('upIcon').style.setProperty('--p-color-dim',cfg.dim);
+  document.getElementById('upIcon').style.color = cfg.color;
+  document.getElementById('upIcon').style.background = cfg.dim;
+  document.getElementById('upIcon').style.borderColor = cfg.color;
+
+  document.getElementById('upTitle').textContent = plan.name + ' · ' + plan.nameTH;
+  document.getElementById('upSub').textContent = plan.desc + ' · ' + cfg.label + ' Perspective';
+
+  renderUploadPanel();
+
+  document.getElementById('upOverlay').classList.add('show');
+  document.getElementById('upPanel').classList.add('open');
+};
+
+window.closeUpload = function(){
+  document.getElementById('upOverlay').classList.remove('show');
+  document.getElementById('upPanel').classList.remove('open');
+  currentPlanId = null;
+};
+
+function renderUploadPanel(){
+  if(!currentPlanId) return;
+  const plan = getPlan(currentPlanId);
+  const state = getPlanState(currentPlanId);
+  const prog = planProgress(plan);
+
+  // Progress
+  document.getElementById('upProgFill').style.width = prog.pct+'%';
+  document.getElementById('upProgPct').textContent = prog.pct+'%';
+
+  // Enablers
+  document.getElementById('upEnablers').innerHTML = plan.enablers.map((e,i)=>{
+    const checked = !!state.enablers[i];
+    return `
+      <div class="enabler-item ${checked?'done':''}">
+        <button class="enabler-check ${checked?'checked':''}" onclick="toggleEnabler(${i})">
+          ${checked?'✓':''}
+        </button>
+        <div class="enabler-text">${e}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Linkages
+  const linkHtml = [];
+  plan.sends.forEach(s=>{
+    const target = getPlan(s.to);
+    if(!target) return;
+    const tcfg = PERSPECTIVE_CONFIG[target.perspective];
+    linkHtml.push(`
+      <div class="linkage-row">
+        <span class="linkage-arrow">→</span>
+        <span class="linkage-target" style="--p-color:${tcfg.color};--p-color-dim:${tcfg.dim}">${s.to}</span>
+        <span class="linkage-desc">${s.desc}</span>
+      </div>
+    `);
+  });
+  plan.receives.forEach(r=>{
+    const source = getPlan(r.from);
+    if(!source) return;
+    const scfg = PERSPECTIVE_CONFIG[source.perspective];
+    linkHtml.push(`
+      <div class="linkage-row">
+        <span class="linkage-arrow" style="color:var(--gold)">←</span>
+        <span class="linkage-target" style="--p-color:${scfg.color};--p-color-dim:${scfg.dim}">${r.from}</span>
+        <span class="linkage-desc">${r.desc}</span>
+      </div>
+    `);
+  });
+  document.getElementById('upLinkages').innerHTML = linkHtml.join('');
+
+  // Docs
+  const docEl = document.getElementById('upDocs');
+  if(state.docs.length === 0){
+    docEl.innerHTML = `<div class="doc-empty">ยังไม่มีเอกสารแนบ · เริ่มอัปโหลดด้านบน</div>`;
+  } else {
+    docEl.innerHTML = state.docs.map((d,i)=>`
+      <div class="doc-item">
+        <div class="doc-icon">${d.type==='file'?'📄':'🔗'}</div>
+        <div class="doc-info">
+          <div class="doc-name">
+            ${d.url ? `<a href="${d.url}" target="_blank" rel="noopener">${escapeHtml(d.label||d.url)}</a>` : escapeHtml(d.label||'-')}
+          </div>
+          <div class="doc-meta">${d.type==='file'?'📎 ไฟล์แนบ':'🔗 ลิงก์'} · ${new Date(d.ts).toLocaleDateString('th-TH')}</div>
+        </div>
+        <button class="doc-del" onclick="delDoc(${i})" title="ลบ">✕</button>
+      </div>
+    `).join('');
+  }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+window.toggleEnabler = async function(i){
+  const state = getPlanState(currentPlanId);
+  state.enablers[i] = !state.enablers[i];
+  await sbSave();
+  renderAll();
+  renderUploadPanel();
+  showToast(state.enablers[i]?'ติ๊กแล้ว ✓':'ยกเลิกแล้ว');
+};
+
+window.addUrlDoc = async function(){
+  const url = document.getElementById('upUrl').value.trim();
+  const label = document.getElementById('upUrlLabel').value.trim();
+  if(!url){ showToast('กรุณาใส่ URL'); return; }
+  if(!/^https?:\/\//i.test(url)){ showToast('URL ต้องขึ้นต้นด้วย http(s)://'); return; }
+  const state = getPlanState(currentPlanId);
+  state.docs.push({ type:'link', url, label: label||url, ts:Date.now() });
+  await sbSave();
+  document.getElementById('upUrl').value = '';
+  document.getElementById('upUrlLabel').value = '';
+  renderAll();
+  renderUploadPanel();
+  showToast('แนบลิงก์แล้ว ✓');
+};
+
+window.onFilePick = async function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 25*1024*1024){ showToast('ไฟล์เกิน 25 MB'); e.target.value=''; return; }
+  // หมายเหตุ: ตัวอย่างนี้เก็บเฉพาะ metadata ของไฟล์
+  // หากต้องการอัปโหลดไฟล์จริง → ใช้ Supabase Storage bucket
+  const state = getPlanState(currentPlanId);
+  state.docs.push({
+    type:'file',
+    label: file.name,
+    url:'',
+    size: file.size,
+    mime: file.type,
+    ts:Date.now(),
+    note:'metadata เท่านั้น · เชื่อม Supabase Storage เพื่อ upload จริง',
+  });
+  await sbSave();
+  e.target.value = '';
+  renderAll();
+  renderUploadPanel();
+  showToast('บันทึกข้อมูลไฟล์แล้ว ✓');
+};
+
+window.delDoc = async function(i){
+  if(!confirm('ลบเอกสารนี้?')) return;
+  const state = getPlanState(currentPlanId);
+  state.docs.splice(i,1);
+  await sbSave();
+  renderAll();
+  renderUploadPanel();
+  showToast('ลบแล้ว');
+};
+
+// Drag-n-drop
+(function setupDnD(){
+  const dz = document.getElementById('upDrop');
+  ['dragenter','dragover'].forEach(ev=>
+    dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('dragover')})
+  );
+  ['dragleave','drop'].forEach(ev=>
+    dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('dragover')})
+  );
+  dz.addEventListener('drop',e=>{
+    const f = e.dataTransfer.files[0];
+    if(f){
+      const input = document.getElementById('upFile');
+      const dt = new DataTransfer();
+      dt.items.add(f);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change'));
+    }
+  });
+})();
+
+// =====================================================
+// VIEW SWITCHER
+// =====================================================
+window.switchView = function(view,btn){
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.strategy-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+};
+
+// =====================================================
+// TOAST
+// =====================================================
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// =====================================================
+// BIND card hover → redraw lines on window resize
+// =====================================================
+window.highlightLinks = highlightLinks;
+window.clearLinks = clearLinks;
+window.addEventListener('resize',()=>{
+  const highlighted = document.querySelector('.plan-card.highlighted');
+  if(highlighted) drawLines(highlighted.dataset.plan);
+});
+
+// =====================================================
+// BOOT
+// =====================================================
+function renderAll(){
+  renderProgressCards();
+  renderStrategyMap();
+  renderTable();
+}
+
+(async function init(){
+  await sbLoad();
+  renderAll();
+})();
+</script>
+</body>
+</html>
