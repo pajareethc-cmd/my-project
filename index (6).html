@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBE Enabler Linkage Map v9 — CM ปี 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1F3A;--navy-mid:#132744;--navy-light:#1A3560;
+  --teal:#00C4B8;--teal-light:#4DD9D0;--teal-dim:rgba(0,196,184,0.12);
+  --gold:#F0B429;--red:#EF4444;--red-dim:rgba(239,68,68,0.12);
+  --orange:#F97316;--orange-dim:rgba(249,115,22,0.12);
+  --green:#22C55E;--green-dim:rgba(34,197,94,0.12);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.12);
+  --text:#E2EDF9;--text-dim:rgba(226,237,249,0.55);
+  --border:rgba(0,196,184,0.2);--panel-bg:rgba(11,31,58,0.97);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sarabun',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,196,184,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,100,180,0.07) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.02) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.02) 40px);z-index:0}
+.app{position:relative;display:flex;flex-direction:column;min-height:100vh;z-index:1}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;
+  background:rgba(11,31,58,0.92);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--teal),#006E6A);
+  display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;color:#fff;
+  box-shadow:0 0 20px rgba(0,196,184,0.3)}
+.header-title h1{font-size:18px;font-weight:700;color:var(--teal)}
+.header-title p{font-size:14px;color:var(--text-dim);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:10px}
+.admin-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--text-dim);font-family:'Sarabun';font-size:15px;cursor:pointer;transition:all .2s}
+.admin-btn:hover,.admin-btn.active{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
+.admin-badge{display:none;padding:2px 8px;border-radius:20px;font-size:13px;font-weight:600;background:var(--teal);color:var(--navy)}
+.admin-badge.visible{display:block}
+/* SCORE BAR */
+.score-bar{display:flex;align-items:center;padding:6px 24px;
+  background:rgba(19,39,68,0.6);border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;gap:2px}
+.score-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 10px;
+  border-right:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:all .2s;min-width:68px}
+.score-item:last-child{border-right:none}
+.score-item:hover,.score-item.active{background:var(--teal-dim);border-radius:8px}
+.score-item .code{font-size:12px;font-weight:700;font-family:'IBM Plex Mono';color:var(--teal)}
+.score-item .val{font-size:16px;font-weight:700}
+.val.hi{color:var(--green)}.val.mid{color:var(--gold)}.val.lo{color:var(--red)}
+/* MEGA BAR */
+.mega-bar{padding:10px 24px;background:rgba(19,39,68,0.4);border-bottom:1px solid rgba(255,255,255,0.05)}
+.mega-bar-title{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--teal);
+  text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.mega-bar-title span{color:var(--text-dim);font-weight:400;letter-spacing:0;text-transform:none}
+.mega-projects{display:flex;gap:16px;flex-wrap:wrap}
+.mega-item{flex:1;min-width:220px;max-width:360px;background:rgba(255,255,255,0.03);
+  border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.07);transition:border-color .3s}
+.mega-item.all-done{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.04)}
+.mega-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.mega-item-name{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;flex:1;margin-right:8px}
+.mega-overall{font-size:13px;font-weight:700;font-family:'IBM Plex Mono';padding:2px 7px;border-radius:4px;white-space:nowrap}
+.mega-overall.done{background:var(--green-dim);color:var(--green)}
+.mega-overall.partial{background:var(--orange-dim);color:var(--orange)}
+.mega-overall.pending{background:rgba(255,255,255,0.05);color:var(--text-dim)}
+.mega-steps{display:flex;flex-direction:column;gap:4px}
+.mega-step{display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border-radius:6px;
+  background:rgba(255,255,255,0.02);cursor:pointer;transition:background .2s;user-select:none;flex-wrap:wrap}
+.mega-step:hover{background:rgba(255,255,255,0.06)}
+.mega-step.done{background:rgba(34,197,94,0.07)}
+.mega-step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  border:1.5px solid rgba(255,255,255,0.2);transition:all .2s}
+.mega-step.done .mega-step-dot{background:var(--green);border-color:var(--green)}
+.mega-step-dept{font-size:13px;font-weight:700;font-family:'IBM Plex Mono';color:var(--teal);width:36px;flex-shrink:0}
+.mega-step-desc{font-size:13px;color:var(--text-dim);flex:1 1 150px;min-width:0;line-height:1.4;word-wrap:break-word;overflow-wrap:anywhere}
+.mega-step.done .mega-step-desc{color:var(--text)}
+.mega-step-done-btn{
+  flex-shrink:0;padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:none;color:var(--text-dim);font-size:12px;font-family:'Sarabun';cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.mega-step-done-btn:hover{border-color:var(--green);color:var(--green)}
+.mega-step.done .mega-step-done-btn{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+/* Step report box */
+.mega-step-report{
+  margin-top:6px;padding:8px 10px;border-radius:7px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);
+  display:none;
+}
+.mega-step-report.open{display:block}
+.mega-step-report.done-report{border-color:rgba(34,197,94,0.25);background:rgba(34,197,94,0.04)}
+.msr-toggle{
+  font-size:12px;color:var(--text-dim);cursor:pointer;background:none;border:none;
+  padding:0;margin-left:auto;text-decoration:underline;font-family:'Sarabun';
+  transition:color .2s;
+}
+.msr-toggle:hover{color:var(--teal)}
+.msr-ta{
+  width:100%;padding:6px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);color:var(--text);font-family:'Sarabun';
+  font-size:13px;outline:none;resize:vertical;min-height:44px;line-height:1.5;margin-bottom:5px;
+}
+.msr-ta:focus{border-color:var(--teal)}
+.msr-drow{display:flex;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.msr-di{flex:1 1 120px;min-width:0;padding:4px 7px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);color:var(--text);font-family:'Sarabun';font-size:13px;outline:none}
+.msr-di:focus{border-color:var(--teal)}
+.msr-sb{padding:4px 9px;border-radius:4px;border:none;background:var(--teal);
+  color:var(--navy);font-family:'Sarabun';font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.msr-drow input[type="file"]{min-width:0;max-width:100%}
+.msr-drow input[type="file"]::-webkit-file-upload-button{
+  padding:3px 8px;margin-right:6px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.04);color:var(--text-dim);font-family:'Sarabun';font-size:12px;cursor:pointer}
+.msr-drow input[type="file"]::file-selector-button{
+  padding:3px 8px;margin-right:6px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.04);color:var(--text-dim);font-family:'Sarabun';font-size:12px;cursor:pointer}
+.msr-links{display:flex;flex-direction:column;gap:3px}
+.msr-lc{display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;background:rgba(255,255,255,0.04)}
+.msr-lc a{color:var(--teal-light);font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.msr-lc a:hover{text-decoration:underline}
+.msr-ldel{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:1px}
+.msr-ldel:hover{color:var(--red)}
+.msr-nolink{font-size:12px;color:var(--text-dim);font-style:italic}
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden}
+.hub-area{flex:1;display:flex;align-items:center;justify-content:center;
+  padding:16px;min-height:calc(100vh - 210px);position:relative;overflow:hidden}
+.ecosystem-wrapper{position:relative;width:100%;max-width:880px;
+  border-radius:14px;overflow:hidden;box-shadow:0 0 60px rgba(0,196,184,0.08);border:1px solid var(--border)}
+.ecosystem-wrapper img{width:100%;height:auto;display:block;filter:brightness(0.92)}
+.eco-zone{position:absolute;background:transparent;border:2px solid transparent;
+  border-radius:10px;cursor:pointer;transition:all .25s;z-index:10;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.eco-zone:hover{background:rgba(0,196,184,0.14);border-color:rgba(0,196,184,0.5);
+  box-shadow:0 0 16px rgba(0,196,184,0.2)}
+.eco-zone.active{background:rgba(0,196,184,0.2);border-color:var(--teal);box-shadow:0 0 22px rgba(0,196,184,0.3)}
+.eco-label{font-size:11px;font-weight:700;font-family:'IBM Plex Mono';color:var(--teal);
+  background:rgba(11,31,58,0.75);padding:1px 5px;border-radius:3px;
+  opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.eco-zone:hover .eco-label{opacity:1}
+/* PANEL */
+.detail-panel{width:0;overflow:hidden;background:var(--panel-bg);border-left:1px solid var(--border);
+  transition:width .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.detail-panel.open{width:40vw;min-width:650px}
+.panel-inner{width:100%;display:flex;flex-direction:column;height:100%}
+.panel-header{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.panel-score-badge{min-width:56px;height:56px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700}
+.panel-header-text{flex:1}
+.panel-title{font-size:17px;font-weight:700;color:var(--teal)}
+.panel-subtitle{font-size:14px;color:var(--text-dim);margin-top:2px;line-height:1.5}
+.panel-score-num{font-size:22px;font-weight:800}
+.panel-close{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px;padding:4px}
+.panel-close:hover{color:var(--text)}
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 18px;overflow-x:auto}
+.tab{padding:9px 0;margin-right:18px;font-size:14px;font-weight:600;
+  border-bottom:2px solid transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab.active{border-bottom-color:var(--teal);color:var(--teal)}
+.panel-content{flex:1;overflow-y:auto;padding:14px 18px}
+.panel-content::-webkit-scrollbar{width:3px}
+.panel-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* CONTENT */
+.section-label{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--teal);
+  text-transform:uppercase;margin-bottom:7px;margin-top:16px}
+.section-label:first-child{margin-top:0}
+.highlight-item{display:flex;align-items:flex-start;gap:9px;padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);font-size:15px;line-height:1.6}
+.highlight-item:last-child{border-bottom:none}
+.hi-icon{flex-shrink:0;width:16px;height:16px;border-radius:50%;background:var(--teal-dim);
+  display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px}
+.gap-item{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border-radius:8px;
+  margin-bottom:5px;border:1px solid transparent}
+.gap-item.risk{background:var(--red-dim);border-color:rgba(239,68,68,0.2)}
+.gap-item.partial{background:var(--orange-dim);border-color:rgba(249,115,22,0.15)}
+.gap-item.closed{background:var(--green-dim);border-color:rgba(34,197,94,0.15);opacity:.7}
+.gap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.gap-dot.risk{background:var(--red)}.gap-dot.partial{background:var(--orange)}.gap-dot.closed{background:var(--green)}
+.gap-text{font-size:15px;line-height:1.6;flex:1}
+.gap-toggle-btn{flex-shrink:0;padding:2px 6px;border-radius:4px;border:1px solid currentColor;
+  font-size:12px;font-family:'Sarabun';cursor:pointer;background:none;opacity:0;transition:opacity .2s}
+.admin-mode .gap-item:hover .gap-toggle-btn{opacity:1}
+.gap-toggle-btn.risk{color:var(--red)}.gap-toggle-btn.partial{color:var(--orange)}.gap-toggle-btn.closed{color:var(--green)}
+.gap-legend{display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-dim)}
+.leg-dot{width:7px;height:7px;border-radius:50%}
+.stat-pills{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stat-pill{padding:3px 9px;border-radius:20px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:4px}
+.stat-pill.risk{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.stat-pill.partial{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,0.2)}
+.stat-pill.closed{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+/* LINKAGE */
+.link-note{font-size:14px;color:var(--text-dim);padding:8px 10px;border-radius:7px;
+  background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.08);margin-bottom:14px;line-height:1.6}
+.link-flow{margin-bottom:18px}
+.link-flow-title{font-size:14px;font-weight:700;padding:6px 10px;border-radius:6px;
+  margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.link-flow-title.send{background:rgba(0,196,184,0.1);color:var(--teal);border-left:3px solid var(--teal)}
+.link-flow-title.recv{background:rgba(240,180,41,0.1);color:var(--gold);border-left:3px solid var(--gold)}
+.link-row{display:flex;align-items:flex-start;gap:10px;padding:7px 10px;
+  border-radius:6px;margin-bottom:4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)}
+.link-row-code{font-size:14px;font-weight:700;font-family:'IBM Plex Mono';
+  color:var(--teal);width:48px;flex-shrink:0;margin-top:1px}
+.link-row-code.recv{color:var(--gold)}
+.link-row-desc{font-size:14px;color:var(--text-dim);flex:1;line-height:1.6}
+/* ── ZONE 3 SHARED ── */
+.z3-summary{padding:10px 12px;border-radius:10px;margin-bottom:14px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07)}
+.z3-sum-title{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--teal);text-transform:uppercase;margin-bottom:8px}
+.z3-sum-grid{display:flex;flex-direction:column;gap:3px}
+.z3-sum-row{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:5px;font-size:13px}
+.z3-sum-row:hover{background:rgba(255,255,255,0.03)}
+.z3-sum-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.z3-sum-dot.done{background:var(--green)}.z3-sum-dot.partial{background:var(--gold)}.z3-sum-dot.empty{background:rgba(255,255,255,0.2)}
+.z3-sum-name{flex:1;color:var(--text-dim);line-height:1.4}
+.z3-sum-status{font-size:12px;font-family:'IBM Plex Mono';white-space:nowrap}
+.z3-criterion{border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.z3-crit-header{display:flex;align-items:center;gap:8px;padding:9px 12px;
+  cursor:pointer;background:rgba(255,255,255,0.03);transition:background .2s;user-select:none}
+.z3-crit-header:hover{background:rgba(0,196,184,0.07)}
+.z3-crit-header.open{background:rgba(0,196,184,0.09)}
+.z3-cnum{font-size:12px;font-weight:700;font-family:'IBM Plex Mono';
+  background:var(--teal-dim);color:var(--teal);padding:2px 6px;border-radius:4px;white-space:nowrap}
+.z3-ctitle{font-size:15px;font-weight:600;flex:1}
+.z3-cscore{font-size:13px;font-weight:700;font-family:'IBM Plex Mono';color:var(--gold);white-space:nowrap}
+.z3-chevron{font-size:13px;color:var(--text-dim);transition:transform .25s;margin-left:4px}
+.z3-crit-header.open .z3-chevron{transform:rotate(90deg)}
+.z3-crit-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.z3-crit-status.done{background:var(--green)}.z3-crit-status.partial{background:var(--gold)}.z3-crit-status.empty{background:rgba(255,255,255,0.15)}
+.z3-body{display:none;padding:0 10px 12px}
+.z3-body.open{display:block}
+.z3-sub{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.z3-sub:last-child{border-bottom:none;padding-bottom:0}
+.z3-sub-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.z3-sub-name{font-size:14px;font-weight:700;color:var(--teal-light);flex:1}
+.z3-sub-badge{font-size:11px;padding:2px 7px;border-radius:10px;font-weight:700;white-space:nowrap}
+.z3-sub-badge.done{background:var(--green-dim);color:var(--green)}
+.z3-sub-badge.partial{background:rgba(240,180,41,0.15);color:var(--gold)}
+.z3-sub-badge.empty{background:rgba(255,255,255,0.06);color:var(--text-dim)}
+.z3-sub-type{font-size:11px;padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono';font-weight:700;white-space:nowrap}
+.z3-sub-type.linked{background:rgba(167,139,250,0.15);color:#c4b5fd}
+.z3-sub-type.solo{background:rgba(255,255,255,0.07);color:var(--text-dim)}
+.z3-row{display:flex;gap:7px;margin-bottom:4px;font-size:14px;line-height:1.6}
+.z3-lbl{flex-shrink:0;width:26px;height:17px;border-radius:3px;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:700;margin-top:2px}
+.z3-lbl.gap{background:rgba(239,68,68,0.18);color:#ef9999}
+.z3-lbl.act{background:rgba(0,196,184,0.14);color:var(--teal)}
+.z3-lbl.bst{background:rgba(240,180,41,0.14);color:var(--gold)}
+.z3-val{color:var(--text-dim);flex:1}
+
+/* ── CASE A: Standalone ── */
+.z3-standalone{margin-top:8px;padding:10px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);
+  transition:border-color .25s,background .25s}
+.z3-standalone.status-done{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.04)}
+.z3-standalone.status-partial{border-color:rgba(240,180,41,0.3);background:rgba(240,180,41,0.03)}
+.z3-sa-label{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:6px}
+.z3-ta{width:100%;padding:7px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);color:var(--text);font-family:'Sarabun';font-size:14px;
+  outline:none;resize:vertical;min-height:52px;line-height:1.6;margin-bottom:6px}
+.z3-ta:focus{border-color:var(--teal)}
+.z3-bp-hint{padding:7px 9px;border-radius:6px;background:rgba(240,180,41,0.07);
+  border-left:2px solid rgba(240,180,41,0.4);font-size:13px;color:rgba(240,180,41,0.8);
+  line-height:1.5;margin-top:6px}
+.z3-bp-hint b{color:var(--gold)}
+
+/* ── CASE B: Split-view ── */
+.z3-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;margin-top:8px;
+  border-radius:8px;border:1px solid rgba(255,255,255,0.08);overflow:hidden}
+.z3-split.status-done{border-color:rgba(34,197,94,0.3)}
+.z3-split.status-partial{border-color:rgba(240,180,41,0.3)}
+.z3-col{padding:10px 11px;background:rgba(255,255,255,0.01);min-width:0}
+.z3-col.input-col{border-right:1px solid rgba(255,255,255,0.07)}
+.z3-col-hdr{display:flex;align-items:center;gap:6px;margin-bottom:9px;
+  padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.z3-col-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex-shrink:0}
+.z3-col-icon.in{background:rgba(0,100,180,0.18);color:#60A5FA}
+.z3-col-icon.out{background:rgba(0,196,184,0.15);color:var(--teal)}
+.z3-col-title{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.z3-col-title.in{color:#60A5FA}
+.z3-col-title.out{color:var(--teal)}
+/* Dept card inside split */
+.z3-dept{padding:8px 9px;border-radius:7px;border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.02);margin-bottom:7px;transition:border-color .2s}
+.z3-dept.has-link{border-color:rgba(34,197,94,0.25);background:rgba(34,197,94,0.03)}
+.z3-dept-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.z3-dept-name{font-size:13px;font-weight:700;font-family:'IBM Plex Mono';color:var(--teal)}
+.z3-dept-doc{font-size:13px;color:var(--text-dim);flex:1;line-height:1.4}
+.z3-link-btn{font-size:12px;padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:none;color:var(--text-dim);cursor:pointer;font-family:'Sarabun';transition:all .2s;white-space:nowrap}
+.z3-link-btn:hover{border-color:var(--teal);color:var(--teal)}
+.z3-link-btn.linked{background:var(--green-dim);border-color:rgba(34,197,94,0.4);color:var(--green)}
+.z3-link-input-row{display:flex;gap:4px;margin-bottom:5px}
+.z3-di{flex:1;min-width:0;padding:4px 7px;border-radius:5px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);color:var(--text);font-family:'Sarabun';font-size:13px;outline:none}
+.z3-di:focus{border-color:var(--teal)}
+.z3-sb{padding:4px 8px;border-radius:5px;border:none;background:var(--teal);
+  color:var(--navy);font-family:'Sarabun';font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+/* File input inside dept card - ให้หดได้เมื่อ column แคบ */
+.z3-dept input[type="file"]{min-width:0;max-width:100%}
+.z3-dept input[type="file"]::-webkit-file-upload-button{
+  padding:3px 8px;margin-right:6px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.04);color:var(--text-dim);font-family:'Sarabun';font-size:12px;cursor:pointer}
+.z3-dept input[type="file"]::file-selector-button{
+  padding:3px 8px;margin-right:6px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.04);color:var(--text-dim);font-family:'Sarabun';font-size:12px;cursor:pointer}
+.z3-ta-sm{width:100%;padding:5px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.03);color:var(--text);font-family:'Sarabun';font-size:13px;
+  outline:none;resize:vertical;min-height:38px;line-height:1.5}
+.z3-ta-sm:focus{border-color:var(--teal)}
+.z3-ta-sm::placeholder{color:var(--text-dim)}
+.z3-lc{display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;
+  background:rgba(255,255,255,0.04);margin-top:3px}
+.z3-lc a{color:var(--teal-light);font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;text-decoration:none}
+.z3-lc a:hover{text-decoration:underline}
+.z3-ldel{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:1px}
+.z3-ldel:hover{color:var(--red)}
+.z3-nolink{font-size:12px;color:var(--text-dim);font-style:italic}
+/* Dept card status dot */
+.z3-dept-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.z3-dept-dot.done{background:var(--green)}
+.z3-dept-dot.partial{background:var(--gold)}
+.z3-dept-dot.empty{background:rgba(255,255,255,0.2)}
+.z3-dept.dept-done{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.03)}
+.z3-dept.dept-partial{border-color:rgba(240,180,41,0.25);background:rgba(240,180,41,0.02)}
+/* BP hint inside split */
+.z3-bp-split{margin-top:8px;padding:6px 8px;border-radius:5px;
+  background:rgba(240,180,41,0.07);border-left:2px solid rgba(240,180,41,0.4);
+  font-size:12px;color:rgba(240,180,41,0.8);line-height:1.5}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:24px;width:300px}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal p{font-size:15px;color:var(--text-dim);margin-bottom:16px}
+.modal input{width:100%;padding:9px 12px;border-radius:7px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.05);color:var(--text);font-family:'Sarabun';font-size:16px;outline:none;margin-bottom:14px}
+.modal input:focus{border-color:var(--teal)}
+.modal-btns{display:flex;gap:8px}
+.btn-primary{flex:1;padding:9px;border-radius:7px;border:none;background:var(--teal);
+  color:var(--navy);font-weight:700;font-family:'Sarabun';font-size:16px;cursor:pointer}
+.btn-secondary{padding:9px 18px;border-radius:7px;border:1px solid var(--border);
+  background:none;color:var(--text-dim);font-family:'Sarabun';cursor:pointer;font-size:16px}
+@media(max-width:900px){
+  .detail-panel.open{width:100%;min-width:unset;position:fixed;inset:0;z-index:200}
+  .hub-area{padding:8px;min-height:auto}
+  .mega-projects{flex-direction:column}
+}
+/* Responsive split view - ยุบเป็น 1 column เมื่อ panel แคบ */
+@media(max-width:760px){
+  .z3-split{grid-template-columns:minmax(0,1fr)}
+  .z3-col.input-col{border-right:none;border-bottom:1px solid rgba(255,255,255,0.07)}
+}
+/* ============ CBE LINKAGE MAP ============ */
+.cbe-wrap{width:100%;max-width:880px;display:flex;flex-direction:column;gap:12px}
+.cbe-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cbe-top h2{font-size:17px;font-weight:700;color:var(--teal);margin:0 0 3px}
+.cbe-top p{font-size:13px;color:var(--text-dim);margin:0}
+.cbe-legend{display:flex;gap:12px;font-size:12px;color:var(--text-dim);flex-wrap:wrap;align-items:center;
+  background:rgba(19,39,68,0.6);padding:7px 12px;border-radius:8px;border:1px solid var(--border)}
+.cbe-legend span{display:inline-flex;align-items:center;gap:6px}
+.cbe-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.cbe-stage-wrap{width:100%;background:rgba(19,39,68,0.5);border:1px solid var(--border);border-radius:14px;padding:14px;
+  box-shadow:0 0 40px rgba(0,196,184,0.06)}
+.cbe-stage-wrap svg{width:100%;height:auto;display:block}
+.cbe-node-g{cursor:pointer;transition:transform .2s ease,filter .2s ease}
+.cbe-node-g:hover{transform:translateY(-1px);filter:brightness(1.15)}
+.cbe-node-g.cbe-active{filter:brightness(1.25) drop-shadow(0 0 12px currentColor)}
+.cbe-node-g.cbe-active circle:first-child{stroke-width:2.5}
+.cbe-link{fill:none;transition:opacity .3s,stroke-width .3s}
+.cbe-link.dim{opacity:.08}
+.cbe-link.active{opacity:1;stroke-width:2.5}
+.cbe-link.flow{stroke-dasharray:6 6;animation:cbe-dash 1.2s linear infinite}
+@keyframes cbe-dash{to{stroke-dashoffset:-24}}
+.cbe-ring{fill:none;stroke:var(--border);stroke-width:.5;stroke-dasharray:2 4;opacity:.5}
+.cbe-hub-glow{animation:cbe-pulse 3.5s ease-in-out infinite;transform-origin:center}
+@keyframes cbe-pulse{0%,100%{opacity:.35}50%{opacity:.65}}
+.cbe-hintbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:12px;color:var(--text-dim);flex-wrap:wrap;padding:0 2px}
+.cbe-toggle{display:inline-flex;gap:4px;background:rgba(19,39,68,0.7);padding:3px;border-radius:8px;border:1px solid var(--border)}
+.cbe-toggle button{border:none;background:transparent;font-size:12px;padding:5px 13px;border-radius:6px;
+  cursor:pointer;color:var(--text-dim);transition:all .15s;font-family:'Sarabun';font-weight:500}
+.cbe-toggle button.on{background:var(--teal-dim);color:var(--teal);font-weight:700}
+.cbe-docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:4px}
+.cbe-doc-card{background:rgba(19,39,68,0.5);border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+  border-left:3px solid var(--accent,var(--teal));display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.cbe-doc-card:hover{background:rgba(19,39,68,0.8);border-left-width:4px}
+.cbe-doc-icon{width:26px;height:30px;flex-shrink:0;position:relative;background:var(--navy);
+  border:1px solid var(--accent,var(--teal));border-radius:3px;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.cbe-doc-icon::before{content:'';position:absolute;top:-1px;right:-1px;width:8px;height:8px;
+  background:rgba(19,39,68,0.5);border-left:1px solid var(--accent,var(--teal));border-bottom:1px solid var(--accent,var(--teal))}
+.cbe-doc-icon span{font-size:7px;font-weight:700;color:var(--accent,var(--teal));letter-spacing:.02em}
+.cbe-doc-meta{flex:1;min-width:0}
+.cbe-doc-code{font-size:11px;font-weight:700;color:var(--accent,var(--teal));font-family:'IBM Plex Mono';letter-spacing:.03em}
+.cbe-doc-name{font-size:12px;color:var(--text);line-height:1.35;font-weight:500;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbe-doc-attach{font-size:10px;color:var(--accent,var(--teal));padding:3px 8px;border-radius:8px;
+  background:var(--navy);border:1px solid var(--accent,var(--teal));font-weight:700;white-space:nowrap;flex-shrink:0}
+.cbe-docs-title{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--teal);
+  text-transform:uppercase;margin:6px 2px 0;display:flex;align-items:center;gap:8px}
+.cbe-docs-title span{color:var(--text-dim);font-weight:400;letter-spacing:0;text-transform:none;font-size:11px}
+@media(max-width:900px){.cbe-stage-wrap{padding:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div class="header-left">
+    <div class="logo" style="background:linear-gradient(135deg,#FBBF24,#D97706)">KM</div>
+    <div class="header-title">
+      <h1>CBE Enabler Linkage Map — แผนดำเนินงานปี 69</h1>
+      <p>การท่าเรือแห่งประเทศไทย · CM Edition v9.0 · อ้างอิงผลประเมิน SE-AM ปี 2568</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="admin-badge" id="adminBadge">🔐 Admin</span>
+    <button class="admin-btn" id="adminBtn" onclick="openAdminModal()">Admin</button>
+  </div>
+</div>
+<div class="score-bar" id="scoreBar"></div>
+<div class="mega-bar">
+  <div class="mega-bar-title">🔗 MEGA PROJECT INTEGRATION <span>คลิกชื่อฝ่ายเพื่ออัพเดทสถานะ · 🟢 = เสร็จแล้ว</span></div>
+  <div class="mega-projects" id="megaProjects"></div>
+</div>
+<div class="main">
+  <div class="hub-area">
+    <div class="cbe-wrap">
+      <div class="cbe-top">
+        <div>
+          <h2>ความเชื่อมโยงของ Core Business Enablers</h2>
+          <p>Strategy-driven CBE Linkage Map · SP เป็นศูนย์กลาง ถ่ายทอด KPI สู่ทุก enabler · <b>คลิก node เพื่อเปิดรายละเอียด</b></p>
+        </div>
+        <div class="cbe-legend">
+          <span><i style="background:var(--green)"></i>ปกติ ≥ 3.00</span>
+          <span><i style="background:var(--gold)"></i>เฝ้าระวัง 2.50–2.99</span>
+          <span><i style="background:var(--red)"></i>เสี่ยง &lt; 2.50</span>
+        </div>
+      </div>
+
+      <div class="cbe-stage-wrap">
+        <svg viewBox="0 0 860 640" role="img" xmlns="http://www.w3.org/2000/svg" id="cbeSvg">
+          <defs>
+            <radialGradient id="cbeHubG" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#A78BFA" stop-opacity=".45"/>
+              <stop offset="70%" stop-color="#A78BFA" stop-opacity=".1"/>
+              <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle class="cbe-ring" cx="430" cy="320" r="220"/>
+          <circle class="cbe-ring" cx="430" cy="320" r="150" style="opacity:.25"/>
+          <circle class="cbe-ring" cx="430" cy="320" r="90" style="opacity:.2"/>
+          <circle class="cbe-hub-glow" cx="430" cy="320" r="105" fill="url(#cbeHubG)"/>
+
+          <!-- LINKS -->
+          <g id="cbeLinks" stroke-linecap="round">
+            <!-- SP spokes (central hub to 8 enablers) -->
+            <path class="cbe-link" data-link="SP-CG" d="M 430 262 Q 420 180 430 142" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-CM" d="M 471 279 Q 520 220 558 193" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-SM" d="M 488 320 Q 560 310 608 320" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-IA" d="M 471 361 Q 520 420 558 447" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-IM" d="M 430 378 Q 440 460 430 498" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-KM" d="M 389 361 Q 340 420 302 447" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-HCM" d="M 372 320 Q 300 330 252 320" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <path class="cbe-link" data-link="SP-RM" d="M 389 279 Q 340 220 302 193" stroke="#A78BFA" stroke-width="1.3" opacity=".45"/>
+            <!-- Outer orbit business flow -->
+            <path class="cbe-link" data-link="CG-CM" d="M 471 114 A 220 220 0 0 1 558 193" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="CM-SM" d="M 613 193 A 220 220 0 0 1 608 320" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="SM-IA" d="M 608 320 A 220 220 0 0 1 613 447" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="IA-IM" d="M 558 447 A 220 220 0 0 1 471 526" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="IM-KM" d="M 389 526 A 220 220 0 0 1 302 447" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="KM-HCM" d="M 247 447 A 220 220 0 0 1 252 320" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="HCM-RM" d="M 252 320 A 220 220 0 0 1 247 193" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <path class="cbe-link" data-link="RM-CG" d="M 302 193 A 220 220 0 0 1 389 114" stroke="#00C4B8" stroke-width="1.3" opacity=".4"/>
+            <!-- Cross links (key inter-enabler ties) -->
+            <path class="cbe-link" data-link="HCM-KM" d="M 220 360 Q 245 440 290 470" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+            <path class="cbe-link" data-link="KM-IM" d="M 302 473 Q 360 520 388 526" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+            <path class="cbe-link" data-link="CM-DT" d="M 570 190 Q 480 290 478 408" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+            <path class="cbe-link" data-link="DT-IM" d="M 430 435 Q 430 470 430 498" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+            <path class="cbe-link" data-link="CG-RM" d="M 389 114 A 220 220 0 0 0 302 193" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+            <path class="cbe-link" data-link="IA-RM" d="M 540 440 Q 380 470 290 200" stroke="#F0B429" stroke-width="1" opacity=".28" stroke-dasharray="4 5"/>
+          </g>
+
+          <!-- CENTRAL HUB: SP (Strategic Planning) -->
+          <g class="cbe-node-g" data-cbe-id="SP" onclick="selectEnabler('SP')">
+            <circle cx="430" cy="320" r="58" fill="#1F1B3D" stroke="#A78BFA" stroke-width="1.5"/>
+            <circle cx="430" cy="320" r="50" fill="none" stroke="#A78BFA" stroke-width=".5" opacity=".4"/>
+            <text x="430" y="306" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:18px;fill:#C4B5FD">SP</text>
+            <text x="430" y="324" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:9px;fill:#A78BFA;letter-spacing:.08em">STRATEGY HUB</text>
+            <text x="430" y="344" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-weight:500;font-size:13px;fill:#DDD6FE">2.5400</text>
+            <circle cx="468" cy="290" r="5" fill="#F0B429" stroke="#1F1B3D" stroke-width="1.5"/>
+          </g>
+
+          <!-- 8 enablers on orbit, 45° apart (r=220) -->
+          <!-- CG at 270° (top) -->
+          <g class="cbe-node-g" data-cbe-id="CG" onclick="selectEnabler('CG')">
+            <circle cx="430" cy="100" r="42" fill="#0F1E3D" stroke="#60A5FA" stroke-width="1"/>
+            <text x="430" y="92" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#93C5FD">CG</text>
+            <text x="430" y="112" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#BFDBFE">2.8315</text>
+            <circle cx="458" cy="78" r="4" fill="#F0B429" stroke="#0F1E3D" stroke-width="1"/>
+          </g>
+          <!-- CM at 315° -->
+          <g class="cbe-node-g" data-cbe-id="CM" onclick="selectEnabler('CM')">
+            <circle cx="585.56" cy="164.44" r="42" fill="#042F23" stroke="#6EE7B7" stroke-width="1"/>
+            <text x="585.56" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#A7F3D0">CM</text>
+            <text x="585.56" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#D1FAE5">3.2512</text>
+            <circle cx="613" cy="142" r="4" fill="#22C55E" stroke="#042F23" stroke-width="1"/>
+          </g>
+          <!-- SM at 0° (right) -->
+          <g class="cbe-node-g" data-cbe-id="SM" onclick="selectEnabler('SM')">
+            <circle cx="650" cy="320" r="42" fill="#052F27" stroke="#34D399" stroke-width="1"/>
+            <text x="650" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#6EE7B7">SM</text>
+            <text x="650" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#A7F3D0">3.2512</text>
+            <circle cx="678" cy="298" r="4" fill="#22C55E" stroke="#052F27" stroke-width="1"/>
+          </g>
+          <!-- IA at 45° -->
+          <g class="cbe-node-g" data-cbe-id="IA" onclick="selectEnabler('IA')">
+            <circle cx="585.56" cy="475.56" r="42" fill="#042F23" stroke="#6EE7B7" stroke-width="1"/>
+            <text x="585.56" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#A7F3D0">IA</text>
+            <text x="585.56" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#D1FAE5">2.7549</text>
+            <circle cx="613" cy="453" r="4" fill="#F0B429" stroke="#042F23" stroke-width="1"/>
+          </g>
+          <!-- IM at 90° (bottom) -->
+          <g class="cbe-node-g" data-cbe-id="IM" onclick="selectEnabler('IM')">
+            <circle cx="430" cy="540" r="42" fill="#2D1B4E" stroke="#C084FC" stroke-width="1"/>
+            <text x="430" y="532" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#D8B4FE">IM</text>
+            <text x="430" y="552" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#E9D5FF">1.9893</text>
+            <circle cx="458" cy="518" r="4" fill="#EF4444" stroke="#2D1B4E" stroke-width="1"/>
+          </g>
+          <!-- KM at 135° -->
+          <g class="cbe-node-g" data-cbe-id="KM" onclick="selectEnabler('KM')">
+            <circle cx="274.44" cy="475.56" r="42" fill="#3B2A05" stroke="#FBBF24" stroke-width="1"/>
+            <text x="274.44" y="467" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#FCD34D">KM</text>
+            <text x="274.44" y="488" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#FDE68A">2.7575</text>
+            <circle cx="302" cy="453" r="4" fill="#F0B429" stroke="#3B2A05" stroke-width="1"/>
+          </g>
+          <!-- HCM at 180° (left) -->
+          <g class="cbe-node-g" data-cbe-id="HCM" onclick="selectEnabler('HCM')">
+            <circle cx="210" cy="320" r="42" fill="#3B0A1F" stroke="#F472B6" stroke-width="1"/>
+            <text x="210" y="312" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:14px;fill:#F9A8D4">HCM</text>
+            <text x="210" y="332" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#FBCFE8">3.0740</text>
+            <circle cx="238" cy="298" r="4" fill="#22C55E" stroke="#3B0A1F" stroke-width="1"/>
+          </g>
+          <!-- RM at 225° (RM&IC) -->
+          <g class="cbe-node-g" data-cbe-id="RM" onclick="selectEnabler('RM')">
+            <circle cx="274.44" cy="164.44" r="42" fill="#3B1505" stroke="#FB923C" stroke-width="1.2"/>
+            <text x="274.44" y="156" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:13px;fill:#FDBA74">RM&amp;IC</text>
+            <text x="274.44" y="177" text-anchor="middle" dominant-baseline="central" style="font-family:'IBM Plex Mono';font-size:11px;fill:#FED7AA">1.9800</text>
+            <circle cx="302" cy="142" r="4" fill="#EF4444" stroke="#3B1505" stroke-width="1"/>
+          </g>
+
+          <!-- DT as cross-cutting pill -->
+          <g class="cbe-node-g" data-cbe-id="DT" onclick="selectEnabler('DT')">
+            <rect x="388" y="398" width="84" height="28" rx="14" fill="#0F1E3D" stroke="#60A5FA" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="430" y="412" text-anchor="middle" dominant-baseline="central" style="font-family:'Sarabun';font-weight:700;font-size:12px;fill:#93C5FD">DT · 2.7565</text>
+          </g>
+          <text x="430" y="444" text-anchor="middle" style="font-family:'Sarabun';font-size:10px;fill:rgba(226,237,249,0.4);font-style:italic">cross-cutting enabler</text>
+        </svg>
+      </div>
+
+      <div class="cbe-hintbar">
+        <span id="cbeHint">💡 คลิก enabler บนแผนผัง เพื่อเปิดรายละเอียด Gap/แผนปี 69 ที่ panel ด้านขวา</span>
+        <div class="cbe-toggle" role="group" aria-label="Filter mode">
+          <button class="on" data-mode="all" onclick="cbeMode('all')">ทั้งหมด</button>
+          <button data-mode="out" onclick="cbeMode('out')">ส่งออก</button>
+          <button data-mode="in" onclick="cbeMode('in')">รับเข้า</button>
+        </div>
+      </div>
+
+      <div class="cbe-docs-title">📄 แผนแม่บทสำคัญ <span>(คลิกเพื่อแนบ/ดูเอกสาร)</span></div>
+      <div class="cbe-docs" id="cbeDocs"></div>
+    </div>
+  </div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-score-badge" id="panelBadge">
+          <span class="panel-score-num" id="panelScore">—</span>
+          <span style="font-size:14px;color:rgba(255,255,255,0.6)">คะแนน</span>
+        </div>
+        <div class="panel-header-text">
+          <div class="panel-title" id="panelTitle">—</div>
+          <div class="panel-subtitle" id="panelSubtitle"></div>
+        </div>
+        <button class="panel-close" onclick="closePanel()">✕</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('overview',this)">ภาพรวม</div>
+        <div class="tab" onclick="switchTab('gaps',this)">Gap ปิด</div>
+        <div class="tab" onclick="switchTab('plan69',this)">แผนดำเนินงาน ปี 69</div>
+      </div>
+      <div class="panel-content" id="panelContent"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <h3>Admin Access</h3>
+    <p>กรอกรหัสเพื่อเปลี่ยนสถานะ Gap</p>
+    <input type="password" id="adminPwd" placeholder="รหัสผ่าน" onkeydown="if(event.key==='Enter')checkAdmin()"/>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeAdminModal()">ยกเลิก</button>
+      <button class="btn-primary" onclick="checkAdmin()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+// ── Supabase ──
+import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPA_URL='https://rqkzupyakyryhsftlled.supabase.co';
+const SUPA_KEY='sb_publishable_Y1GaR2fMC1VvKmwpqsy6Dg_neCid4g9';
+const db=createClient(SUPA_URL,SUPA_KEY);
+
+// ── local cache ──
+let selectedKey=null,activeTab='overview',isAdmin=false;
+let gapOverrides={};
+let plan69Data={};
+let megaSteps={};
+let megaStepData={};
+
+// ── Supabase helpers ──
+async function sbGet(id){
+  try{const{data}=await db.from('cbe_data').select('value').eq('id',id).single();return data?data.value:null;}
+  catch(e){return null;}
+}
+async function sbSet(id,value){
+  try{await db.from('cbe_data').upsert({id,value,updated_at:new Date().toISOString()},{onConflict:'id'});}
+  catch(e){console.error('sbSet',e);}
+}
+
+// ── real-time sync ──
+db.channel('cbe_rt').on('postgres_changes',{event:'*',schema:'public',table:'cbe_data'},p=>{
+  const{id,value}=p.new||{};
+  if(!id)return;
+  if(id==='cbe_gaps'){gapOverrides=value||{};if(selectedKey)renderTab();}
+  if(id==='cbe_plan69'){plan69Data=value||{};if(selectedKey)renderTab();}
+  if(id==='cbe_mega_steps'){megaSteps=value||{};buildMegaBar();}
+  if(id==='cbe_mega_step_data'){megaStepData=value||{};buildMegaBar();}
+  if(id==='cbe_master_plans'){cbeMPData=value||{};buildCbeDocs();}
+}).subscribe();
+
+// ── โหลดข้อมูลตอนเริ่ม ──
+async function loadAllData(){
+  const[gaps,plan,steps,sd,mp]=await Promise.all([
+    sbGet('cbe_gaps'),sbGet('cbe_plan69'),sbGet('cbe_mega_steps'),sbGet('cbe_mega_step_data'),sbGet('cbe_master_plans')
+  ]);
+  gapOverrides=gaps||{};plan69Data=plan||{};megaSteps=steps||{};megaStepData=sd||{};cbeMPData=mp||{};
+}
+
+const MEGA=[
+  {id:0,name:'1. EWS — ระบบเตือนภัยล่วงหน้า',steps:[
+    {id:'ews-scm',dept:'SCM',desc:'นำ VOC/ข้อร้องเรียนเป็น Trigger Signal'},
+    {id:'ews-rm',dept:'RM',desc:'ตั้ง Trigger Point แจ้ง Risk Owner'},
+    {id:'ews-dt',dept:'DT',desc:'พัฒนาระบบ EWS ดึงข้อมูลอัตโนมัติ'},
+  ]},
+  {id:1,name:'2. KM to Innovation — นำองค์ความรู้สู่นวัตกรรม',steps:[
+    {id:'kmi-km',dept:'KM',desc:'ถอดบทเรียน AAR จัดเก็บระบบดิจิทัล'},
+    {id:'kmi-im',dept:'IM',desc:'สร้างนวัตกรรมกระบวนการ มี Process KPI วัดผล'},
+  ]},
+  {id:2,name:'3. Bottom-up Alignment — สอบทาน KPI ย้อนกลับ',steps:[
+    {id:'ba-sp',dept:'SP',desc:'ถ่ายทอด KPI ระดับองค์กร → สายงาน/บุคคล'},
+    {id:'ba-hcm',dept:'HCM',desc:'สอบทานความสอดคล้อง KPI บุคคล = เป้าองค์กร'},
+  ]},
+];
+
+function getMSD(stepId){return megaStepData[stepId]||{notes:'',links:[]}}
+function saveMSD(stepId,d){megaStepData[stepId]=d;sbSet('cbe_mega_step_data',megaStepData);}
+
+function buildMegaBar(){
+  document.getElementById('megaProjects').innerHTML=MEGA.map(m=>{
+    const doneCount=m.steps.filter(s=>megaSteps[s.id]).length;
+    const allDone=doneCount===m.steps.length;
+    const cls=allDone?'done':doneCount>0?'partial':'pending';
+    const label=allDone?'✅ เสร็จแล้ว':doneCount>0?(doneCount+'/'+m.steps.length+' ดำเนินการ'):'⏳ รอดำเนินการ';
+    const stepsHtml=m.steps.map(s=>{
+      const done=megaSteps[s.id];
+      const sd=getMSD(s.id);
+      const lnks=(sd.links||[]).map((l,li)=>'<div class="msr-lc"><a href="'+l.url+'" target="_blank">'+(l.label||l.url)+'</a>'
+        +'<button class="msr-ldel" onclick="delMSLink(\''+s.id+'\','+li+')">✕</button></div>').join('');
+      return '<div class="mega-step'+(done?' done':'')+'" id="mstep-'+s.id+'">'
+        +'<div class="mega-step-dot"></div>'
+        +'<div class="mega-step-dept">'+s.dept+'</div>'
+        +'<div class="mega-step-desc">'+s.desc+'</div>'
+        +'<button class="msr-toggle" onclick="toggleMSReport(\''+s.id+'\')">📝</button>'
+        +'<button class="mega-step-done-btn" onclick="toggleMegaStep(\''+s.id+'\')">'+(done?'✅ เสร็จแล้ว':'กดสีเขียว')+'</button>'
+        +'</div>'
+        +'<div class="mega-step-report'+(done?' done-report':'')+'" id="msreport-'+s.id+'">'
+        +'<textarea class="msr-ta" id="msnotes-'+s.id+'" placeholder="บันทึกความคืบหน้าของด้าน '+s.dept+'..." onblur="saveMSNotes(\''+s.id+'\')">'+( sd.notes||'')+'</textarea>'
+        +'<div class="msr-drow" style="flex-wrap:wrap;gap:5px">'
+        +'<input class="msr-di" id="msdlbl-'+s.id+'" placeholder="ชื่อเอกสาร" style="min-width:90px"/>'
+        +'<input class="msr-di" id="msdurl-'+s.id+'" placeholder="Google Drive Link (ถ้ามี)" />'
+        +'<button class="msr-sb" onclick="saveMSLink(\''+s.id+'\')">แนบลิงก์</button>'
+        +'</div>'
+        +'<div class="msr-drow" style="margin-top:4px">'
+        +'<input type="file" id="msfile-'+s.id+'" style="flex:1 1 140px;min-width:0;font-size:13px;color:var(--text-dim)" />'
+        +'<button class="msr-sb" id="msfbtn-'+s.id+'" onclick="uploadMSFile(\''+s.id+'\')">อัปโหลด</button>'
+        +'</div>'
+        +'<div class="msr-links" id="mslinks-'+s.id+'">'+(lnks||'<div class="msr-nolink">ยังไม่มีเอกสารแนบ</div>')+'</div>'
+        +'</div>';
+    }).join('');
+    return '<div class="mega-item'+(allDone?' all-done':'')+'" id="mega-'+m.id+'">'
+      +'<div class="mega-item-header"><div class="mega-item-name">'+m.name+'</div>'
+      +'<div class="mega-overall '+cls+'">'+label+'</div></div>'
+      +'<div class="mega-steps">'+stepsHtml+'</div></div>';
+  }).join('');
+}
+
+function toggleMSReport(stepId){
+  const r=document.getElementById('msreport-'+stepId);
+  if(r)r.classList.toggle('open');
+}
+function toggleMegaStep(stepId){
+  megaSteps[stepId]=!megaSteps[stepId];
+  sbSet('cbe_mega_steps',megaSteps);
+  // update just this step UI
+  const el=document.getElementById('mstep-'+stepId);
+  const rep=document.getElementById('msreport-'+stepId);
+  if(el){
+    el.classList.toggle('done',!!megaSteps[stepId]);
+    const btn=el.querySelector('.mega-step-done-btn');
+    if(btn)btn.textContent=megaSteps[stepId]?'✅ เสร็จแล้ว':'กดสีเขียว';
+  }
+  if(rep)rep.classList.toggle('done-report',!!megaSteps[stepId]);
+  // update project overall badge
+  MEGA.forEach(m=>{
+    const doneCount=m.steps.filter(s=>megaSteps[s.id]).length;
+    const allDone=doneCount===m.steps.length;
+    const proj=document.getElementById('mega-'+m.id);
+    if(proj){
+      proj.classList.toggle('all-done',allDone);
+      const badge=proj.querySelector('.mega-overall');
+      if(badge){
+        badge.className='mega-overall '+(allDone?'done':doneCount>0?'partial':'pending');
+        badge.textContent=allDone?'✅ เสร็จแล้ว':doneCount>0?(doneCount+'/'+m.steps.length+' ดำเนินการ'):'⏳ รอดำเนินการ';
+      }
+    }
+  });
+}
+function saveMSNotes(stepId){
+  const el=document.getElementById('msnotes-'+stepId);if(!el)return;
+  const d=getMSD(stepId);d.notes=el.value;saveMSD(stepId,d);
+}
+function saveMSLink(stepId){
+  var _u=document.getElementById('msdurl-'+stepId);
+  var _l=document.getElementById('msdlbl-'+stepId);
+  var url=_u&&_u.value&&_u.value.trim();
+  var label=(_l&&_l.value&&_l.value.trim())||url;
+  if(!url)return;
+  const d=getMSD(stepId);if(!d.links)d.links=[];
+  d.links.push({url,label});saveMSD(stepId,d);
+  document.getElementById('msdurl-'+stepId).value='';
+  document.getElementById('msdlbl-'+stepId).value='';
+  refreshMSLinks(stepId);
+}
+function delMSLink(stepId,li){
+  const d=getMSD(stepId);d.links.splice(li,1);saveMSD(stepId,d);refreshMSLinks(stepId);
+}
+function refreshMSLinks(stepId){
+  const el=document.getElementById('mslinks-'+stepId);if(!el)return;
+  const d=getMSD(stepId);
+  const lnks=(d.links||[]).map((l,li)=>'<div class="msr-lc"><a href="'+l.url+'" target="_blank">'+(l.label||l.url)+'</a>'
+    +'<button class="msr-ldel" onclick="delMSLink(\''+stepId+'\','+li+')">✕</button></div>').join('');
+  el.innerHTML=lnks||'<div class="msr-nolink">ยังไม่มีเอกสารแนบ</div>';
+}
+
+const ENABLERS={
+CG:{code:'CG',name:'Corporate Governance & Leadership',nameTH:'การกำกับดูแลที่ดีและการนำองค์กร',
+  score:2.8315,prevScore:2.7295,color:'#60A5FA',
+  highlights:['คะแนน 2.8315 (+0.1020) · ปรับโครงสร้าง Compliance แยกชัดเจน','จัดตั้งหน่วยงานด้านความยั่งยืน · ติดตามกรณีพิเศษ 21 เรื่อง','ความท้าทาย: บอร์ดยังขาดข้อสั่งการเชิงกลยุทธ์'],
+  gaps:[{id:'cg1',text:'ส่งเอกสารประชุมบอร์ดล่าช้ากว่า 7 วัน',status:'risk'},{id:'cg2',text:'บอร์ดขาด Strategic Guidance — มติ "รับทราบ" เป็นส่วนใหญ่',status:'risk'},{id:'cg3',text:'ขาดการประเมิน Outcome และวิเคราะห์รากเหง้าปัญหา',status:'risk'},{id:'cg4',text:'รายงานประจำปีขาดข้อมูล RPT ที่ครบถ้วน',status:'partial'},{id:'cg5',text:'รายงานความยั่งยืนไม่ได้มาตรฐานสากล',status:'risk'}],
+  sends:[{to:'RM',desc:'นโยบาย GRC + ข้อสั่งการ Board'},{to:'SP',desc:'นโยบายและทิศทางยุทธศาสตร์จาก Board'},{to:'IA',desc:'COI/RPT ส่งให้ IA สุ่มตรวจ'},{to:'DT',desc:'ความต้องการระบบ Digital Boardroom'}],
+  receives:[{from:'RM',desc:'Risk Profile + KRI ด้านกฎหมาย'},{from:'SP',desc:'ข้อมูลสภาพแวดล้อมและความท้าทาย'},{from:'IA',desc:'รายงานตรวจสอบ + ยืนยันความโปร่งใส'},{from:'DT',desc:'Digital Boardroom + Analytics Dashboard'}]},
+SP:{code:'SP',name:'Strategic Planning',nameTH:'การวางแผนเชิงยุทธศาสตร์',
+  score:2.5400,prevScore:2.4067,color:'#A78BFA',
+  highlights:['คะแนน 2.5400 (+0.1333) · บูรณาการแผนแม่-ลูก อย่างเป็นระบบ','Cascade KPI จากองค์กรสู่สายงาน/บุคคล','ความท้าทาย: ขาด Scenario Planning 3 กรณี และ Bottom-up KPI Check'],
+  gaps:[{id:'sp1',text:'ขาด Scenario Planning ครบ 3 กรณี (Best/Base/Worst)',status:'risk'},{id:'sp2',text:'Strategy Map ใส่แค่ชื่อโครงการ ยังไม่แสดง Key Activities + Impact',status:'partial'},{id:'sp3',text:'ขาดการสอบทาน KPI ย้อนกลับ (Bottom-up Alignment Check)',status:'risk'},{id:'sp4',text:'Work System เดิมรองรับเป้าหมายก้าวกระโดดไม่ได้',status:'partial'},{id:'sp5',text:'Trigger Point ยังไม่ผูกกับ Leading Indicator ทุกแผน',status:'partial'},{id:'sp6',text:'Future CC ไม่ส่งต่อให้ HR ทำ IDP อย่างเป็นทางการ',status:'partial'}],
+  sends:[{to:'HCM',desc:'Future Competency → IDP + KPI Targets → PMS บุคลากร'},{to:'RM',desc:'Intelligent Risk + ความเสี่ยงแผนปฏิบัติการ'},{to:'SM',desc:'ทิศทางและแผนปฏิบัติการ (สื่อสารถึง Stakeholder)'},{to:'CG',desc:'ข้อมูลสภาพแวดล้อม + แผนยุทธศาสตร์ (เสนอ Board)'},{to:'DT',desc:'ทิศทางยุทธศาสตร์ → โครงการดิจิทัล'}],
+  receives:[{from:'HCM',desc:'Competency Gap + ผลพัฒนาบุคลากร (feedback loop)'},{from:'RM',desc:'แผนบริหารความเสี่ยงรองรับแผนปฏิบัติการ'},{from:'SM',desc:'ความคาดหวัง Stakeholders → ตั้งเป็น Strategic Objective'},{from:'DT',desc:'Dashboard + Data Analytics ติดตามผลแผน'},{from:'CG',desc:'นโยบาย + ข้อสั่งการ Board'}]},
+RM:{code:'RM&IC',name:'Risk Management & Internal Control',nameTH:'การบริหารความเสี่ยงและการควบคุมภายใน',
+  score:1.9800,prevScore:1.9400,color:'#FB923C',
+  highlights:['คะแนน 1.9800 (ต่ำสุด) · ตั้งสำนักบริหารความเสี่ยง (สสค.)','BCM ได้รับรอง ISO 22301:2019 · ทัศนคติดีขึ้น 13%','ความท้าทาย: EWS ยังไม่สมบูรณ์ · ไม่ครอบคลุม MOU ทลฉ.'],
+  gaps:[{id:'rm1',text:'ปัจจัยเสี่ยง 7 ตัว ไม่ครอบคลุม MOU ทลฉ.',status:'risk'},{id:'rm2',text:'EWS ยังอยู่ระหว่างพัฒนา ยังไม่ใช้งานได้จริง',status:'risk'},{id:'rm3',text:'Risk Correlation Map วิเคราะห์เชิงปริมาณไม่ครบ',status:'risk'},{id:'rm4',text:'Value Creation ไม่สะท้อนมูลค่าเพิ่มทางการเงิน',status:'risk'},{id:'rm5',text:'ประเมิน Likelihood ไม่เจาะจงตามข้อมูลจริง',status:'partial'}],
+  sends:[{to:'CG',desc:'รายงาน GRC + ปัจจัยเสี่ยงด้านกฎหมาย'},{to:'SP',desc:'แผนบริหารความเสี่ยงรองรับแผนปฏิบัติการ'},{to:'HCM',desc:'ผลประเมินความเสี่ยงรายสายงาน + KPI RM'},{to:'KM',desc:'Critical Steps + Intelligent Risk → คลัง KM'},{to:'IA',desc:'Risk Universe + Risk Profile → แผนตรวจสอบ'}],
+  receives:[{from:'CG',desc:'นโยบาย GRC + ข้อสั่งการ Board'},{from:'SP',desc:'เป้าหมายองค์กร + Intelligent Risk Analysis'},{from:'SM',desc:'VOC + ข้อร้องเรียน (EWS Trigger Point)'},{from:'DT',desc:'BCM/DRP + Big Data'},{from:'IA',desc:'รายงานประเมินประสิทธิผล RM&IC'}]},
+SM:{code:'SM',name:'Stakeholder Management',nameTH:'การมุ่งเน้นผู้มีส่วนได้ส่วนเสีย',
+  score:3.2512,prevScore:null,color:'#34D399',
+  highlights:['คะแนน 3.2512 · ลดกลุ่ม Stakeholder 14→10 ด้วย Materiality Matrix','ปรับระดับความสัมพันธ์ AA1000SES 10→5 ระดับ','ความท้าทาย: ขาด Process KPI · จัดเก็บ KM ดิจิทัลยังไม่ครบ'],
+  gaps:[{id:'sm1',text:'ขาด Process KPI + วิเคราะห์ที่มานวัตกรรมกระบวนการ',status:'partial'},{id:'sm2',text:'การจัดเก็บ KM ในระบบดิจิทัลยังไม่ครบถ้วน',status:'partial'},{id:'sm3',text:'ขาดทรัพยากร (Resources & Capacity) ระดับฝ่ายที่ชัดเจน',status:'partial'}],
+  sends:[{to:'SP',desc:'Stakeholder Insights + VOC → SWOT + กำหนด SO'},{to:'RM',desc:'VOC/ข้อร้องเรียน (EWS Trigger)'},{to:'KM',desc:'Pain Points + AAR → คลัง KM'},{to:'CG',desc:'รายงานผลตัวชี้วัด Stakeholder เสนอ Board'}],
+  receives:[{from:'SP',desc:'ทิศทางยุทธศาสตร์ + KPI องค์กร'},{from:'RM',desc:'กรอบประเมินความเสี่ยง'},{from:'DT',desc:'ระบบ AI Analytics + ฐานข้อมูล'},{from:'KM',desc:'Best Practice + แนวทางแก้ปัญหา'}]},
+CM:{code:'CM',name:'Customer Management',nameTH:'การมุ่งเน้นลูกค้า',
+  score:3.2512,prevScore:null,color:'#6EE7B7',
+  highlights:['คะแนน 3.2512 · ทบทวน Sub-segment (Special/Premium/Standard)','พัฒนา PAT VOC Center · CM Report = 4.36/4.00','ความท้าทาย: Sub-segment สื่อสารคลาดเคลื่อน · NPS 7.13 < เป้า 8.00'],
+  gaps:[{id:'cm1',text:'สื่อสาร Sub-segment ผิด — "กลุ่มลูกค้าใหม่" ≠ "กลุ่มย่อยจากฐานเดิม"',status:'risk'},{id:'cm2',text:'ขาด Customer Segment Profile แยก Special/Premium/Standard',status:'risk'},{id:'cm3',text:'NPS Score 7.13 ต่ำกว่าเป้าหมาย 8.00',status:'risk'},{id:'cm4',text:'VOC/CRM/SLA ยังไม่ปรับให้สอดคล้อง Sub-segment ใหม่',status:'partial'}],
+  sends:[{to:'SP',desc:'VOC + Unmet Needs → ปัจจัย SWOT'},{to:'RM',desc:'ข้อร้องเรียน → EWS Trigger Point'},{to:'KM',desc:'Pain Points + Customer AAR → คลังความรู้'},{to:'IM',desc:'Unmet Need + Customer Journey → นวัตกรรมบริการ'}],
+  receives:[{from:'SP',desc:'ทิศทางยุทธศาสตร์ + KPI'},{from:'DT',desc:'AI Analytics + PAT VOC Center'},{from:'HCM',desc:'บุคลากรพัฒนาแล้ว + Incentive'},{from:'KM',desc:'Best Practice + แนวทางแก้ปัญหาลูกค้า'}]},
+DT:{code:'DT',name:'Digital Technology',nameTH:'การพัฒนาเทคโนโลยีดิจิทัล',
+  score:2.7565,prevScore:null,color:'#60A5FA',
+  highlights:['คะแนน 2.7565 · ปรับตัวชี้วัด Output → Outcome','ISO 27001 ความพร้อม 100% · MOU A2S กับ ธอส.','ความท้าทาย: EA ยังขาด · EWS + AI/Big Data ยังไม่สมบูรณ์'],
+  gaps:[{id:'dt1',text:'Enterprise Architecture ยังไม่ครอบคลุมทุกมิติ',status:'risk'},{id:'dt2',text:'Quality Management (QMS) ไม่มีแนวทางชัดเจน',status:'risk'},{id:'dt3',text:'ตัวชี้วัดส่วนใหญ่ยังเป็น Output ไม่สะท้อน Outcome',status:'partial'},{id:'dt4',text:'AI และ Big Data เพื่อคาดการณ์เชิงรุกยังไม่มี',status:'partial'}],
+  sends:[{to:'CG',desc:'Digital Boardroom + มาตรฐานดิจิทัล'},{to:'SP',desc:'IT Projects + Dashboard ติดตามผลแผน'},{to:'RM',desc:'BCM/DRP + ระบบ EWS'},{to:'SM',desc:'AI Analytics → ปรับปรุงบริการ'},{to:'HCM',desc:'HRIS + Digital Skill Tools'},{to:'KM',desc:'Knowledge Platform + AI (NotebookLM)'}],
+  receives:[{from:'SP',desc:'ทิศทางยุทธศาสตร์ → โครงการดิจิทัล'},{from:'RM',desc:'BIA + ความเสี่ยงองค์กร'},{from:'SM',desc:'ฐานข้อมูลพฤติกรรม Stakeholder'},{from:'HCM',desc:'โครงสร้างกำลังคน + แผนพัฒนา'},{from:'KM',desc:'ความต้องการระบบ KM'}]},
+HCM:{code:'HCM',name:'Human Capital Management',nameTH:'การบริหารทุนมนุษย์',
+  score:3.0740,prevScore:2.9045,color:'#F472B6',
+  highlights:['คะแนน 3.0740 (+0.1695) · Productivity 5.33 ล้านบาท/คน','HR Chatbot "Patty" · FutureSkill Platform · HR Analytics (PowerBI)','ความท้าทาย: บูรณาการข้าม Enablers ยังแค่กระดาษ'],
+  gaps:[{id:'hcm1',text:'บูรณาการข้าม Enablers ยังแค่อ้างอิง ไม่มี Joint Operation จริง',status:'partial'},{id:'hcm2',text:'ขาด Time & Motion Study หน่วยงาน Front-line',status:'partial'},{id:'hcm3',text:'Young Talent (อายุ≤35) ยังไม่มีแผนดูแลเฉพาะ',status:'partial'},{id:'hcm4',text:'HR Audit ยังเป็น Reactive ไม่ใช่ Preventive',status:'partial'}],
+  sends:[{to:'SP',desc:'HR Plan + ตำแหน่งยุทธศาสตร์'},{to:'RM',desc:'แผนฝึกอบรม RM + BCP กำลังคน'},{to:'KM',desc:'Talent วิทยากร + ถ่ายทอดความรู้'},{to:'CG',desc:'ผลสำรวจพฤติกรรม + ค่านิยม SMART PAT'}],
+  receives:[{from:'SP',desc:'Future CC + KPI Targets → PMS'},{from:'RM',desc:'Risk Profile รายสายงาน'},{from:'SM',desc:'Training Need (ทักษะบริการ)'},{from:'DT',desc:'HRIS + เครื่องมือดิจิทัล'},{from:'KM',desc:'Best Practice + แนวทางเรียนรู้'}]},
+KM:{code:'KM',name:'Knowledge Management',nameTH:'การจัดการความรู้',
+  score:2.7575,prevScore:null,color:'#FBBF24',
+  highlights:['คะแนน 2.7575 · Google Workspace + NotebookLM จัดเก็บ 556 เรื่อง','นวัตกรรมจาก KM 5 โครงการ · e-Complaint ลดขั้นตอน 66%','ความท้าทาย: ยังไม่พิสูจน์มูลค่าเพิ่มทางการเงิน'],
+  gaps:[{id:'km1',text:'KM ยังไม่พิสูจน์มูลค่าเพิ่มทางการเงินได้',status:'risk'},{id:'km2',text:'Knowledge Map ขาดความสมบูรณ์หลังย้ายระบบ',status:'partial'},{id:'km3',text:'KM และ RM บูรณาการเครื่องมือกันไม่สมบูรณ์',status:'partial'}],
+  sends:[{to:'RM',desc:'Lesson Learned + คู่มือป้องกันความเสี่ยง'},{to:'HCM',desc:'IDP ทักษะนวัตกรรม + ฐานความรู้'},{to:'DT',desc:'ความต้องการระบบ KM + Knowledge Taxonomy'},{to:'IM',desc:'องค์ความรู้ → ต่อยอดนวัตกรรม'}],
+  receives:[{from:'SM',desc:'Pain Points + AAR → คลัง KM'},{from:'RM',desc:'Critical Steps + Intelligent Risk'},{from:'DT',desc:'Knowledge Platform + AI'},{from:'HCM',desc:'Talent วิทยากรถ่ายทอดความรู้'}]},
+IM:{code:'IM',name:'Innovation Management',nameTH:'การจัดการนวัตกรรม',
+  score:1.9893,prevScore:null,color:'#C084FC',
+  highlights:['คะแนน 1.9893 · IM4 วัฒนธรรมนวัตกรรม 1.45 — ต่ำสุด','e-Complaint ลดขั้นตอน 66% · Open Innovation เปิดรับภายนอก','ความท้าทาย: ขาด Data Analytics · ไม่พิสูจน์มูลค่าเพิ่มได้'],
+  gaps:[{id:'im1',text:'วัฒนธรรมนวัตกรรม (IM4) คะแนน 1.45 — วัดแค่จำนวนกิจกรรม',status:'risk'},{id:'im2',text:'ขาด Data Analytics พยากรณ์ความต้องการ',status:'risk'},{id:'im3',text:'ยังไม่พิสูจน์ผลนวัตกรรมดีกว่าเป้า + ดีกว่าคู่เทียบ',status:'risk'},{id:'im4',text:'Open Innovation ยังไม่ครอบคลุมพันธมิตรภายนอก',status:'partial'}],
+  sends:[{to:'CM',desc:'นวัตกรรมบริการที่ตอบ Unmet Needs'},{to:'SP',desc:'ผลนวัตกรรม → ต่อยอดแผนยุทธศาสตร์'},{to:'KM',desc:'Lesson Learned จากนวัตกรรม'}],
+  receives:[{from:'CM',desc:'Unmet Need + Customer Journey → โจทย์นวัตกรรม'},{from:'KM',desc:'องค์ความรู้ → นำไปพัฒนานวัตกรรม'},{from:'HCM',desc:'Talent รุ่นใหม่ + แรงจูงใจ'},{from:'DT',desc:'เทคโนโลยี + Big Data รองรับนวัตกรรม'}]},
+IA:{code:'IA',name:'Internal Audit',nameTH:'การตรวจสอบภายใน',
+  score:2.7549,prevScore:null,color:'#6EE7B7',
+  highlights:['คะแนน 2.7549 · ปรับกฎบัตรตามมาตรฐาน GIAS 2024','MOU A2S กับ ธอส. · เพิ่มปัจจัยเสี่ยงทุจริต/ESG 12 ปัจจัย','ความท้าทาย: AC สรรหาล่าช้า · ขาด CIA/CPIAT'],
+  gaps:[{id:'ia1',text:'AC สรรหาล่าช้า + ทับซ้อนอนุกรรมการสายบริหาร',status:'risk'},{id:'ia2',text:'กฎบัตรยังไม่สอดคล้องมาตรฐาน GIAS 2024 ครบ',status:'partial'},{id:'ia3',text:'ขาดบุคลากรผ่าน CIA/CPIAT',status:'partial'},{id:'ia4',text:'งานให้คำปรึกษายังเป็น Reactive ไม่มีแผนเชิงรุก',status:'partial'}],
+  sends:[{to:'CG',desc:'รายงานตรวจสอบ + ยืนยันความโปร่งใส'},{to:'RM',desc:'Risk Universe + Risk Profile'},{to:'KM',desc:'AAR + Lesson Learned จากการตรวจ'},{to:'DT',desc:'แผนตรวจสอบ IT + ข้อเสนอแนะ'}],
+  receives:[{from:'CG',desc:'COI/RPT ส่งให้ IA สุ่มตรวจ'},{from:'RM',desc:'Risk Profile + Risk Universe'},{from:'DT',desc:'ระบบ A2S + IT Audit Data'},{from:'HCM',desc:'IDP ทีม IA + แผนสอบวิชาชีพ'}]},
+};
+
+const KEYS=['CG','SP','RM','SM','CM','DT','HCM','KM','IM','IA'];
+
+const ZONE3={
+CG:{criteria:[
+  {id:'cg-1',title:'1. สนองบทบาทภาครัฐ',score:'2.75/5.00',items:[
+    {sub:'1.1 การรายงานผลตามนโยบายภาครัฐ',
+     gap:'ขาดการติดตามการปฏิบัติตามกฎหมาย ระเบียบอย่างเป็นระบบ เพื่อไม่ให้ถูกร้องเรียน/ฟ้องร้อง',
+     act:'ประเมินประสิทธิผลระบบ และทำ Dashboard แจ้งเตือนกฎหมาย',
+     best:'(รฟม.) มีแนวปฏิบัติครอบคลุม และเริ่มประเมินคุณภาพ/ประสิทธิผลของกระบวนการแล้ว',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'รายงานประเมินประสิทธิผล Compliance'},{dept:'DT',docLabel:'Dashboard แจ้งเตือนกฎหมาย'}]},
+  ]},
+  {id:'cg-2',title:'2. ตลาดที่เป็นธรรม',score:'2.90/5.00',items:[
+    {sub:'2.1 นโยบายเพื่อแข่งขันเป็นธรรม',
+     gap:'ควรกำหนด "ผู้รับผิดชอบ" ในทุกขั้นตอนเพื่อนำนโยบายไปสู่การปฏิบัติจริง',
+     act:'ประเมินประสิทธิผลว่าระบบช่วยลดข้อร้องเรียนจากคู่แข่ง/คู่ค้าได้จริง',
+     best:'(รฟม.) กำหนดผู้รับผิดชอบครบ 5 ประเด็น และเริ่มประเมินประสิทธิผลแล้ว',
+     inputs:[],
+     outputs:[{dept:'SM',docLabel:'รายงานประเมินลดข้อร้องเรียนจากคู่ค้า'},{dept:'IA',docLabel:'รายงานผลการสอดส่องการแข่งขัน'}]},
+  ]},
+  {id:'cg-3',title:'3. สิทธิผู้ถือหุ้น',score:'2.67/5.00',items:[
+    {sub:'3.1 สิทธิผู้ถือหุ้นตามกฎหมาย',
+     gap:'ขาดกระบวนการ "ป้องกัน" และการเกิดรายการเกี่ยวโยงกันไปสู่การปฏิบัติจริง (Substance over Form)',
+     act:'ฝ่ายตรวจสอบภายในเข้า "สุ่มตรวจ (Audit)" รายการที่เกี่ยวโยงกัน',
+     best:'(รฟม.) ดำเนินการป้องกันการใช้ข้อมูลภายใน และความขัดแย้งทางผลประโยชน์ได้ครบถ้วน',
+     inputs:[],
+     outputs:[{dept:'IA',docLabel:'รายงานสุ่มตรวจ COI'},{dept:'HCM',docLabel:'หนังสือแสดงความโปร่งใส (COI) จากบอร์ด/ผู้บริหาร'}]},
+  ]},
+  {id:'cg-4',title:'4. บทบาทผู้มีส่วนได้เสีย',score:'2.67/5.00',items:[
+    {sub:'4.1 การกำกับดูแลผู้มีส่วนได้เสีย',
+     gap:'คณะกรรมการควรให้ความสำคัญในการมอบ "ข้อสังเกต/ข้อเสนอแนะ" เพื่อผลักดันเป้าหมาย',
+     act:'บันทึกรายงานการประชุมบอร์ดต้องมี "ข้อสั่งการเชิงกลยุทธ์" และมีผลลัพธ์การลดข้อขัดแย้ง',
+     best:'(รฟม.) บอร์ดติดตามผลและให้ "ข้อสังเกต" รายไตรมาส มีการวัดคุณภาพเป็นรูปธรรม',
+     inputs:[],
+     outputs:[{dept:'SM',docLabel:'แผนยุทธศาสตร์ผู้มีส่วนได้เสีย 10 กลุ่ม'},{dept:'SP',docLabel:'ข้อสั่งการเชิงกลยุทธ์ในรายงานประชุมบอร์ด'}]},
+  ]},
+  {id:'cg-5',title:'5. การเปิดเผยข้อมูล',score:'4.35/5.00',items:[
+    {sub:'5.1 รายงานประจำปี',
+     gap:'ควรเพิ่มข้อมูลสารสนเทศ "รายการที่เกี่ยวโยงกัน (RPT)" ให้ครบถ้วน',
+     act:'เปิดเผยข้อมูล RPT อย่างละเอียดในรายงานประจำปี และยกระดับเป็น Integrated Report ตามมาตรฐานสากล',
+     best:'(รฟม.) เปิดเผยครบ 14 ประเด็น เผยแพร่เร็ว และแสดงผลลัพธ์ปรับปรุงกระบวนการเป็นรูปธรรม',
+     inputs:[],
+     outputs:[{dept:'DT',docLabel:'ระบบ Integrated Report'},{dept:'SM',docLabel:'ข้อมูลส่งเสริมการเปิดเผยสารสนเทศ (RPT)'}]},
+    {sub:'5.2 ระยะเวลาเผยแพร่',
+     gap:'เผยแพร่ภายในกรอบเวลา',
+     act:'เผยแพร่ภายใน 1 เดือนหลัง สตง. รับรองงบ',
+     best:'(ประเมินรวมในหัวข้อ 5.1)',
+     inputs:[],
+     outputs:[{dept:'DT',docLabel:'ระบบการเผยแพร่รายงานออนไลน์ทันกาล'}]},
+    {sub:'5.3 เว็บไซต์',
+     gap:'ควรจัดให้มีการประเมินคุณภาพ/ประสิทธิผลของระบบเปิดเผยข้อมูล',
+     act:'ประเมินผลความพึงพอใจการใช้งานเว็บไซต์ และนำผลสำรวจมาปรับปรุง UX/UI ให้ตอบโจทย์ผู้ใช้งาน',
+     best:'(ประเมินรวมในหัวข้อ 5.1)',
+     inputs:[],
+     outputs:[{dept:'DT',docLabel:'เว็บไซต์ปรับปรุงใหม่ UI/UX'},{dept:'SM',docLabel:'ผลสำรวจความพึงพอใจเว็บไซต์'}]},
+  ]},
+  {id:'cg-6',title:'6. คณะกรรมการ',score:'2.75/5.00',items:[
+    {sub:'6.1 องค์ประกอบ/สรรหา',
+     gap:'ขาดการติดตามการปฏิบัติตามกฎหมาย ระเบียบอย่างเป็นระบบ เพื่อไม่ให้ถูกร้องเรียน/ฟ้องร้อง',
+     act:'จัดตั้งหน่วยงาน Compliance และรายงานผลต่อบอร์ด รวมถึงทำ Dashboard แจ้งเตือน',
+     best:'(รฟม.) มีแนวปฏิบัติครอบคลุม และเริ่มประเมินคุณภาพ/ประสิทธิผลของกระบวนการแล้ว',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'ประมวลการปฏิบัติกฎหมาย Compliance'},{dept:'DT',docLabel:'Dashboard แจ้งเตือนกฎหมาย'}]},
+    {sub:'6.2 กำหนดทิศทาง/กลยุทธ์',
+     gap:'ยังไม่สามารถสรรหากรรมการได้ครบถ้วนตาม Skill Matrix ที่กำหนด',
+     act:'ระบุทักษะที่ขาดและนำ Skill Matrix มาใช้มอบหมายงานเข้าคณะอนุกรรมการ',
+     best:'(รฟม.) นำ Skill Matrix และ Director Pool มาใช้ครบถ้วน และประเมินประสิทธิผลแล้ว',
+     inputs:[],
+     outputs:[{dept:'HCM',docLabel:'ฐานข้อมูล Skill Matrix และ Director Pool'}]},
+    {sub:'6.3 กำกับดูแลแผนสำคัญ',
+     gap:'บอร์ดต้องให้ข้อเสนอแนะต่อการดำเนินงานตามแผนงาน',
+     act:'ประเมินประสิทธิผลกระบวนการกำหนดกลยุทธ์โดยมีบอร์ดเข้าร่วม Workshop',
+     best:'(รฟม.) บอร์ดให้ข้อเสนอแนะนำไปสู่การริเริ่มโครงการใหม่ๆ ด้านนวัตกรรม',
+     inputs:[],
+     outputs:[{dept:'SP',docLabel:'ข้อเสนอแนะบอร์ดจาก Workshop สำหรับจัดทำแผน'}]},
+    {sub:'6.4 ประเมินผลผู้บริหาร',
+     gap:'บอร์ดควรให้ข้อสังเกต/ข้อเสนอแนะ ผลักดันผลการดำเนินงาน',
+     act:'บันทึกการประชุมต้องแสดงข้อชี้แนะเชิงกลยุทธ์ในการติดตามแผน 4 ด้าน (DT, HCM, IA, KM)',
+     best:'(รฟม.) ติดตามและให้ข้อเสนอแนะต่อแผนปฏิบัติการอย่างสม่ำเสมอ',
+     inputs:[],
+     outputs:[{dept:'DT',docLabel:'ข้อชี้แนะเชิงกลยุทธ์ในการติดตามแผน DT'},{dept:'HCM',docLabel:'ข้อชี้แนะเชิงกลยุทธ์ในการติดตามแผน HCM'},{dept:'IA',docLabel:'ข้อชี้แนะเชิงกลยุทธ์ในการติดตามแผน IA'},{dept:'KM',docLabel:'ข้อชี้แนะเชิงกลยุทธ์ในการติดตามแผน KM'}]},
+    {sub:'6.5 ประสิทธิภาพประชุม',
+     gap:'(จุดแข็ง) ประเมินตามเกณฑ์และผูกแรงจูงใจได้เป็นรูปธรรมแล้ว',
+     act:'ดำเนินการตามหลักเกณฑ์อย่างต่อเนื่อง',
+     best:'(รฟม.) มีหลักเกณฑ์ประเมินที่ชัดเจน ผูกกับระบบแรงจูงใจ',
+     inputs:[],
+     outputs:[{dept:'HCM',docLabel:'หลักเกณฑ์ผูกระบบแรงจูงใจ'}]},
+    {sub:'6.6 เสริมสร้าง CG',
+     gap:'(วิกฤต) ไม่สามารถส่งเอกสารล่วงหน้า 7 วันได้',
+     act:'บังคับใช้ระบบ Digital Boardroom เต็มรูปแบบ ต้องส่งเอกสารล่วงหน้า >7 วัน ให้ได้ 100%',
+     best:'(รฟม.) คณะกรรมการได้รับข้อมูลเพียงพอและทันเวลา',
+     inputs:[],
+     outputs:[{dept:'DT',docLabel:'ระบบ Digital Boardroom'}]},
+    {sub:'6.7 ประเมินตนเอง',
+     gap:'แผนพัฒนาบอร์ดไม่สอดคล้องกับผลประเมินตนเองและ Skill Matrix',
+     act:'ปรับแผนอบรมบอร์ดให้ตรงกับจุดอ่อนที่พบ จัดทำ Individual Development Plan',
+     best:'(รฟม.) นำผลประเมินตนเองไปจัดทำแผนเพิ่มประสิทธิภาพกำกับดูแลจนบรรลุเป้า',
+     inputs:[],
+     outputs:[{dept:'HCM',docLabel:'Individual Development Plan (IDP) สำหรับกรรมการ'}]},
+  ]},
+  {id:'cg-7',title:'7. บริหารความเสี่ยงฯ',score:'2.75/5.00',items:[
+    {sub:'7.1 ประสิทธิภาพบริหารความเสี่ยง',
+     gap:'บอร์ดควรให้ข้อสังเกตและประเมินคุณภาพ/ประสิทธิผลของระบบติดตามการบริหารความเสี่ยง',
+     act:'บอร์ดประเมินประสิทธิผลของระบบ GRC Dashboard',
+     best:'(กทพ.) บอร์ดติดตามผลทุกไตรมาส บรรลุเป้าหมาย และมีข้อสั่งการ/ข้อเสนอแนะที่มีสาระสำคัญ',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'คู่มือบูรณาการ GRC'},{dept:'IA',docLabel:'ประเมินประสิทธิผล GRC Dashboard'}]},
+  ]},
+  {id:'cg-8',title:'8. จรรยาบรรณ',score:'2.75/5.00',items:[
+    {sub:'8.1 เสริมสร้างพฤติกรรม',
+     gap:'ต้องติดตามผลและประเมิน "ผลลัพธ์ (Outcome)" การเปลี่ยนแปลงพฤติกรรมอย่างเป็นระบบ',
+     act:'ประเมินพฤติกรรมพึงประสงค์ 3 ระดับ และรวบรวมตัวเลขสถิติ เช่น การลดลงของข้อร้องเรียน',
+     best:'(กทพ.) ประเมินการรับรู้ผ่านแบบสอบถาม และสำรวจความตระหนักตามค่านิยมองค์กรชัดเจน',
+     inputs:[],
+     outputs:[{dept:'HCM',docLabel:'รายงานประเมินพฤติกรรม ค่านิยมสถิติร้องเรียน'}]},
+  ]},
+  {id:'cg-9',title:'9. ความยั่งยืน/นวัตกรรม',score:'2.75/5.00',items:[
+    {sub:'9.1 ระบบนวัตกรรม',
+     gap:'แผนนวัตกรรมต้องสนับสนุนวิสัยทัศน์องค์กร',
+     act:'นำระบบ CIS ไปใช้สนับสนุนโครงการนวัตกรรมและวัดผล Innovation Impact',
+     best:'(รฟม.) บอร์ดมีส่วนร่วมกำหนดทิศทางนวัตกรรม เชื่อมโยงยุทธศาสตร์ชัดเจน',
+     inputs:[],
+     outputs:[{dept:'IM',docLabel:'วัดผล Innovation Impact ลดต้นทุน/เพิ่มรายได้'},{dept:'SP',docLabel:'แผนนวัตกรรมสนับสนุนวิสัยทัศน์'}]},
+    {sub:'9.2 ความยั่งยืนเชิงยุทธศาสตร์',
+     gap:'ขาดกรอบแนวทางการพัฒนาความยั่งยืนที่เป็นระบบ',
+     act:'นำ 16 ปัจจัย ESG ไปเป็น Input ในแผนวิสาหกิจ นำ ESG ฝังในกระบวนการปรกติ',
+     best:'(รฟม.) แผนแม่บทนวัตกรรม/ความยั่งยืนสอดคล้องกับยุทธศาสตร์องค์กร',
+     inputs:[],
+     outputs:[{dept:'SM',docLabel:'16 ปัจจัย ESG เพื่อทำแผนวิสาหกิจ'},{dept:'SP',docLabel:'แผนวิสาหกิจที่ผนวกกรอบความยั่งยืน ESG'}]},
+    {sub:'9.3 รายงานความยั่งยืน',
+     gap:'รายงานยั่งยืนต้องได้มาตรฐานสากล',
+     act:'จัดทำรายงานตามมาตรฐาน GRI และจ้างผู้ทวนสอบภายนอก (Third Party Assurance)',
+     best:'(รฟม.) จัดทำรายงานการพัฒนาความยั่งยืนตามมาตรฐานสากลและเผยแพร่แล้ว',
+     inputs:[],
+     outputs:[{dept:'SM',docLabel:'รายงานความยั่งยืนตามมาตรฐาน GRI ทวนสอบโดย Third Party'}]},
+  ]},
+  {id:'cg-10',title:'10. การติดตามผล',score:'2.75/5.00',items:[
+    {sub:'10.1 การติดตามผล',
+     gap:'ตัวชี้วัดสำคัญบางตัวยังไม่บรรลุเป้าหมาย',
+     act:'ประเมินคุณภาพระบบติดตามว่าช่วยแก้ปัญหาได้จริง',
+     best:'(รฟม.) มีตัวชี้วัด Output และ Outcome ของระบบติดตามผลที่ชัดเจนรูปธรรม',
+     inputs:[],
+     outputs:[]},
+    {sub:'10.2 คุณภาพรายงาน',
+     gap:'ควรประเมินคุณภาพ/ประสิทธิผลกระบวนการทำรายงาน',
+     act:'ใช้ Data Analytics/Dashboard สรุปข้อมูลแบบ Real-time',
+     best:'(ประเมินรวมในหัวข้อ 10.1)',
+     inputs:[],
+     outputs:[{dept:'SP',docLabel:'Data Analytics/Dashboard ข้อมูลผลการดำเนินงานแบบ Real-time'},{dept:'DT',docLabel:'ระบบ Data Analytics/Dashboard'}]},
+  ]},
+]},
+RM:{ criteria:[
+  {id:'rm-1',title:'1. ธรรมาภิบาลและวัฒนธรรมองค์กร',score:'2.27/5.00',items:[
+    {sub:'1.1 บทบาทคณะกรรมการฯ',
+     gap:'นโยบาย GRC ยังไม่มีการนำไปปฏิบัติอย่างเป็นรูปธรรม',
+     act:'ติดตามผลลัพธ์ GRC (People, Process, Tech) ให้เป็นรูปธรรมวัดผลได้',
+     best:'มีการกำหนดนโยบายบูรณาการ GRC พร้อมโครงสร้างผู้รับผิดชอบและแนวปฏิบัติที่ชัดเจน',
+     inputs:[{dept:'CG',docLabel:'ข้อสังเกต/ข้อสั่งการจากบอร์ด'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลการบูรณาการ GRC'},{dept:'HCM',docLabel:'แผนพัฒนา RM Competency'}]},
+    {sub:'1.2 โครงสร้างและบทบาทหน้าที่',
+     gap:'ขาดการประเมินประสิทธิผลของกระบวนการโครงสร้าง',
+     act:'ทำแบบประเมินประสิทธิผลกระบวนการทำงานของ สสค. (Input, Process, Output, Time)',
+     best:'มีหน่วยงานจัดการความเสี่ยงฯ ที่ชัดเจน กำหนดโครงสร้างบทบาทหน้าที่พร้อมคู่มือครบถ้วน',
+     inputs:[{dept:'HCM',docLabel:'โครงสร้างองค์กรและบทบาทหน้าที่'}],
+     outputs:[{dept:'CG',docLabel:'รายงานประเมินประสิทธิผลกระบวนการ RM'}]},
+    {sub:'1.3 บรรยากาศและวัฒนธรรม',
+     gap:'ผลสำรวจพฤติกรรมยังไม่บรรลุเป้า',
+     act:'ยกระดับคะแนนผลสำรวจวัฒนธรรม RM ให้บรรลุเป้าหมาย',
+     best:'มีการประเมินความรู้ความเข้าใจเรื่องการบริหารความเสี่ยงของบุคลากร สอดคล้องกับแผนพัฒนาบุคลากร',
+     inputs:[{dept:'HCM',docLabel:'ผลสำรวจวัฒนธรรมและความผูกพันองค์กร'}],
+     outputs:[{dept:'HCM',docLabel:'แผนพัฒนาวัฒนธรรม RM รายสายงาน'}]},
+    {sub:'1.4 ความมุ่งมั่นต่อค่านิยม',
+     gap:'ขาดแผนปรับปรุงพฤติกรรมจากผลสำรวจอย่างเป็นระบบ',
+     act:'นำผลสำรวจมาจัดทำแผนปรับปรุงพฤติกรรมทั้ง 3 ระดับ (บอร์ด/ผู้บริหาร/พนักงาน)',
+     best:'มีการเปรียบเทียบกับพฤติกรรมพึงประสงค์ และออกแบบคำถามที่สะท้อนการสร้างความตระหนักนำไปปฏิบัติได้จริง',
+     inputs:[{dept:'HCM',docLabel:'แบบสำรวจพฤติกรรมและค่านิยม SMART PAT'}],
+     outputs:[{dept:'HCM',docLabel:'แผนปรับปรุงพฤติกรรมรายระดับ'}]},
+    {sub:'1.5 แรงจูงใจ การพัฒนาและรักษาบุคลากร',
+     gap:'การถ่ายทอด KPI สู่ระดับสายงานยังไม่สมบูรณ์',
+     act:'นำผลประเมิน Risk Profile ระดับสายงาน ผูกกับแรงจูงใจอย่างแท้จริง',
+     best:'เชื่อมโยงผลประเมินการบริหารความเสี่ยงกับผลตอบแทน/แรงจูงใจ (Incentive)',
+     inputs:[{dept:'HCM',docLabel:'แผนประเมิน KPI/แรงจูงใจ, แผนฝึกอบรม'}],
+     outputs:[{dept:'HCM',docLabel:'ผลการบริหารความเสี่ยงรายสายงาน, สมรรถนะด้านความเสี่ยง'}]}
+  ]},
+  {id:'rm-2',title:'2. การกำหนดยุทธศาสตร์และเป้าประสงค์',score:'2.00/5.00',items:[
+    {sub:'2.2 การระบุเป้าหมายความเสี่ยง (RA/RT)',
+     gap:'ขาดการสื่อสารสาเหตุ RA/RT ให้สอดคล้องแผน HR/DT',
+     act:'สื่อสาร RA/RT ถึงระดับ Root Cause ให้ Stakeholders ทราบ และบูรณาการกับแผน HR/IT',
+     best:'กำหนด Risk Appetite และ Risk Tolerance ที่เชื่อมโยงกับเป้าหมายองค์กรอย่างชัดเจน',
+     inputs:[
+       {dept:'SP',docLabel:'แผนวิสาหกิจ, SWOT, โอกาสทางธุรกิจ, เป้าหมาย MOU'},
+       {dept:'SM',docLabel:'ข้อมูล Voice of Customer (VOC) และข้อร้องเรียน'}
+     ],
+     outputs:[
+       {dept:'SP',docLabel:'แผนบริหารความเสี่ยงที่รองรับแผนปฏิบัติการ และผลประเมิน Intelligent Risk'},
+       {dept:'SM',docLabel:'แผนบริหารความเสี่ยงด้านการสร้างความสัมพันธ์กับ Stakeholders'}
+     ]},
+    {sub:'2.4 การสร้างมูลค่าเพิ่ม (VC/VE)',
+     gap:'ผลลัพธ์ VC/VE ไม่แสดงการเพิ่มมูลค่าอย่างชัดเจน',
+     act:'วิเคราะห์ Intelligent Risk และติดตามผลลัพธ์ VC/VE เป็นตัวเลขทางการเงิน',
+     best:'มุ่งเน้นการบริหารความเสี่ยงผ่านการสร้างแรงจูงใจและเชื่อมโยงกับ Value Creation และ Value Enhancement',
+     inputs:[{dept:'IM',docLabel:'นวัตกรรมที่ช่วยลดระดับความรุนแรงของความเสี่ยง'}],
+     outputs:[{dept:'IM',docLabel:'ผลวิเคราะห์ Intelligent Risk / โอกาสทางธุรกิจ'}]}
+  ]},
+  {id:'rm-3',title:'3. กระบวนการบริหารความเสี่ยง',score:'1.74/5.00',items:[
+    {sub:'3.1 การระบุปัจจัยเสี่ยง',
+     gap:'ปัจจัยเสี่ยงไม่ครอบคลุมตัวชี้วัด MOU (ทลฉ.)',
+     act:'เพิ่มตัวชี้วัด MOU เข้าเป็นความเสี่ยงองค์กร',
+     best:'มีกระบวนการพิจารณาปัจจัยเสี่ยงจากปัจจัยภายใน ภายนอก ยุทธศาสตร์ เป้าหมาย และตัวชี้วัดสำคัญ (Risk Universe)',
+     inputs:[{dept:'SP',docLabel:'เป้าหมาย MOU และตัวชี้วัดองค์กร'}],
+     outputs:[{dept:'SP',docLabel:'Risk Universe ที่ครอบคลุม MOU'}]},
+    {sub:'3.2 การกำหนดกิจกรรมการควบคุม',
+     gap:'ขาดประเมินกิจกรรมระดับสายงาน และขาดบูรณาการ IT',
+     act:'นำเทคโนโลยีดิจิทัลมาพัฒนากิจกรรมการควบคุม (Digital Control)',
+     best:'มีการประเมินกิจกรรมการควบคุมประกอบการวิเคราะห์ปัจจัยเสี่ยงระดับสายงานครบ 4 ด้าน',
+     inputs:[{dept:'IA',docLabel:'รายงานผลการตรวจสอบกระบวนการ (Assurance) และข้อเสนอแนะ'}],
+     outputs:[{dept:'IA',docLabel:'Risk Universe, Risk Profile, แผนการจัดการความเสี่ยง'}]},
+    {sub:'3.3 การประเมินระดับความรุนแรง',
+     gap:'กำหนด Likelihood โดยพึ่งพาดุลยพินิจ ไม่เจาะจงข้อมูล',
+     act:'ใช้ฐานข้อมูลอดีต/คาดการณ์ (Fact-based) ในการประเมิน Likelihood',
+     best:'กำหนดเกณฑ์ประเมินระดับความรุนแรง โดยใช้ฐานข้อมูลในอดีตหรือการคาดการณ์ในอนาคตมาประกอบ',
+     inputs:[{dept:'DT',docLabel:'ฐานข้อมูลประวัติเหตุการณ์ความเสี่ยง'}],
+     outputs:[{dept:'DT',docLabel:'รายงานการประเมิน Likelihood เชิงปริมาณ'}]},
+    {sub:'3.4 การจัดลำดับความเสี่ยง',
+     gap:'การบูรณาการ Risk Boundary กับเป้าประสงค์ยังไม่ชัด',
+     act:'อธิบายการบูรณาการ Risk Boundary กับยุทธศาสตร์ให้ชัดเจน',
+     best:'มีการกำหนด Risk Boundary และจัดลำดับความเสี่ยง โดยบูรณาการกับเป้าประสงค์และ Risk Appetite',
+     inputs:[{dept:'SP',docLabel:'เป้าประสงค์ยุทธศาสตร์และ Risk Appetite ขององค์กร'}],
+     outputs:[{dept:'SP',docLabel:'Risk Profile พร้อม Risk Boundary ที่ชัดเจน'}]},
+    {sub:'3.5 วิธีจัดการความเสี่ยง (Mitigation)',
+     gap:'แผนจัดการยังไม่ครอบคลุมสาเหตุทางอ้อม',
+     act:'นำ "สาเหตุทางอ้อม" จาก Correlation Map มาใส่ใน Mitigation Plan',
+     best:'การคัดเลือกวิธีจัดการความเสี่ยง (Mitigation Plan) มีการระบุหลักเกณฑ์ประเมินค่าใช้จ่ายและผลประโยชน์',
+     inputs:[{dept:'SP',docLabel:'แผนยุทธศาสตร์และทรัพยากรองค์กร'}],
+     outputs:[{dept:'SP',docLabel:'Mitigation Plan ที่ครอบคลุมสาเหตุทางอ้อม'}]},
+    {sub:'3.6 Risk Correlation Map & Portfolio',
+     gap:'ขาดการวิเคราะห์ผลกระทบ และขาด Portfolio View',
+     act:'อธิบายที่มาของ % น้ำหนัก และจัดทำ Portfolio View of Risk',
+     best:'วิเคราะห์ความสัมพันธ์ระหว่างปัจจัยเสี่ยงและผลกระทบ และมีการจัดทำ Portfolio View of Risk ผ่านระบบ GRC',
+     inputs:[{dept:'IA',docLabel:'รายงานผลการตรวจสอบกระบวนการ (Assurance) และข้อเสนอแนะ'}],
+     outputs:[{dept:'IA',docLabel:'Risk Correlation Map และ Portfolio View of Risk'}]}
+  ]},
+  {id:'rm-4',title:'4. การทบทวนการบริหารความเสี่ยง',score:'2.33/5.00',items:[
+    {sub:'4.1 การทบทวนและปรับปรุงผล',
+     gap:'ปัจจัยเสี่ยงที่ทบทวนไม่ครอบคลุมตัวชี้วัด MOU',
+     act:'ดึงตัวชี้วัด MOU ที่ไม่บรรลุเป้า เข้ามาทบทวนใกล้ชิดระหว่างปี',
+     best:'มีกระบวนการทบทวนและปรับปรุงผลความเสี่ยงสม่ำเสมอครบทุกไตรมาส',
+     inputs:[{dept:'SP',docLabel:'รายงานผล MOU และตัวชี้วัดองค์กรรายไตรมาส'}],
+     outputs:[{dept:'SP',docLabel:'รายงานผลการทบทวนความเสี่ยงที่บูรณาการ MOU'}]},
+    {sub:'4.2 การกำหนดแนวทางปรับปรุงกระบวนการ',
+     gap:'ขาดการประเมินประสิทธิผลของกระบวนการปรับปรุง',
+     act:'ทำแบบประเมินประสิทธิผลทุกขั้นตอน (Input, Process, Output, Time)',
+     best:'มีแนวทางประเมินคุณภาพและประสิทธิผลของกระบวนการให้ความเห็นชอบและติดตามแผน RM ของคณะกรรมการ',
+     inputs:[{dept:'IA',docLabel:'ผลการตรวจสอบและข้อเสนอแนะปรับปรุง RM'}],
+     outputs:[{dept:'IA',docLabel:'รายงานประเมินประสิทธิผลกระบวนการ RM แบบ 4 มิติ'}]}
+  ]},
+  {id:'rm-5',title:'5. ข้อมูลสารสนเทศ การสื่อสาร และรายงานผล',score:'1.90/5.00',items:[
+    {sub:'5.1 การสื่อสารความเสี่ยง',
+     gap:'ผลสำรวจความตระหนักไม่ถึงเป้า ไม่เชื่อมแผน HR',
+     act:'ยกระดับผลสำรวจ และบูรณาการช่องทางสื่อสารกับ HR/DT',
+     best:'มีการสื่อสารเกณฑ์การประเมินระดับความรุนแรงของแต่ละปัจจัยเสี่ยงต่อผู้รับผิดชอบ (Risk Owner) อย่างชัดเจน',
+     inputs:[{dept:'HCM',docLabel:'แผนการสื่อสารและช่องทาง HR'}],
+     outputs:[{dept:'KM',docLabel:'คู่มือขั้นตอนวิกฤต (Critical Steps)'}]},
+    {sub:'5.2 การติดตามและรายงานผล',
+     gap:'การรายงานผลไม่เชื่อมโยงระบบดิจิทัลอัตโนมัติ',
+     act:'พัฒนาระบบ Digital RM ให้ดึงข้อมูลรายงานผลได้อัตโนมัติ',
+     best:'พัฒนาระบบ GRC และเริ่มใช้งาน (Go-live) เพื่อสนับสนุนการรวบรวมข้อมูล การรายงาน และวิเคราะห์ระดับความรุนแรง',
+     inputs:[{dept:'DT',docLabel:'แผนพัฒนาระบบ GRC และ Dashboard'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลรายไตรมาสแบบ Automated Digital RM'},{dept:'DT',docLabel:'ความต้องการระบบ Digital RM'}]},
+    {sub:'5.3 ข้อมูลและเทคโนโลยี (EWS)',
+     gap:'ระบบเตือนภัยล่วงหน้า (EWS) อยู่ในขั้นจัดทำแผน',
+     act:'เร่งพัฒนาระบบ EWS ให้ดึงข้อมูลอัตโนมัติแจ้งเตือน Trigger Point',
+     best:'เริ่มใช้งานระบบ GRC และมีระบบเตือนภัยล่วงหน้า (EWS) ที่เชื่อมโยงกับเป้าหมายองค์กร',
+     inputs:[{dept:'DT',docLabel:'แผนแม่บทดิจิทัล, แผน DRP, ข้อมูลจากฐานข้อมูลองค์กร'}],
+     outputs:[{dept:'DT',docLabel:'ความต้องการของระบบ (Requirement) สำหรับ Automated EWS'}]},
+    {sub:'5.4 บริหารความต่อเนื่องทางธุรกิจ (BCM)',
+     gap:'ไม่ประเมินกลุ่ม Stakeholder ภายนอก ไม่เชื่อม DRP',
+     act:'ประเมิน Stakeholder ภายนอก และบูรณาการ BCM เข้ากับแผน DRP',
+     best:'กำหนดกระบวนการ BCM เชื่อมโยงกับเป้าหมายและทิศทางยุทธศาสตร์ คำนึงถึงความซับซ้อนของเทคโนโลยี (DRP)',
+     inputs:[{dept:'DT',docLabel:'แผน DRP และข้อมูลโครงสร้างพื้นฐาน IT'}],
+     outputs:[{dept:'DT',docLabel:'แผน BCM ที่บูรณาการ DRP และ Stakeholder ภายนอก'}]}
+  ]}
+]},
+SM:{criteria:[
+  {id:'sm-1',title:'1. ยุทธศาสตร์ด้านผู้มีส่วนได้ส่วนเสีย',score:'3.7000/5.00',items:[
+    {sub:'1.1 แผนยุทธศาสตร์ด้านผู้มีส่วนได้ส่วนเสีย',
+     gap:'ขาดการผลักดัน Value Creation · Governance ระดับองค์กร และบทบาทเชิงรุกของผู้บริหารระดับสูง',
+     act:'กำหนดให้ผู้บริหารระดับสูงมี Action Plan เชิงรุก ผลักดันให้ผลลัพธ์ SM สร้างมูลค่าเพิ่ม (Value Creation) แท้จริง',
+     best:'(กทพ.) วิเคราะห์ข้อมูลจากแผนแม่บทระยะยาวอื่น ๆ มาทำแผน SCM อย่างรอบด้าน',
+     inputs:[{dept:'SP',docLabel:'ทิศทางนโยบาย/เป้าหมายองค์กรจาก SP เพื่อทำแผน SM'}],
+     outputs:[{dept:'SP',docLabel:'Insight และความต้องการของ Stakeholders เพื่อประกอบการจัดทำ SWOT'}]},
+  ]},
+  {id:'sm-2',title:'2. วัตถุประสงค์ ขอบเขต และผู้มีส่วนได้ส่วนเสีย',score:'4.1000/5.00',items:[
+    {sub:'2.1 การกำหนดวัตถุประสงค์และขอบเขต',
+     gap:'ขาดการวิเคราะห์และพัฒนานวัตกรรมกระบวนการอย่างเป็นระบบ ขาด Process KPI และการจัดเก็บ KM ในระบบดิจิทัล',
+     act:'กำหนดตัวชี้วัดประสิทธิผลและค่าเป้าหมายของกระบวนการให้ชัดเจน แสดงว่าการปรับปรุงกระบวนการผลักดันเป้าหมายได้อย่างไร',
+     best:'(รฟม.) กำหนดวัตถุประสงค์ระดับองค์กรโดยบูรณาการเข้ากับระดับสายงาน/ฝ่ายอย่างเป็นระบบ',
+     inputs:[],
+     outputs:[{dept:'KM',docLabel:'ผล AAR และนวัตกรรมกระบวนการ SM เข้าสู่ระบบ KM ขององค์กร'}]},
+    {sub:'2.2 การระบุผู้มีส่วนได้ส่วนเสีย',
+     gap:'การจัดเก็บความรู้และนวัตกรรมยังไม่ครบถ้วน',
+     act:'นำผลจาก AAR ไปจัดทำเป็นนวัตกรรมกระบวนการ และจัดเก็บความรู้ลงในระบบดิจิทัลขององค์กรให้สมบูรณ์',
+     best:'(รฟม.) กำหนดวัตถุประสงค์ระดับองค์กรโดยบูรณาการเข้ากับระดับสายงาน/ฝ่ายอย่างเป็นระบบ',
+     inputs:[{dept:'DT',docLabel:'แพลตฟอร์ม/ระบบสารสนเทศ (Stakeholder Database) สำหรับ SM'}],
+     outputs:[{dept:'DT',docLabel:'Requirement ด้านการจัดเก็บและวิเคราะห์ข้อมูล Stakeholder 10 กลุ่ม'}]},
+    {sub:'2.3 การระบุประเด็นระหว่างผู้มีส่วนได้ส่วนเสีย',
+     gap:'การวิเคราะห์ตัวชี้วัดกระบวนการยังไม่สมบูรณ์',
+     act:'กำหนด Process KPI ในการคัดกรองประเด็นความต้องการ และติดตามผลสัมฤทธิ์อย่างเป็นระบบ',
+     best:'(รฟม.) กำหนดวัตถุประสงค์ระดับองค์กรโดยบูรณาการเข้ากับระดับสายงาน/ฝ่ายอย่างเป็นระบบ',
+     inputs:[],
+     outputs:[]},
+  ]},
+  {id:'sm-3',title:'3. กระบวนการสร้างความสัมพันธ์',score:'2.7000/5.00',items:[
+    {sub:'3.1.1 การจัดลำดับความสำคัญของผู้มีส่วนได้ส่วนเสียและประเด็น',
+     gap:'ขาดการจัดเก็บความรู้และนวัตกรรมกระบวนการลงระบบอย่างเป็นระบบ ขาดการขับเคลื่อนตัวชี้วัดกระบวนการ',
+     act:'นำผลจากการจัดลำดับความสำคัญไปปรับปรุงแผนปฏิบัติการ พร้อมกำหนดเป้าหมาย Process KPI เชิงลึก',
+     best:'(รฟม.) จัดลำดับความสำคัญโดยมีหลักเกณฑ์ที่เป็นมาตรฐาน สอดคล้องตามบริบทเฉพาะของฝ่าย',
+     inputs:[],
+     outputs:[]},
+    {sub:'3.1.2 การกำหนดระดับและรูปแบบ',
+     gap:'ขาดการวิเคราะห์ Methods ให้สอดคล้องกับจำนวนอัตรากำลังและขีดความสามารถของแต่ละฝ่าย',
+     act:'วิเคราะห์และออกแบบ Methods ให้สอดคล้องกับ Capacity ของแต่ละฝ่าย ทั้งคน งบ และ IT',
+     best:'(กทพ.) กำหนด Methods ครอบคลุมทุกประเด็น โดยวิเคราะห์ขีดความสามารถของบุคลากรประกอบ',
+     inputs:[{dept:'HCM',docLabel:'ข้อมูลอัตรากำลังและ Capacity ของบุคลากรในแต่ละฝ่าย'}],
+     outputs:[]},
+    {sub:'3.1.3 การจัดทำแผนปฏิบัติการ',
+     gap:'ขาดการกำหนดแนวทาง/มาตรฐานในการปรับเปลี่ยนแผนกรณีฉุกเฉิน (นโยบายด่วน)',
+     act:'จัดทำ Flowchart/SIPOC ที่ชัดเจน ว่าหากต้องปรับแผนฉุกเฉิน ใครอนุมัติ ภายในกี่วัน (Trigger Point)',
+     best:'(กทพ.) สื่อสารและถ่ายทอด KPI และเป้าหมายของหน่วยงานลงสู่ระดับบุคคล (Individual KPI)',
+     inputs:[{dept:'SP',docLabel:'ทิศทางยุทธศาสตร์และนโยบายเร่งด่วนจาก SP เพื่อปรับแผน SM'}],
+     outputs:[]},
+    {sub:'3.2.1 การยกระดับความสามารถในการสร้างความสัมพันธ์',
+     gap:'ขาดการระบุทรัพยากร (Resources & Capacity) ที่ชัดเจนและเป็นระบบในระดับฝ่าย',
+     act:'จัดทำแบบฟอร์มวิเคราะห์ทรัพยากร (งบ/คน/IT) สำหรับจัดทำแผนของทุกฝ่ายอย่างเป็นระบบ เชื่อมโยงทักษะ SM เข้ากับ Incentive',
+     best:'(รฟม.) ระบุทรัพยากรและความสามารถ ครอบคลุมทุกสายงานอย่างชัดเจนและเป็นระบบ',
+     inputs:[{dept:'HCM',docLabel:'ความต้องการอัตรากำลังและ Training Need (Skill Gap) สำหรับ SM'}],
+     outputs:[{dept:'HCM',docLabel:'แผนพัฒนาทักษะ Power Skill ด้านการบริหารความสัมพันธ์'}]},
+    {sub:'3.2.2 การระบุและเตรียมความพร้อมการจัดการความเสี่ยง',
+     gap:'แบบฟอร์ม Risk Profile ยังไม่แยก 2 มิติอย่างชัดเจนตามเกณฑ์',
+     act:'ปรับปรุง Risk Profile ให้แยก 2 มิติ 1) ผลกระทบต่อ Stakeholder 2) ผลกระทบต่อ กทท. และเชื่อมโยงเข้ากับระบบ GRC',
+     best:'(กทพ.) มีการระบุความเสี่ยง 2 มิติครบถ้วน (กระทบ Stakeholder / กระทบองค์กร)',
+     inputs:[{dept:'RM',docLabel:'กรอบประเมิน/ระดับความเสี่ยงที่ยอมรับได้ (Risk Appetite) จาก RM'}],
+     outputs:[{dept:'RM',docLabel:'Risk Profile งาน SM เพื่อบูรณาการเข้ากับระบบ GRC ขององค์กร'}]},
+    {sub:'3.3.1 การติดตามและประเมินผล',
+     gap:'ขาดการเทียบเคียงผลประเมินรายฝ่ายกับเป้าหมายยุทธศาสตร์ระดับองค์กร',
+     act:'วิเคราะห์ความเชื่อมโยงว่าผลของกิจกรรม SM (ฝ่าย) ส่งผลต่อภาพลักษณ์/เป้าหมายของ กทท. (องค์กร) อย่างไร',
+     best:'(รฟม.) กำหนด KPI/เป้าหมาย ความถี่ ผู้รับผิดชอบในการติดตามประเมินผลชัดเจน',
+     inputs:[],
+     outputs:[{dept:'SP',docLabel:'รายงานผลลัพธ์ SM ที่เชื่อมโยงกับเป้าหมายยุทธศาสตร์องค์กร'}]},
+    {sub:'3.3.2 การรายงานผล',
+     gap:'ขาดการกำหนดค่าเป้าหมายการสำรวจความพึงพอใจของทุกช่องทาง',
+     act:'เพิ่มการกำหนดค่าเป้าหมายเชิงปริมาณสำหรับการเผยแพร่ทาง Website และ Social Media และรักษามาตรฐาน',
+     best:'(รฟม.) รายงานผลลัพธ์ทั้ง Output/Outcome ครบถ้วน และเผยแพร่รายงานผ่านเว็บไซต์เป็นทางการ',
+     inputs:[{dept:'DT',docLabel:'แพลตฟอร์มเผยแพร่รายงาน SM ทาง Website/Social Media'}],
+     outputs:[]},
+    {sub:'3.3.3 การเรียนรู้และปรับปรุง',
+     gap:'การนำผลการเรียนรู้ไปต่อยอดเป็นนวัตกรรมกระบวนการยังไม่เห็นผลชัดเจน',
+     act:'ต่อยอดผล AAR ไปสร้าง Process Innovation ที่ช่วยลดเวลา/ลดต้นทุนให้ กทท. ได้จริง โดยมีตัวชี้วัด (Process KPI)',
+     best:'(รฟม.) มีกระบวนการเรียนรู้และทบทวนปรับปรุงครอบคลุมครบทุกเกณฑ์ย่อยที่สำคัญ',
+     inputs:[{dept:'KM',docLabel:'เครื่องมือ KM/IM และ Best Practice เพื่อสร้างกระบวนการรูปแบบใหม่'}],
+     outputs:[{dept:'KM',docLabel:'องค์ความรู้ (AAR) และนวัตกรรมกระบวนการ SM เข้าสู่ระบบ KM ขององค์กร'}]},
+  ]},
+]},
+CM:{criteria:[
+  {id:'cm-1',title:'1. ยุทธศาสตร์ด้านลูกค้าและตลาด',score:'3.5000/5.00',items:[
+    {sub:'1.1 ยุทธศาสตร์ด้านลูกค้าและตลาด',
+     gap:'แผนยุทธศาสตร์ CM ต้องบูรณาการกับแผนวิสาหกิจและแผนแม่บทอื่น ๆ อย่างชัดเจน ขาดการควบคุม กำกับ ติดตามให้เป็นไปตามเป้าหมาย',
+     act:'บูรณาการแผนให้สอดคล้องกับแผนวิสาหกิจและแผนแม่บทอื่นโดยมีแผนลูกค้าเป็นตัวตั้ง รายงานตัวชี้วัดเปรียบเทียบเป้าหมายพร้อมคาดการณ์ผลสิ้นปีเพื่อปรับกลยุทธ์ จัดทำ SIPOC การติดตามแผน CM',
+     best:'(กทพ.) มีการสื่อสารแผนและถ่ายทอดเป้าหมายระดับยุทธศาสตร์ลงสู่ระดับปฏิบัติการและระดับบุคคล พร้อมมีกลไกกำกับติดตามที่ชัดเจน',
+     inputs:[{dept:'SP',docLabel:'ทิศทายุทธศาสตร์องค์กร/เป้าหมายสำคัญ (VOC) เพื่อประกอบการจัดทำแผน CM'}],
+     outputs:[{dept:'SP',docLabel:'แผนยุทธศาสตร์ CM ที่บูรณาการกับ SP พร้อมตัวชี้วัดเชิงรุก (Forecasting)'}]},
+  ]},
+  {id:'cm-2',title:'2. การจำแนกลูกค้า',score:'3.5000/5.00',items:[
+    {sub:'2.1 การจำแนกลูกค้า',
+     gap:'ความเสี่ยงสำคัญ: การสื่อสารคลาดเคลื่อน (เปลี่ยนกลุ่มใหม่ vs กลุ่มย่อย Sub-segment) และยังขาด Customer Segment Profile ตามกลุ่มย่อยใหม่ที่ชัดเจน',
+     act:'แก้ไขเอกสารและการสื่อสารให้ชัดเจนว่าเป็นการ "แบ่งกลุ่มลูกค้าย่อย (Sub-segment)" ไม่ใช่กลุ่มใหม่ จัดทำ Customer Segment Profile ของแต่ละกลุ่มย่อยโดยละเอียด (พฤติกรรม ความต้องการ ช่องทาง) นำข้อมูล Sub-segment ไปทบทวนกระบวนการ VOC SLA CRM ให้สอดคล้อง',
+     best:'(กทพ.) มีการจัดทำข้อมูลกลุ่มลูกค้า (Customer Segment Profile) ระบุคุณลักษณะครบถ้วนทุกกลุ่ม และมีการประเมินประสิทธิผลของการจำแนกลูกค้า',
+     inputs:[{dept:'SP',docLabel:'ปัจจัยนำเข้า (SWOT/ยุทธศาสตร์) จาก SP เพื่อทบทวนการจัดกลุ่มลูกค้า CM'}],
+     outputs:[{dept:'SP',docLabel:'Customer Segment Profile (Special/Premium/Standard) เพื่อประกอบ SWOT/Input SP'}]},
+  ]},
+  {id:'cm-3',title:'3. การรับฟังลูกค้า',score:'3.7375/5.00',items:[
+    {sub:'3.1 การรับฟังลูกค้า',
+     gap:'การบูรณาการสารสนเทศ VOC และการกำกับติดตามการรับฟังลูกค้า ต้องปรับปรุงให้ครอบคลุมตาม "กลุ่มลูกค้าย่อย (Sub-segment)" ที่เพิ่งทบทวนใหม่',
+     act:'ทบทวนวิธีการและช่องทางการรับฟังลูกค้าให้สอดคล้องกับ "กลุ่มลูกค้าย่อยใหม่" นำระบบ AI ใน PAT VOC Center มาวิเคราะห์หา Unmet Need จัดทำสารสนเทศเสียงลูกค้ารายงานผู้บริหารทุกไตรมาส',
+     best:'(รฟม.) กำหนดช่องทางรับฟังครอบคลุมลูกค้าทุกกลุ่ม (รวมถึงอดีตลูกค้าและลูกค้าคู่แข่ง) และทำเป็นสารสนเทศความเสี่ยงรายงานผู้บริหาร',
+     inputs:[{dept:'DT',docLabel:'ระบบ PAT VOC Center + AI Analytics + CRM + ฐานข้อมูลลูกค้า สำหรับ CM'}],
+     outputs:[{dept:'DT',docLabel:'Requirement ฐานข้อมูลลูกค้า e-Complaint และ Customer Profile สำหรับ Big Data จาก CM'}]},
+    {sub:'3.2 การประเมินความพึงพอใจ ความไม่พึงพอใจ และความผูกพัน',
+     gap:'กระบวนการประเมินความพึงพอใจต้องทบทวนให้ครบถ้วนตาม "ลูกค้าแต่ละกลุ่มย่อย (Sub-segment)" ใหม่',
+     act:'ทบทวนกระบวนการสำรวจให้ครอบคลุมกลุ่มลูกค้าย่อย (Sub-segment) ทุกกลุ่ม นำผลสำรวจและเสียงของลูกค้า (VOC) ไปใช้ทบทวนแผนยุทธศาสตร์และปรับปรุงกระบวนการต่าง ๆ ให้ครบถ้วน ใช้ AAR ถอดบทเรียนสร้าง Best Practice ลงระบบ KM',
+     best:'(รฟม.) มีการประเมินประสิทธิผลของระเบียบวิธีวิจัย (ความเที่ยงตรงของแบบสำรวจ อัตราการตอบกลับ) และเก็บความรู้ลงระบบดิจิทัล',
+     inputs:[],
+     outputs:[{dept:'KM',docLabel:'ข้อมูล VOC ปัญหา Pain Point ข้อร้องเรียน และ Customer Journey เพื่อสร้างองค์ความรู้'}]},
+  ]},
+  {id:'cm-4',title:'4. การพัฒนาผลิตภัณฑ์และบริการ',score:'3.2500/5.00',items:[
+    {sub:'4.1 การพัฒนาและนวัตกรรมผลิตภัณฑ์และบริการ',
+     gap:'ต้องกำหนดค่าเป้าหมายและผลลัพธ์ใน 3 มิติ (ประสิทธิภาพ คุณค่าต่อลูกค้า ผลทางธุรกิจ) ให้ครบถ้วนใน "ทุกแผนงาน/โครงการ"',
+     act:'กำหนดเป้าหมายและชี้วัดผลลัพธ์ 3 มิติให้ครบถ้วนในทุกแผนงาน เปิดโอกาสให้ลูกค้ามีส่วนร่วม (Co-creation) ในขั้นตอนทวนสอบและทดสอบ (Sandbox) ก่อนพัฒนาจริง ติดตามโครงการ Free Zone และ e-Gate ให้ระบุผลลัพธ์ 3 มิติชัดเจน',
+     best:'(กทพ.) ประยุกต์ใช้การบริหารความเสี่ยงและนำองค์ความรู้ (KM) มาใช้ร่วมในการวางแผนพัฒนาผลิตภัณฑ์อย่างเป็นระบบ',
+     inputs:[{dept:'IM',docLabel:'นวัตกรรมบริการที่ตอบ Unmet Needs จาก IM เพื่อพัฒนาผลิตภัณฑ์/บริการใหม่'}],
+     outputs:[{dept:'IM',docLabel:'Unmet Need + Customer Journey → โจทย์นวัตกรรม (Co-creation) สำหรับ IM'}]},
+  ]},
+  {id:'cm-5',title:'5. การจัดการความสัมพันธ์กับลูกค้า',score:'3.2500/5.00',items:[
+    {sub:'5.1 การสนับสนุนลูกค้า',
+     gap:'ผลลัพธ์การสนับสนุนลูกค้ายังไม่เป็นไปตามมาตรฐานในทุกพื้นที่/ทุกช่องทาง ขาดการวิเคราะห์ Customer Journey ตามกลุ่มลูกค้าย่อยใหม่',
+     act:'ติดตามการปฏิบัติงานให้เป็นไปตาม SLA และรายงานผล 100% วิเคราะห์ Customer Journey ใหม่ทั้งหมดให้ตอบโจทย์ "กลุ่มลูกค้าย่อย (Sub-segment)" กำหนด AMO (Account Management Officer) สำหรับลูกค้ากลุ่ม Premium',
+     best:'(กทพ.) กำหนดจุดสัมผัสบริการ (Touch points) ที่สำคัญตลอดวงจรชีวิตของลูกค้า มีระบบประเมินประสิทธิผลของ Customer Journey อย่างเป็นระบบ',
+     inputs:[{dept:'HCM',docLabel:'Training Need (Pain Points) และมาตรฐาน Service Excellence สำหรับพนักงาน CM'}],
+     outputs:[{dept:'HCM',docLabel:'Customer Journey Map + ความต้องการพัฒนาทักษะ (Upskill/Reskill) ด้านบริการลูกค้า'}]},
+    {sub:'5.2 การจัดการข้อร้องเรียน (CRM)',
+     gap:'ระบบ CRM ต้องบูรณาการข้อมูลจากทุกช่องทางและสนับสนุนการให้บริการแบบ Personalization เพื่อตอบโจทย์แต่ละ Sub-segment',
+     act:'จัดทำ Dashboard Customer Profile CRM แยกตามกลุ่มลูกค้าย่อย (Special/Premium/Standard) ใช้ AMO กำกับลูกค้า Premium พร้อม Deep Talk นำ CRM บูรณาการ e-Complaint ให้สามารถ Personalization ได้',
+     best:'(กทพ.) มีระบบ CRM บูรณาการข้อมูลลูกค้าครบวงจร แสดง Customer Life Cycle และกลไก Feedback Loop ที่ชัดเจน',
+     inputs:[{dept:'DT',docLabel:'ระบบ CRM + ฐานข้อมูลลูกค้าสำหรับจัดทำ Customer Profile และรองรับ Personalization'}],
+     outputs:[]},
+    {sub:'5.3 การจัดการข้อร้องเรียน (e-Complaint)',
+     gap:'ระบบ e-Complaint ต้องพัฒนาให้เชื่อมโยงกับการติดตาม SLA และเป็น Early Warning Signal สำหรับ RM',
+     act:'พัฒนา e-Complaint ให้เชื่อมโยงกับการติดตาม SLA เป็น Early Warning Indicator ส่งสัญญาณ Risk Owner รายงาน Closed-loop ครบถ้วนรวดเร็ว Real-time',
+     best:'(กทพ.) ระบบข้อร้องเรียนเชื่อมโยงกับ Risk Indicator อัตโนมัติ มี SLA ชัดเจนและวัดผลได้จริง',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'รายงาน e-Complaint เป็น Risk Indicator เพื่อเชื่อมโยงกับระบบ Early Warning System (EWS)'}]},
+  ]},
+  {id:'cm-6',title:'6. ผลลัพธ์ด้านลูกค้า',score:'3.2500/5.00',items:[
+    {sub:'6.1 ผลลัพธ์ด้านลูกค้า (Ranking & KPIs)',
+     gap:'ผลลัพธ์ต้องแสดงให้ครบใน 3 มิติ (ประสิทธิภาพ คุณค่าลูกค้า ผลทางธุรกิจ) พร้อมคาดการณ์สิ้นปีเพื่อปรับแผน',
+     act:'รายงาน NPS Score พร้อม Baseline และ Transshipment Ranking ทุกไตรมาส เชื่อมโยงผลลัพธ์ CM กับเป้าหมายยุทธศาสตร์องค์กร (SP) ให้ผู้บริหารรับทราบ',
+     best:'(กทพ.) รายงานผลลัพธ์ครบ Output/Outcome แสดงทิศทางการเปลี่ยนแปลงที่วัดได้จริงและนำไปสู่การปรับปรุงกระบวนการ',
+     inputs:[{dept:'CG',docLabel:'เป้าหมายตัวชี้วัดระดับองค์กร (NPS/SLA) จาก CG เพื่อกำกับผลลัพธ์ CM'}],
+     outputs:[{dept:'SP',docLabel:'รายงานผลลัพธ์ CM (NPS Ranking ข้อร้องเรียน e-Complaint) เชื่อมโยงกับเป้าหมาย SP'}]},
+  ]},
+]},
+DT:{criteria:[
+  {id:'dt-1',title:'1. Digital Governance & Roadmap',score:'2.8333/5.00',items:[
+    {sub:'1.1 Digital Governance',
+     gap:'ตัวชี้วัดประสิทธิผลส่วนใหญ่ยังเป็น Output · ขาดการประเมินการรับรู้ของผู้มีส่วนได้ส่วนเสีย',
+     act:'จัดทำแผนงานเข้าสู่มาตรฐาน ISO 38500 และทบทวนตัวชี้วัด Leading/Lagging ให้ครบถ้วน นำระบบ GRC System บูรณาการเพื่อติดตามและรายงานผลการกำกับดูแลให้เป็นรูปธรรม',
+     best:'(รฟม.) มีกระบวนการที่เป็นมาตรฐาน ทำซ้ำได้ และวิเคราะห์ผู้มีส่วนได้ส่วนเสียชัดเจน',
+     inputs:[{dept:'CG',docLabel:'นโยบาย GRC + ข้อสั่งการจากบอร์ด เพื่อกำหนดกรอบกำกับดูแลดิจิทัล'}],
+     outputs:[{dept:'CG',docLabel:'ฐานข้อมูลการตรวจสอบและผลการปฏิบัติงานตามมาตรฐานดิจิทัล (ISO38500)'}]},
+    {sub:'1.2 Digital Roadmap',
+     gap:'แผนยังไม่สะท้อนการปรับเปลี่ยน People, Process, Tech ในภาพรวมอย่างลึกซึ้ง',
+     act:'กำหนดเป้าหมายที่สะท้อนการเปลี่ยนแปลง People, Process, Tech อย่างเป็นรูปธรรม นำระบบสารสนเทศสนับสนุนการถ่ายทอดแผนและพัฒนาระบบติดตามผลสัมฤทธิ์',
+     best:'(รฟม.) ถ่ายทอดกระบวนการและแผนให้ Stakeholder รับทราบครบถ้วนเป็นรูปธรรม',
+     inputs:[{dept:'SP',docLabel:'ทิศทางและเป้าหมายยุทธศาสตร์องค์กร + แผนวิสาหกิจ เพื่อเป็นกรอบแผนดิจิทัล'}],
+     outputs:[{dept:'SP',docLabel:'โครงการดิจิทัลและระบบ IT Dashboard สำหรับติดตามผลงานองค์กร'}]},
+  ]},
+  {id:'dt-2',title:'2. Digital Transformation',score:'2.0760/5.00',items:[
+    {sub:'2.1 Enterprise Architecture (EA)',
+     gap:'ขาดการวิเคราะห์ภาพปัจจุบัน (As-Is) สู่ภาพอนาคต (To-Be) ครอบคลุมทั้ง Business, Data, App, Infra, Security',
+     act:'วิเคราะห์ EA (As-Is/To-Be) ครบทุกมิติแบบ End-to-End ประเมินความคุ้มค่าของการนำ Technology มาใช้ และแสดงให้เห็นภาพการเปลี่ยนผ่าน (Transition) อย่างเป็นรูปธรรม',
+     best:'(รฟม.) กระบวนการวิเคราะห์และจัดทำ EA มีแนวทางเป็นระบบ ทำซ้ำได้ และเป็นมาตรฐาน',
+     inputs:[{dept:'SP',docLabel:'เป้าหมายยุทธศาสตร์และโครงสร้างธุรกิจองค์กร เพื่อวางภาพ To-Be EA'},{dept:'HCM',docLabel:'โครงสร้างกำลังคน + แผนพัฒนาบุคลากร (People Transformation) จาก HCM'}],
+     outputs:[]},
+    {sub:'2.2 Project Management',
+     gap:'ตัววัดส่วนใหญ่ยังอิง Output ไม่สะท้อน Outcome ของกระบวนการบริหารโครงการทั้งหมด',
+     act:'วิเคราะห์และประเมินประสิทธิผลการบริหารโครงการ (ทั้ง Output/Outcome) นำผลลัพธ์ที่สำคัญมาทบทวนปรับปรุงกระบวนการ และนำปัญหาจากโครงการไปต่อยอดในระบบ KM',
+     best:'(รฟม.) มีการวิเคราะห์และดึงผู้มีส่วนได้ส่วนเสียร่วมในกระบวนการบริหารโครงการชัดเจน',
+     inputs:[],
+     outputs:[{dept:'KM',docLabel:'บทเรียน (Lesson Learned) และผลการบริหารโครงการ เพื่อนำเข้าระบบ KM'}]},
+    {sub:'2.3 Quality Management (QMS)',
+     gap:'ขาดแนวทางการปฏิบัติที่ชัดเจนในการจัดการคุณภาพ · ยังไม่มี QMS Good Practices',
+     act:'จัดทำ QMS Good Practices ที่ชัดเจน นำตัวอย่างที่ดีมาใช้ในการจัดการด้านคุณภาพ และสร้างมาตรฐานที่นำไปปฏิบัติและทำซ้ำได้ทั่วองค์กร',
+     best:'(รฟม.) แสดงการวิเคราะห์และประเมินการรับรู้ของ Stakeholder ด้าน QMS อย่างเป็นระบบ',
+     inputs:[],
+     outputs:[{dept:'KM',docLabel:'QMS Good Practices เป็นองค์ความรู้กลาง เพื่อเผยแพร่ผ่านระบบ KM Portal'}]},
+  ]},
+  {id:'dt-3',title:'3. Government Integration',score:'2.6667/5.00',items:[
+    {sub:'3.1 Enterprise Collaboration / Gov. Integration',
+     gap:'ตัววัดประสิทธิผลยังเป็นแค่ผลผลิต (Output) ควรยกระดับการแลกเปลี่ยนให้เป็นแผนปฏิบัติการ',
+     act:'ทบทวนตัวชี้วัด Leading/Lagging และเพิ่ม Use Case การบูรณาการข้อมูลกับหน่วยงานภายนอก สร้างกลไกตรวจสอบความถูกต้องของข้อมูลข้ามหน่วยงาน',
+     best:'(รฟม.) การออกแบบความเชื่อมโยงข้อมูลมีการวิเคราะห์ Stakeholder ครบถ้วนเป็นมาตรฐาน',
+     inputs:[],
+     outputs:[{dept:'CG',docLabel:'ระบบและผลการแลกเปลี่ยนข้อมูลกับหน่วยงานภายนอก เพื่อรายงานผลการกำกับดูแล'}]},
+  ]},
+  {id:'dt-4',title:'4. Data Governance & Big Data',score:'1.8000/5.00',items:[
+    {sub:'4.1 Data Governance & Big Data Management',
+     gap:'ขาดโครงสร้างกำกับดูแลข้อมูล (Data Governance) ที่มีหน่วยงานกลางควบคุมชัดเจน',
+     act:'ทบทวนโครงสร้างกำกับดูแลข้อมูลให้เป็นมาตรฐานเดียว ประยุกต์ใช้ AI และ Big Data พยากรณ์ความต้องการเชิงรุก วัดผล Outcome คุณภาพข้อมูล (Data Quality Assessment) ครบวงจร',
+     best:'(รฟม.) กระบวนการกำกับดูแลข้อมูลเป็นมาตรฐาน มีการแสดงการนำไปปฏิบัติที่ชัดเจนเป็นรูปธรรม',
+     inputs:[{dept:'SM',docLabel:'Requirement ด้านการจัดเก็บและวิเคราะห์ข้อมูล Stakeholder 10 กลุ่ม จาก SM'},{dept:'CM',docLabel:'Requirement ฐานข้อมูลลูกค้า e-Complaint และ Customer Profile สำหรับ Big Data จาก CM'}],
+     outputs:[{dept:'SM',docLabel:'แพลตฟอร์ม Stakeholder Database + AI Analytics สำหรับ SM'},{dept:'CM',docLabel:'ระบบ PAT VOC Center + AI Analytics + CRM + ฐานข้อมูลลูกค้า สำหรับ CM'}]},
+  ]},
+  {id:'dt-5',title:'5. Information Security Management',score:'3.4000/5.00',items:[
+    {sub:'5.1 ISMS (ISO 27001)',
+     gap:'ขาดการนำผลลัพธ์เข้าสู่กระบวนการทบทวนเพื่อทำนวัตกรรม และบางตัวยังเป็น Output',
+     act:'ยกระดับการบริหารความเสี่ยงทางไซเบอร์ที่ซับซ้อนขึ้น ถอดบทเรียนเหตุการณ์ด้านความปลอดภัยนำเข้าสู่ระบบ KM อย่างเป็นระบบ',
+     best:'(รฟม.) มีการถ่ายทอดกระบวนการเรื่องความมั่นคงปลอดภัยแก่ผู้มีส่วนได้ส่วนเสียชัดเจน',
+     inputs:[{dept:'RM',docLabel:'Risk Profile ด้าน IT Risk + ระดับความเสี่ยงที่ยอมรับได้ (Risk Appetite) จาก RM'}],
+     outputs:[{dept:'KM',docLabel:'Lesson Learned ด้านความมั่นคงปลอดภัยสารสนเทศ เพื่อนำเข้าระบบ KM'}]},
+    {sub:'5.2 IS Risk Management',
+     gap:'ตัววัดประสิทธิผลส่วนใหญ่ยังเป็นแค่ Output · ยังไม่แสดงการบูรณาการ IT Risk เป็นส่วนหนึ่งของความเสี่ยงองค์กร',
+     act:'ทบทวนตัวชี้วัด Leading/Lagging ด้านความเสี่ยง แสดงการบูรณาการ IT Risk ให้เป็นส่วนหนึ่งของ Enterprise Risk เพื่อการตอบสนองเชิงรุก',
+     best:'(รฟม.) จัดทำแนวปฏิบัติการประเมินความเสี่ยงด้าน IT ที่เป็นมาตรฐานเดียวกันทั่วองค์กร',
+     inputs:[{dept:'RM',docLabel:'กรอบบริหารความเสี่ยงองค์กร (GRC Framework) + BIA จาก RM&IC'}],
+     outputs:[{dept:'RM',docLabel:'IT Risk Profile ที่บูรณาการเข้าระบบบริหารความเสี่ยงองค์กร (Enterprise Risk)'}]},
+    {sub:'5.3 ISMS Audit',
+     gap:'ตัววัดยังไม่ครอบคลุม Outcome ของการตรวจสอบอย่างแท้จริง',
+     act:'กำหนดการวัด ติดตาม วิเคราะห์ตัวชี้วัด Outcome ของกระบวนการตรวจสอบ นำผลข้อบกพร่องมาวิเคราะห์ Root Cause และสร้างมาตรการป้องกันเชิงรุก (Preventive)',
+     best:'(รฟม.) วิเคราะห์กลุ่มผู้มีส่วนได้ส่วนเสียในงาน ISMS Audit และถ่ายทอดกระบวนการอย่างชัดเจน',
+     inputs:[{dept:'IA',docLabel:'แผนตรวจสอบและข้อเสนอแนะจากการประเมิน (IA) เพื่อกำหนดขอบเขต ISMS Audit'}],
+     outputs:[{dept:'IA',docLabel:'รายงานการปิดช่องโหว่ (Gap Closure) และผลการรักษาความมั่นคงปลอดภัยระบบ'}]},
+  ]},
+  {id:'dt-6',title:'6. BCM & Availability Management',score:'2.7917/5.00',items:[
+    {sub:'6.1 IT Asset Management',
+     gap:'ขาดการจำแนกการสื่อสารตามกลุ่มที่สำคัญ และผลลัพธ์ Outcome ยังไม่สมบูรณ์',
+     act:'วิเคราะห์และประเมินประสิทธิผลของการจัดการ Asset ให้สะท้อนกลับมาปรับปรุงกระบวนการลงทุน บริหารวงจรชีวิต (Life Cycle) และจัดการ End of Life เชิงรุก',
+     best:'(รฟม.) การแสดงให้เห็นแนวทางการนำกระบวนการทรัพย์สินไปปฏิบัติอย่างชัดเจนเป็นรูปธรรม',
+     inputs:[{dept:'RM',docLabel:'ผลประเมินความเสี่ยง (RA) และ BIA เพื่อกำหนดความสำคัญของ IT Asset ตามความเสี่ยง'}],
+     outputs:[]},
+    {sub:'6.2 Configuration Management',
+     gap:'ตัววัดประสิทธิผลส่วนใหญ่ยังอิงเชิง Output',
+     act:'ทบทวนตัวชี้วัด Leading/Lagging ในการควบคุม Minimum Baseline Standard ทำระบบแจ้งเตือนอัตโนมัติ (Automation) เมื่อมีการเปลี่ยน Config นอกเหนือจากแผน',
+     best:'(รฟม.) มีกระบวนการที่เป็นระบบ ทำซ้ำได้ และถ่ายทอดกระบวนการแก่ผู้มีส่วนได้ส่วนเสีย',
+     inputs:[{dept:'RM',docLabel:'Risk Profile ระบบ IT + ผลประเมิน BIA เพื่อกำหนด Baseline ตามความเสี่ยง'}],
+     outputs:[]},
+    {sub:'6.3 IT Incident & Service Requests',
+     gap:'ตัววัดความสำเร็จส่วนใหญ่ยังเป็นยอดปิดใบงาน (Output) · ยังไม่แสดงความเชื่อมโยง SLA กับ BIA',
+     act:'นำระบบ ITSM มาวิเคราะห์หาสาเหตุรากฐาน (Root Cause) เพื่อลด Incident ในระยะยาว แสดงที่มาและ Input ในการกำหนด SLA โดยผูกกับผลประเมินความเสี่ยงและ BIA',
+     best:'(รฟม.) การวิเคราะห์กลุ่มผู้ใช้บริการและทำระบบให้บริการที่เป็นมาตรฐาน',
+     inputs:[{dept:'RM',docLabel:'ผลประเมินความเสี่ยง (BIA/RA) เพื่อกำหนดเกณฑ์ SLA ระดับความสำคัญของระบบ'}],
+     outputs:[{dept:'CM',docLabel:'รายงาน IT Incident ที่เกี่ยวข้องกับระบบให้บริการลูกค้า (PAT VOC Center, e-Complaint)'}]},
+    {sub:'6.4 Business Continuity Management (BCM)',
+     gap:'ขาดการสะท้อนผลลัพธ์ Outcome ตอนเกิดเหตุการณ์วิกฤต · RTO/RPO ยังไม่สอดคล้องกับ BCM องค์กร',
+     act:'ปรับเป้า RTO/RPO ให้สอดคล้องกับ BCM องค์กร นำผลจากการซ้อมแผน BCP เข้าสู่การทบทวนแผนปฏิบัติการดิจิทัลระยะยาว แสดงรูปแบบสื่อสารภายนอกเมื่อเกิดเหตุการณ์วิกฤต',
+     best:'(รฟม.) การกำหนดและสื่อสารแผนรองรับกรณีฉุกเฉินที่เป็นมาตรฐาน ทำซ้ำได้ และนำไปปฏิบัติจริง',
+     inputs:[{dept:'RM',docLabel:'กรอบแผน BCM องค์กร + เกณฑ์ BIA + แผน DRP ระดับองค์กร จาก RM&IC'}],
+     outputs:[{dept:'RM',docLabel:'แผนรองรับฉุกเฉินด้าน IT (IT BCP) + ระบบแจ้งเตือน (EWS) ที่เชื่อมโยงกับ BCM องค์กร'}]},
+  ]},
+  {id:'dt-7',title:'7. Resource Optimization Management',score:'2.8750/5.00',items:[
+    {sub:'7.1 Resource Optimization Implementation',
+     gap:'ขาดการกำหนดตัวชี้วัดทรัพยากร (เงิน, คน, เทคโนโลยี, เวลา) ให้ครบถ้วน',
+     act:'กำหนดเป้าหมายและประเมินผลลัพธ์การใช้ทรัพยากรแบบบูรณาการในทุกโครงการ จัดทำรายงานวิเคราะห์ความคุ้มค่า (Cost-Benefit/ROI) ของการจัดสรรทรัพยากรโครงการ IT',
+     best:'(รฟม.) มีกระบวนการวิเคราะห์ Stakeholder ของการใช้ทรัพยากร และจัดทำแนวปฏิบัติเป็นระบบทำซ้ำได้',
+     inputs:[{dept:'SP',docLabel:'แผนจัดสรรงบประมาณและทรัพยากรองค์กร + เป้าหมายเชิงยุทธศาสตร์ จาก SP'}],
+     outputs:[{dept:'CG',docLabel:'รายงานการใช้ทรัพยากรและ ROI ของโครงการดิจิทัล เพื่อรายงานคณะกรรมการ'}]},
+    {sub:'7.2 Green IT Management',
+     gap:'ตัววัดประสิทธิผลยังเป็นเพียงเปอร์เซ็นต์ผู้เข้าร่วม · ต้องกำหนดตัวชี้วัด Outcome ด้าน Green IT',
+     act:'วัดผลลัพธ์เชิง Outcome จาก Green IT (เช่น ปริมาณคาร์บอน/พลังงานที่ลดลงเป็นตัวเลข) นำผลรณรงค์ Green IT ไปบูรณาการกับแผนความยั่งยืน (ESG) ขององค์กร',
+     best:'(รฟม.) มีกระบวนการรณรงค์/ประเมินรับรู้ Green IT เป็นระบบและเป็นมาตรฐาน (Standardized Practice)',
+     inputs:[],
+     outputs:[{dept:'CG',docLabel:'รายงานผลลัพธ์ Green IT (ลดพลังงาน/คาร์บอน) เพื่อบูรณาการกับรายงาน ESG/ความยั่งยืน'}]},
+  ]},
+]},
+HCM:{criteria:[
+  {id:'hcm-1',title:'1. ยุทธศาสตร์ด้าน HCM และการขับเคลื่อนของผู้บริหาร',score:'3.1500/5.00',items:[
+    {sub:'1.1 คุณภาพของยุทธศาสตร์หรือกลยุทธ์ด้าน HCM',
+     gap:'การบูรณาการยังเป็นเพียงการแสดงความเชื่อมโยงบนกระดาษ ขาด Joint Action Plan จริง · คู่เทียบยังเป็นรัฐวิสาหกิจในประเทศ ไม่สะท้อนวิสัยทัศน์ท่าเรือระดับโลก',
+     act:'นำมาตรฐาน ISO 30414:2018 มาใช้ เทียบเคียงตัวชี้วัดกับ World-Class Port · ทำ Joint Action Plan ข้าม Enablers เพื่อพิสูจน์การทำงานร่วมกันจริง',
+     best:'(กทพ.) จัดทำแผนยุทธศาสตร์ HR ที่แปลงเป็นแผนปฏิบัติการ และบูรณาการเชื่อมโยงกับแผนยุทธศาสตร์องค์กรอย่างเป็นรูปธรรม',
+     inputs:[{dept:'SP',docLabel:'เป้าหมายธุรกิจ/Strategic Positioning + ทิศทางยุทธศาสตร์องค์กร'}],
+     outputs:[{dept:'SP',docLabel:'Joint Action Plan HCM-SP + กรอบอัตรากำลังตามตำแหน่งสำคัญเชิงยุทธศาสตร์'}]},
+    {sub:'1.2 การขับเคลื่อนของผู้บริหารระดับสูง',
+     gap:'กนบ. ขาดเวทีประชุม Top Team (N, N-1 ทุกสายงาน) แบบรายไตรมาสเพื่อแก้ปัญหาข้าม Enablers',
+     act:'จัดเวทีประชุม Top Team ทุกไตรมาส นำวาระปัญหาข้าม Enablers เข้าหารือ · จัดทำปฏิทินกิจกรรม HCM ผู้บริหารตลอดปี',
+     best:'(กทพ.) คณะกรรมการยุทธศาสตร์ HR เข้มแข็ง ริเริ่มกำหนดยุทธศาสตร์และติดตามผลอย่างน้อยรายไตรมาส',
+     inputs:[{dept:'CG',docLabel:'วาระและข้อสั่งการบอร์ด/ผู้บริหารสูงสุดด้าน HCM สำหรับการประชุม Top Team'}],
+     outputs:[{dept:'CG',docLabel:'รายงานการประชุม Top Team (MoM) ที่แสดงการแก้ปัญหาข้าม Enablers รายไตรมาส'}]},
+  ]},
+  {id:'hcm-2',title:'2. การบริหารทุนมนุษย์',score:'3.1100/5.00',items:[
+    {sub:'2.1 อัตรากำลัง',
+     gap:'ขาดการวิเคราะห์ Time & Motion Study กลุ่ม Front-line · ขาดการบริหาร Supply-side เชิงลึก',
+     act:'ทำ Time & Motion Study หน่วยงาน Front-line · วิเคราะห์ Supply-side กำหนดแนวทาง Multi-skill/Reskill ทดแทนการจ้างใหม่',
+     best:'(รฟม.) วิเคราะห์อุปสงค์อุปทาน (Supply-side) อย่างเป็นระบบ มีแผนอัตรากำลังระยะสั้น-ยาวพร้อม Demand & Supply Analysis',
+     inputs:[{dept:'SP',docLabel:'โจทย์ Redesign งาน + อัตรากำลังใหม่ที่ต้องการจาก Work System Design'}],
+     outputs:[{dept:'RM',docLabel:'ผลการวิเคราะห์ Time & Motion Study และแผนบริหารความเสี่ยงด้านกำลังคน (BCP)'}]},
+    {sub:'2.2 ระบบประเมินผลการปฏิบัติงาน',
+     gap:'ขาดกลไกสอบทานคุณภาพ KPI ระดับสายงาน/ปฏิบัติการ · ยังไม่มีการประเมินแบบ 360 องศา',
+     act:'นำการประเมิน 360 องศามาใช้กับผู้บริหาร · สร้างวัฒนธรรม Feedback Culture ระหว่างปี',
+     best:'(รฟม.) ผูกผลการประเมิน KPI กับการปรับเลื่อนตำแหน่ง ขึ้นเงินเดือน และ Rewards อย่างเป็นรูปธรรม',
+     inputs:[{dept:'SP',docLabel:'KPI เป้าหมายองค์กรที่ Cascade ลงสู่บุคคลแล้ว + ผล Bottom-up KPI Check'}],
+     outputs:[{dept:'SP',docLabel:'ผลประเมินพนักงาน + KPI Scorecard ระดับสายงาน เพื่อติดตามผลแผนองค์กร'}]},
+    {sub:'2.3 ผลตอบแทนและสิทธิประโยชน์',
+     gap:'การแบ่ง Segmentation บุคลากรยังซับซ้อน ไม่ตอบโจทย์ความต้องการเชิงลึก',
+     act:'แบ่ง Segmentation 2-3 กลุ่มตาม Diversity/Gen · เปลี่ยนจาก Equality เป็น Equity ในการออกแบบสวัสดิการ',
+     best:'(รฟม.) เปรียบเทียบโครงสร้างผลตอบแทนกับตลาด และนำ "ความต้องการ" พนักงานแต่ละกลุ่มมาออกแบบสวัสดิการจริง',
+     inputs:[{dept:'SM',docLabel:'ข้อมูล Training Need (ทักษะบริการ) และความต้องการบุคลากร จาก SM'}],
+     outputs:[]},
+  ]},
+  {id:'hcm-3',title:'3. การพัฒนาทุนมนุษย์',score:'2.8700/5.00',items:[
+    {sub:'3.1 การเรียนรู้และการพัฒนา',
+     gap:'Learning Ecosystem ยังไม่เชื่อมโยงภายนอก · ยากประเมิน ROI กลุ่ม Non-classroom',
+     act:'สร้าง Collaborative Learning ร่วมกับลูกค้า/ผู้มีส่วนได้ส่วนเสียภายนอก · ปรับวิธีประเมิน Non-classroom ให้วัด ROI ได้',
+     best:'(รฟม.) มี Development Roadmap ระยะยาว พัฒนาระบบนิเวศการเรียนรู้ร่วมกับ e-learning เต็มรูปแบบ',
+     inputs:[{dept:'KM',docLabel:'Best Practice + แนวทางเรียนรู้ + Knowledge Platform จาก KM'},{dept:'DT',docLabel:'เครื่องมือดิจิทัล FutureSkill + HRIS + ระบบสนับสนุน Learning'}],
+     outputs:[{dept:'KM',docLabel:'ผลสัมฤทธิ์การอบรม IDP + Tacit Knowledge จาก Talent เข้าสู่คลัง KM'}]},
+    {sub:'3.2 การสืบทอดตำแหน่ง/การบริหารจัดการคนเก่ง',
+     gap:'Succession Plan กระจุกอยู่ที่ผู้บริหาร · ขาดการดูแล Young Talent (อายุ ≤ 35 ปี)',
+     act:'ขยาย Succession Plan สู่ตำแหน่งยุทธศาสตร์ระดับปฏิบัติการ (เช่น คนขับเครื่องมือ) · ทำแผนเฉพาะกลุ่ม Young Talent',
+     best:'(รฟม.) มีกลไกติดตาม Talent/Successor สม่ำเสมอ ใช้ข้อมูลตลาดแรงงานภายนอกวิเคราะห์ร่วมกับข้อมูลภายใน',
+     inputs:[{dept:'KM',docLabel:'ฐานความรู้ IDP ทักษะนวัตกรรม + วิทยากร Talent จาก KM'}],
+     outputs:[{dept:'KM',docLabel:'กลุ่มพนักงานศักยภาพสูง (Talent/Successor) + Tacit Knowledge เข้าสู่ KM'},{dept:'IM',docLabel:'กลุ่ม Young Talent สำหรับขับเคลื่อนนวัตกรรม + ผล Idea Box'}]},
+    {sub:'3.3 การจัดการสายอาชีพ',
+     gap:'กลไก CMC ยังไม่เริ่มดำเนินการ · ขาดการประเมินประสิทธิผลกลไกสายอาชีพ',
+     act:'ประเมินประสิทธิผล CMC · ติดตามผลและประเมิน Job Rotation ให้เกิดผลต่อ Career Path จริง',
+     best:'(รฟม.) มีหลักเกณฑ์เคลื่อนย้าย/หมุนเวียนชัดเจน มีกลไก Committee ช่วยคำปรึกษาเส้นทางอาชีพอย่างมีประสิทธิภาพ',
+     inputs:[{dept:'SP',docLabel:'ทิศทางยุทธศาสตร์เพื่อกำหนด Career Path ที่สอดคล้องกับธุรกิจ'}],
+     outputs:[]},
+  ]},
+  {id:'hcm-4',title:'4. กลไกที่สนับสนุนการบริหารและพัฒนาทุนมนุษย์',score:'3.1700/5.00',items:[
+    {sub:'4.1 การสร้างประสบการณ์ที่ดี ค่านิยม และการเปลี่ยนแปลง',
+     gap:'การสร้าง EX ตาม Life Journey ยังไม่เป็นระบบ · พฤติกรรมพึงประสงค์ยังไม่สะท้อน DEI&B ชัดเจน',
+     act:'วิเคราะห์ Persona เชิงลึกตาม Life Journey ตั้งแต่ก่อนเข้างานจนหลังเกษียณ · ผูกนโยบาย Hybrid Work เข้ากับระบบประเมินผล Outcome',
+     best:'(กทพ.) สร้างประสบการณ์ที่ดีครอบคลุมตลอดวงจรชีวิตการทำงาน มีแนวทาง Change Management สื่อสารครบถ้วน',
+     inputs:[{dept:'CG',docLabel:'นโยบาย ESG/DEI&B และค่านิยมองค์กร SMART PAT จาก CG'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลสำรวจพฤติกรรม SMART PAT + แผนปรับปรุงพฤติกรรมรายระดับ'}]},
+    {sub:'4.2 เทคโนโลยีดิจิทัลด้าน HR',
+     gap:'ผู้บริหารระดับสายงานยังไม่นำ HR Analytics ไปใช้ตัดสินใจจริง · ระบบ HRIS ยังมีสิทธิ์เข้าถึงข้อมูลอ่อนไหวมากเกินไป',
+     act:'เชื่อมโยงข้อมูล HR Dashboard เข้าระบบ EDW · กำหนดระดับชั้นการเข้าถึงข้อมูลอ่อนไหว (Data Privacy) · เปลี่ยนบทบาท HR เป็นผู้ออกแบบ AI Governance',
+     best:'(กทพ.) นำข้อมูล HR Analytics มาวิเคราะห์เชิงลึกเพื่อการตัดสินใจ เชื่อมโยงระบบดิจิทัล HR กับระบบงานต่างๆ ขององค์กร',
+     inputs:[{dept:'DT',docLabel:'HRIS + HR Analytics Platform + ระบบ EDW จาก DT สำหรับเชื่อมโยงข้อมูล HR'}],
+     outputs:[{dept:'DT',docLabel:'ฐานข้อมูลบุคลากร + ทักษะดิจิทัลพนักงาน เพื่อประกอบ Big Data/EDW ขององค์กร'}]},
+    {sub:'4.3 ความปลอดภัยและสภาพแวดล้อมในการทำงาน',
+     gap:'ตัวชี้วัดไม่แยกตามบริบทพื้นที่ (สนญ. vs ท่าเรือ) · ไม่แยก Security (สวัสดิภาพ) ออกจาก Safety (อุบัติเหตุ)',
+     act:'ตั้ง KPI แยกบริบทพื้นที่ชัดเจน · แยกมิติ Safety (อุบัติเหตุ) ออกจาก Security (อาชญากรรม/CCTV) อย่างเด็ดขาด',
+     best:'(กทพ.) มีแผนครอบคลุม 4 มิติ (Safety, Security, Health, Environment) กำหนดผู้รับผิดชอบชัดเจน',
+     inputs:[{dept:'RM',docLabel:'ปัจจัยเสี่ยง RF6 (HR Productivity) + กรอบประเมินความเสี่ยงด้านความปลอดภัย'}],
+     outputs:[{dept:'RM',docLabel:'แผน BCP ด้านกำลังคน + ผลการวิเคราะห์ความเสี่ยงด้านอัตรากำลัง'}]},
+    {sub:'4.4 บทบาทของสายงาน HR',
+     gap:'HR Audit ยังเป็น Reactive ไม่ใช่ Preventive · ยังไม่มีบุคลากร HR ที่ได้รับคุณวุฒิวิชาชีพสากล',
+     act:'ปรับ HR Audit เป็น Preventive Approach (สอบทานก่อนเกิดข้อผิดพลาด) · จัดทำ Roadmap สู่ Global HR Certification (SHRM)',
+     best:'(กทพ.) HR ทำหน้าที่เป็น Internal Consultant สนับสนุนให้ HR ได้รับคุณวุฒิวิชาชีพ มีการสอบทานกระบวนการ HR (HR Audit)',
+     inputs:[{dept:'IA',docLabel:'แผนการตรวจสอบ + ข้อเสนอแนะ เพื่อนำไปออกแบบ Preventive HR Audit'}],
+     outputs:[{dept:'IA',docLabel:'รายงาน HR Audit แบบ Preventive + ข้อมูลกระบวนการ HR ที่โปร่งใสสำหรับ IA'}]},
+  ]},
+]},
+KM:{criteria:[
+  {id:'km-1',title:'1. ยุทธศาสตร์ด้านผู้มีส่วนได้ส่วนเสีย',score:'2.9250/5.00',items:[
+    {sub:'1.1 วิสัยทัศน์/ทิศทาง/นโยบายด้าน KM',
+     gap:'การสื่อสารวิสัยทัศน์ยังไม่ครอบคลุมความหลากหลายของ Generation ของบุคลากร',
+     act:'ออกแบบสื่อแยกตาม Gen เช่น Gamification/Social Media สำหรับ Gen Y/Z และ Website/Email สำหรับ Gen X',
+     best:'(กทพ.) บูรณาการนโยบายการจัดการความรู้ นวัตกรรม และดิจิทัล เป็นเนื้อเดียวกัน',
+     inputs:[{dept:'SP',docLabel:'แผนวิสาหกิจและทิศทางองค์กร'},{dept:'CG',docLabel:'นโยบายและค่านิยมองค์กร SMART PAT'}],
+     outputs:[{dept:'HCM',docLabel:'สื่อสื่อสารวิสัยทัศน์ KM แยก Generation'},{dept:'SM',docLabel:'แผนสื่อสาร KM ไปยัง Stakeholders ภายนอก'}]},
+    {sub:'1.2 การมีส่วนร่วมของผู้บริหารทุกระดับ',
+     gap:'ผู้บริหารระดับกลาง/ต้น ยังไม่แสดงบทบาท Role Model ในการนำ KM ไปใช้หน้างานให้เห็นชัดเจน',
+     act:'ให้ระดับกลาง/ต้น เป็น KM Champion นำ CoP แก้ปัญหา และผูก KPI ผู้บริหาร',
+     best:'(กทพ.) ทบทวนรางวัลจาก 4 เป็น 5 ประเภท เพื่อกระตุ้นแรงจูงใจทุกระดับ',
+     inputs:[{dept:'HCM',docLabel:'แผน KPI ผู้บริหารด้าน KM'},{dept:'CG',docLabel:'นโยบายการมีส่วนร่วมผู้บริหาร'}],
+     outputs:[{dept:'HCM',docLabel:'รายงานผลการประเมิน KM Champion ผู้บริหาร'}]},
+  ]},
+  {id:'km-2',title:'2. การวางแผนและทรัพยากร',score:'2.6500/5.00',items:[
+    {sub:'2.1 การวางแผน KM และติดตามผล',
+     gap:'ขาดการกำหนดตัวชี้วัดนำ (Leading) และตัวชี้วัดตาม (Lagging Indicator)',
+     act:'ปรับตัวชี้วัดมุ่งเน้น Outcome เชิงคุณภาพ (ลดเวลา/ลดต้นทุน) และกำหนด Leading/Lagging ครบ',
+     best:'(กทพ.) ทำคู่มือให้ทุกหน่วยงานเข้าใจบทบาทหน้าที่ตรงกัน',
+     inputs:[{dept:'SP',docLabel:'แผนวิสาหกิจ ข้อมูล SWOT และทิศทางองค์กร'},{dept:'HCM',docLabel:'Competency Gap ด้าน KM'}],
+     outputs:[{dept:'SP',docLabel:'แผนแม่บท KM ที่สอดคล้องกับยุทธศาสตร์องค์กร'}]},
+    {sub:'2.2 การจัดสรรทรัพยากร',
+     gap:'ขาดแผนสำรองกรณีทรัพยากรขาดแคลน และเกณฑ์จัดสรรยังไม่รูปธรรม',
+     act:'ทบทวนหลักเกณฑ์วิธีการให้คะแนนจัดสรรทรัพยากรให้เป็นรูปธรรม และกำหนดแผนสำรอง',
+     best:'(กทพ.) จัดสรรทรัพยากรโดยดูจาก 1.ความพร้อม 2.ระยะเวลา 3.ความเสี่ยง',
+     inputs:[{dept:'SP',docLabel:'งบประมาณและทรัพยากรองค์กร'}],
+     outputs:[{dept:'SP',docLabel:'แผนจัดสรรทรัพยากร KM + แผนสำรองฉุกเฉิน'}]},
+  ]},
+  {id:'km-3',title:'3. บุคลากร',score:'2.9375/5.00',items:[
+    {sub:'3.1 ความตระหนัก/ส่วนร่วม/แรงจูงใจ',
+     gap:'วิธีสื่อสารสร้างความตระหนักไม่ตรงจริตแต่ละกลุ่ม ขาดแรงจูงใจที่ทั่วถึง',
+     act:'จัดทำ IDP และผูกผลงาน KM กับ Career Path ปรับแบบสำรวจให้วัด 3 มิติ (รับรู้ ตระหนัก เปลี่ยนพฤติกรรม)',
+     best:'(กทพ.) นำทักษะ KM ไปใส่ใน Functional Competency ประเมินพนักงาน',
+     inputs:[{dept:'HCM',docLabel:'ช่องว่างสมรรถนะ (Competency Gap) และแผนพัฒนารายบุคคล (IDP)'}],
+     outputs:[{dept:'HCM',docLabel:'ผลสัมฤทธิ์การอบรม IDP + Tacit Knowledge เข้าสู่คลัง KM'}]},
+    {sub:'3.2 วัฒนธรรมและสภาพแวดล้อม',
+     gap:'การสำรวจค่านิยมไม่ครอบคลุม 3 มิติ (รับรู้ ตระหนัก เปลี่ยนพฤติกรรม)',
+     act:'ปรับแบบสำรวจค่านิยมให้วัด 3 มิติครบ และสร้างสภาพแวดล้อมทั้งกายภาพ-จิตวิทยา',
+     best:'(กทพ.) ใช้ KM คัดเลือก "พนักงานต้นแบบ (SMART EXAT)"',
+     inputs:[{dept:'HCM',docLabel:'ผลสำรวจวัฒนธรรมและความผูกพันองค์กร'}],
+     outputs:[{dept:'HCM',docLabel:'แผนพัฒนาวัฒนธรรม KM และสภาพแวดล้อมการเรียนรู้'}]},
+    {sub:'3.3 ความสามารถและความรับผิดชอบทีมงาน',
+     gap:'KM Audit ยังไม่เน้นเชิงป้องกัน และขาด IDP ให้ทีม KM',
+     act:'ปรับ KM Audit เน้น "เชิงป้องกัน" (Preventive) และวางแผน IDP ทีม KM ด้าน AI',
+     best:'(กทพ.) สร้าง Internal Trainer ปั้นวิทยากรภายในถ่ายทอด KM โดยเฉพาะ',
+     inputs:[{dept:'HCM',docLabel:'แผนพัฒนาทักษะทีม KM (IDP)'},{dept:'IA',docLabel:'แผนการตรวจสอบ KM Audit'}],
+     outputs:[{dept:'HCM',docLabel:'กลุ่มพนักงานศักยภาพสูง (Talent/Successor) + Tacit Knowledge เข้าสู่ KM'},{dept:'IM',docLabel:'กลุ่ม Young Talent สำหรับขับเคลื่อนนวัตกรรม'}]},
+  ]},
+  {id:'km-4',title:'4. กระบวนการจัดการความรู้',score:'2.8500/5.00',items:[
+    {sub:'4.1 กระบวนการ KM และเทคโนโลยี',
+     gap:'ย้ายระบบไป Google อาจทำให้ Knowledge Map ขาดความสมบูรณ์',
+     act:'สร้าง Knowledge Map เชื่อมโยงทุกสายงาน ให้ AI ค้นหาง่าย เน้นเฉพาะ Critical Knowledge',
+     best:'(กทพ.) บูรณาการ GRC เข้ากับ IT ลดความซ้ำซ้อน และปรับกระบวนการเก็บองค์ความรู้',
+     inputs:[{dept:'DT',docLabel:'Knowledge Platform + AI (NotebookLM) และโครงสร้าง IT'},{dept:'RM',docLabel:'Critical Steps + Intelligent Risk สำหรับจัดลำดับความรู้'}],
+     outputs:[{dept:'DT',docLabel:'ความต้องการระบบ KM + Knowledge Taxonomy เพื่อพัฒนาต่อ'}]},
+    {sub:'4.2 สารสนเทศจากภายนอก',
+     gap:'รูปแบบแลกเปลี่ยนความรู้กับ Stakeholder ไม่แตกต่างกันตามกลุ่ม',
+     act:'ออกแบบช่องทางแยกตามกลุ่ม และนำ VOC มาสร้างมูลค่าเพิ่ม',
+     best:'(กทพ.) ถอดบทเรียนคู่แข่งสร้าง Value Creation',
+     inputs:[{dept:'SM',docLabel:'เสียงผู้มีส่วนได้ส่วนเสีย (VOC) และ Best Practice จากภายนอก'}],
+     outputs:[{dept:'SM',docLabel:'กระบวนงานบริการใหม่และหลักสูตรอบรม (COE)'}]},
+  ]},
+  {id:'km-5',title:'5. กระบวนการปฏิบัติงาน',score:'2.7000/5.00',items:[
+    {sub:'5.1 การปฏิบัติงานโดยใช้ความรู้เป็นฐาน',
+     gap:'ไม่ปรากฏประสิทธิผลเชิงประจักษ์ใน "ทุก" กระบวนการอย่างต่อเนื่อง',
+     act:'ฝังเครื่องมือ KM ลง Daily Operation 100% ใช้ BAR/AAR/CoP ในงานประจำ',
+     best:'(กทพ.) ใช้ AAR + SIPOC ถอดบทเรียนเพื่อปรับปรุงรอบเวลา SLA ทันที',
+     inputs:[{dept:'SM',docLabel:'Pain Points + AAR จากการปฏิบัติงาน → คลัง KM'}],
+     outputs:[{dept:'IM',docLabel:'องค์ความรู้ → ต่อยอดนวัตกรรมกระบวนการ/บริการ'}]},
+    {sub:'5.2 ความตระหนักเรื่องความเสี่ยงในกระบวนการ',
+     gap:'KM และ RM บูรณาการเครื่องมือกันไม่สมบูรณ์',
+     act:'นำ Critical Steps ทุกกระบวนการมาจัดทำ Lesson Learned และเชื่อมกับ Risk Correlation Map',
+     best:'(กทพ.) นำระดับความเสี่ยงรายสายงานมาเป็นหัวข้อบังคับถอดบทเรียน',
+     inputs:[{dept:'RM',docLabel:'Critical Steps + แผนบริหารความเสี่ยง + Risk Correlation Map'},{dept:'IA',docLabel:'ผลการตรวจสอบและข้อเสนอแนะ'}],
+     outputs:[{dept:'RM',docLabel:'คู่มือขั้นตอนวิกฤต (Critical Steps) + Lesson Learned เชิงป้องกัน'}]},
+  ]},
+  {id:'km-6',title:'6. ผลลัพธ์ของการจัดการความรู้',score:'2.4000/5.00',items:[
+    {sub:'6.1 ผลลัพธ์และนวัตกรรม',
+     gap:'ไม่สามารถพิสูจน์มูลค่าเพิ่มทางการเงินจากนวัตกรรม KM ได้ชัดเจน',
+     act:'ทำระบบ KM to Innovation และวัดผลเป็นตัวเลขทางการเงิน (Value Creation)',
+     best:'(กทพ.) พิสูจน์มูลค่าเพิ่มของนวัตกรรมที่มาจากฐาน KM ได้จริง (ขอให้มีผลลัพธ์เชิงประจักษ์)',
+     inputs:[{dept:'IM',docLabel:'ปัญหาหน้างาน (Pain Point) ไอเดียจากพนักงาน'},{dept:'HCM',docLabel:'ผลงานนวัตกรรม IDP Talent เข้าสู่ระบบ KM'}],
+     outputs:[{dept:'IM',docLabel:'นวัตกรรมกระบวนการ/บริการ ที่มีรากฐานจาก KM พร้อมพิสูจน์มูลค่าเพิ่ม'}]},
+  ]},
+]},
+IM:{criteria:[
+  {id:'im-1',title:'1. การนำองค์กรสู่การจัดการนวัตกรรมที่ยั่งยืน',score:'2.64/5.00',items:[
+    {sub:'1.1 บทบาทผู้บริหารระดับสูง',
+     gap:'การประเมินบทบาท Role Model ของผู้บริหารยังเป็นภาพรวม ไม่ได้แยกประเมินเป็นรายบุคคลอย่างเป็นรูปธรรม',
+     act:'กำหนดแบบประเมิน Role Model นวัตกรรมรายบุคคลที่ชัดเจน ผู้บริหารระดับสูงร่วมกำหนดเป้าหมาย KPI และสื่อสารสนับสนุนนวัตกรรมต่อเนื่อง',
+     best:'(รฟม.) ผู้บริหารระดับสูงร่วมกำหนดเป้าหมาย (KPI) และปฏิบัติตนเป็น Role Model ที่วัดผลได้ชัดเจนและแยกประเมินรายบุคคล',
+     inputs:[{dept:'HCM',docLabel:'แบบประเมิน Role Model ผู้บริหารด้านนวัตกรรม (รายบุคคล) + กรอบ KPI นวัตกรรมระดับผู้บริหาร'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลการประเมิน Role Model ผู้บริหารด้านนวัตกรรม (รายบุคคล) ต่อบอร์ด'}]},
+    {sub:'1.2 บทบาทคณะกรรมการและคณะทำงานด้านนวัตกรรม',
+     gap:'กระบวนการติดตามผลการปฏิบัติหน้าที่ของคณะทำงานตามที่ได้รับมอบหมายยังไม่เป็นรูปธรรม',
+     act:'ติดตามผลการดำเนินงานตามบทบาทหน้าที่ในกฎบัตรอย่างเคร่งครัด รายงานผลรายไตรมาส',
+     best:'(รฟม.) จัดทำกฎบัตรของคณะกรรมการนวัตกรรมระดับองค์กรเป็นลายลักษณ์อักษร ติดตามผลต่อเนื่อง',
+     inputs:[{dept:'HCM',docLabel:'Job Description คณะทำงาน IM กฎบัตร และกรอบการประเมินผลการปฏิบัติหน้าที่'}],
+     outputs:[{dept:'CG',docLabel:'รายงานการประชุมคณะทำงาน IM ที่แสดงข้อเสนอแนะเชิงกลยุทธ์และผลติดตามรายไตรมาส'}]},
+  ]},
+  {id:'im-2',title:'2. ยุทธศาสตร์ด้านนวัตกรรม',score:'2.33/5.00',items:[
+    {sub:'2.1 การวางแผนยุทธศาสตร์ด้านนวัตกรรมและนำไปสู่การปฏิบัติ',
+     gap:'เป้าหมายนวัตกรรมระยะสั้น/ยาวยังขาดความท้าทาย และระบบติดตามแผนยังไม่ทันกาล ไม่ตอบสนองต่อการเปลี่ยนแปลงได้ทันที',
+     act:'กำหนดเป้าหมายการเงิน/ไม่ใช่การเงินให้ท้าทาย สะท้อนการเติบโต พัฒนาระบบติดตามประเมินผลแผนงานให้รวดเร็ว ตั้งเป้าและเปรียบเทียบกับ Benchmark ได้',
+     best:'(รฟม.) กำหนดเป้าหมายนวัตกรรมระยะสั้น/ยาว สื่อสารแผนผ่านช่องทางที่หลากหลาย มีตัวชี้วัด Leading/Lagging ครบถ้วน',
+     inputs:[{dept:'SP',docLabel:'แผนวิสาหกิจ เป้าหมายองค์กร และกรอบ KPI นวัตกรรมที่ท้าทายจาก SP'}],
+     outputs:[{dept:'SP',docLabel:'ผลสำเร็จโครงการนวัตกรรมรายโครงการ/รายบุคคล เทียบเป้าหมาย เทียบปีที่ผ่านมา เทียบ Benchmark'}]},
+    {sub:'2.2 การจัดสรรทรัพยากรด้านนวัตกรรม',
+     gap:'การกำหนดเกณฑ์ให้คะแนนความสำคัญในการจัดสรรทรัพยากรยังไม่เข้มข้นหรือหลากหลายพอ',
+     act:'ปรับปรุงปัจจัยในการจัดลำดับความสำคัญให้ครอบคลุมสถานการณ์ที่มีข้อจำกัด จัดสรรให้สอดคล้องกับกระบวนการพัฒนานวัตกรรมแต่ละ Stage',
+     best:'(รฟม.) มีหลักเกณฑ์จัดลำดับความสำคัญโครงการนวัตกรรมที่เป็นระบบ ครอบคลุม Feasibility, Cost-Benefit, และความใหม่',
+     inputs:[{dept:'SP',docLabel:'งบประมาณ กรอบทรัพยากรองค์กร และลำดับความสำคัญของแผนงานจาก SP'}],
+     outputs:[]},
+  ]},
+  {id:'im-3',title:'3. นวัตกรรมเพื่อมุ่งเน้นลูกค้าและตลาด',score:'1.89/5.00',items:[
+    {sub:'3.1 ข้อมูลและสารสนเทศเพื่อการพัฒนานวัตกรรมมุ่งเน้นลูกค้าและตลาด',
+     gap:'การทำ Data Analytics เพื่อพยากรณ์ (Predictive) ความต้องการของกลุ่มลูกค้าในอนาคตยังไม่ชัดเจน',
+     act:'ขยายผลการนำ Big Data และเสียงลูกค้ามาวิเคราะห์เชิงลึก เพื่อพยากรณ์ความต้องการ (Unmet Need) และต่อยอดผลิตภัณฑ์/บริการใหม่',
+     best:'(รฟม.) รวบรวม Big Data ทั้งลูกค้าปัจจุบัน/อนาคต นำมาทำ Predictive Data Analytics พยากรณ์ความต้องการเชิงรุก',
+     inputs:[
+       {dept:'SCM',docLabel:'ข้อมูล VOC ปัญหา (Pain Point) ข้อร้องเรียน และ Customer Journey จากระบบ SCM/E-Complaint'},
+       {dept:'DT',docLabel:'ฐานข้อมูล Big Data และเครื่องมือ Data Analytics จาก DT สำหรับวิเคราะห์พยากรณ์ความต้องการ'}
+     ],
+     outputs:[{dept:'SCM',docLabel:'ไอเดียนวัตกรรมและผลลัพธ์ที่แก้ปัญหาลูกค้า (Unmet Need Solution) ส่งกลับ SCM'}]},
+  ]},
+  {id:'im-4',title:'4. ความรู้สู่การสร้างนวัตกรรม',score:'1.75/5.00',items:[
+    {sub:'4.1 การจัดการความรู้สู่การสร้างนวัตกรรม',
+     gap:'การประยุกต์ใช้ KM ถอดบทเรียน (AAR) เพื่อพัฒนานวัตกรรมระหว่างสายงานยังไม่เป็นระบบชัดเจน',
+     act:'นำกิจกรรมนวัตกรรมสนับสนุนตัวชี้วัดสำคัญองค์กรโดยตรง ประยุกต์ใช้ KM ถอดบทเรียน (AAR) เพื่อขยายผลนวัตกรรมไปสู่สายงานอื่น จัดเก็บใน PAT KM Portal',
+     best:'(รฟม.) นำข้อมูลตัวชี้วัดทั้งภายใน/ภายนอก มาเปรียบเทียบเพื่อพัฒนาให้ดีกว่าคู่เทียบ และต่อยอดเป็นนวัตกรรมที่มีมูลค่าเพิ่มเชิงประจักษ์',
+     inputs:[{dept:'KM',docLabel:'คู่มือการทำงาน องค์ความรู้เดิม Best Practice และแนวทางการทำ AAR จากระบบ KM Portal'}],
+     outputs:[{dept:'KM',docLabel:'บทเรียน (AAR / Lesson Learned) จากโครงการนวัตกรรม ส่งกลับเข้าฐานความรู้ KM Portal เพื่อแบ่งปันข้ามสายงาน'}]},
+  ]},
+  {id:'im-5',title:'5. วัฒนธรรมเพื่อมุ่งเน้นการสร้างนวัตกรรม',score:'1.45/5.00',items:[
+    {sub:'5.1 การปลูกฝังค่านิยมและเสริมสร้างวัฒนธรรมที่มุ่งเน้นนวัตกรรม',
+     gap:'การประเมินผลสัมฤทธิ์ระดับ Outcome เพื่อยกระดับวัฒนธรรมองค์กรให้ยั่งยืนยังไม่เป็นระบบ ยังวัดแค่ Output (จำนวนกิจกรรม)',
+     act:'ใช้ผล Gap Analysis จัดทำแผนเสริมสร้างวัฒนธรรมองค์กร ติดตามผลการเปลี่ยนพฤติกรรม (Behavioral Outcome) ให้สอดคล้องกับค่านิยม SMART PAT',
+     best:'(รฟม.) กำหนดค่านิยม "RAPID" สร้าง Infographic สื่อสารหลากหลาย ประเมินผลการเปลี่ยนพฤติกรรมระดับ Outcome',
+     inputs:[{dept:'HCM',docLabel:'ผลสำรวจวัฒนธรรม ค่านิยม Innovation Gap Analysis และแผนพัฒนา (IDP) ด้านนวัตกรรม'}],
+     outputs:[{dept:'HCM',docLabel:'รายงานผลการวัดพฤติกรรม Behavioral Outcome ด้านนวัตกรรมรายปี + แผนปรับปรุงวัฒนธรรม'}]},
+    {sub:'5.2 การยกระดับความรู้ความสามารถด้านนวัตกรรม',
+     gap:'การวิเคราะห์ช่องว่างทักษะใหม่ๆ ที่จำเป็น เช่น AI, Data Literacy, Design Thinking ของทีมงานนวัตกรรมยังไม่ครอบคลุม',
+     act:'พัฒนาทักษะแห่งอนาคตให้บุคลากรนวัตกรรม เช่น AI & Data Literacy, Design Thinking จัดทำ IDP และวัดผลจากผลงานนวัตกรรมที่สร้างได้จริง',
+     best:'(รฟม.) ทำ Innovation Gap Analysis รายบุคคล จัดทำแผนพัฒนาระยะสั้น/ยาว ผูกกับ Career Path และ Incentive',
+     inputs:[{dept:'HCM',docLabel:'ผล Innovation Gap Analysis รายบุคคล + แผนพัฒนา IDP ด้านทักษะนวัตกรรม (AI, Data, Design Thinking)'}],
+     outputs:[{dept:'HCM',docLabel:'รายชื่อ Young Talent / Talent นวัตกรรม + Innovation Gap Analysis สำหรับ HR ออกแบบหลักสูตร IDP'}]},
+  ]},
+  {id:'im-6',title:'6. กระบวนการนวัตกรรม',score:'1.75/5.00',items:[
+    {sub:'6.1 การออกแบบระบบนวัตกรรมองค์กร (PAT-CIS)',
+     gap:'การพิจารณาความเชื่อมโยงกับระบบนิเวศธุรกิจ (Business Ecosystem) และพันธมิตร ขาดหลักเกณฑ์คัดเลือกพันธมิตร Open Innovation ที่เป็นลายลักษณ์อักษร',
+     act:'ออกแบบ Innovation Portfolio ระยะสั้น/ยาว จัดทำหลักเกณฑ์คัดเลือกพันธมิตร Open Innovation เป็นลายลักษณ์อักษร สร้างความร่วมมือเชิงลึกกับระบบนิเวศธุรกิจ',
+     best:'(รฟม.) ออกแบบระบบครอบคลุมทั้ง Closed และ Open Innovation มี Portfolio ชัดเจน มีหลักเกณฑ์เลือกพันธมิตรที่เป็นระบบ',
+     inputs:[{dept:'RM',docLabel:'หลักเกณฑ์ประเมินความเสี่ยง Cost-Benefit Feasibility Newness IP Management สำหรับ Stage-Gate Criteria'}],
+     outputs:[{dept:'RM',docLabel:'โครงการนวัตกรรมที่ผ่านการประเมินความเสี่ยงและ Stage-Gate แล้ว พร้อมผลการวิเคราะห์ความเสี่ยง'}]},
+    {sub:'6.2 กระบวนการใช้ความคิดสร้างสรรค์สู่การสร้างนวัตกรรม',
+     gap:'การติดตามปัญหาและอุปสรรคจากการนำกระบวนการนวัตกรรมไปปฏิบัติจริง (Front End) ยังไม่เป็นระบบ',
+     act:'สื่อสารระบบงานให้ทั่วถึง ติดตามปัญหา Feedback จากกระบวนการเพื่อปรับปรุง กำหนดเกณฑ์คัดกรองไอเดีย Screening ที่วัดศักยภาพเชิงพาณิชย์ได้',
+     best:'(รฟม.) มีกระบวนการ Front End ครบถ้วน Idea Generation Screening Evaluation ครอบคลุมทุกระดับ นำ Feedback มาปรับปรุงต่อเนื่อง',
+     inputs:[],
+     outputs:[]},
+    {sub:'6.3 การพัฒนานวัตกรรม',
+     gap:'การนำนวัตกรรมออกไปใช้งานจริง (Launch) และผลักดันให้เกิดมูลค่าเชิงพาณิชย์ (Commercialization) ยังไม่ครอบคลุม',
+     act:'กำกับดูแลทุกโครงการใน Portfolio ให้ข้ามผ่าน Stage-Gate สู่การใช้งานจริง วัดผลประโยชน์เชิงพาณิชย์/สังคมที่เกิดขึ้นจริง',
+     best:'(รฟม.) พัฒนานวัตกรรมอย่างเป็นระบบด้วย Stage-Gate Model ควบคู่แผนปฏิบัติการ มีผลลัพธ์รูปธรรม',
+     inputs:[{dept:'DT',docLabel:'ระบบ IT พื้นฐาน ฐานข้อมูล Big Data และเครื่องมือดิจิทัลจาก DT สำหรับสนับสนุนการพัฒนานวัตกรรม'}],
+     outputs:[{dept:'DT',docLabel:'บริการใหม่ในรูปแบบดิจิทัล เช่น แอป LCP Traffic ระบบ E-Gate ส่งมอบให้ DT ดูแลระบบต่อ'}]},
+  ]},
+  {id:'im-7',title:'7. ผลลัพธ์ด้านนวัตกรรม',score:'1.83/5.00',items:[
+    {sub:'7.1 ผลลัพธ์ด้านนวัตกรรมทั้งการเงินและไม่ใช่ทางการเงิน',
+     gap:'การเปรียบเทียบผลลัพธ์กับคู่เทียบ/คู่แข่ง และการเติบโตอย่างต่อเนื่อง 3 ปีติดต่อกัน ยัง Cascade KPI ทางการเงินเป็น "รายโครงการ" ได้ไม่ชัดเจน',
+     act:'ทบทวน KPI ทางการเงินแยกเป็นรายโครงการ/ผู้รับผิดชอบ กำกับดูแลผลลัพธ์ให้ดีกว่าเป้าหมาย ดีกว่าคู่เทียบ และเติบโตต่อเนื่อง เทียบ Benchmark ท่าเรือระดับโลก',
+     best:'(รฟม.) กำหนดเป้าหมายนวัตกรรมทั้งการเงินและไม่ใช่การเงินที่ท้าทาย สอดคล้องแผนยุทธศาสตร์ แสดง Trend 3 ปี เทียบ Benchmark',
+     inputs:[{dept:'SP',docLabel:'KPI องค์กรและระบบ PMS เพื่อผูกโยงเป้าหมายนวัตกรรมและ Cascade ลงรายโครงการ/บุคคล'}],
+     outputs:[{dept:'SP',docLabel:'ตารางผลลัพธ์นวัตกรรม 4 มิติ BSC เทียบเป้า เทียบปีที่ผ่านมา เทียบ Benchmark ท่าเรือสิงคโปร์/มาเลเซีย'}]},
+  ]},
+]},
+IA:{criteria:[
+  {id:'ia-1',title:'1. คณะกรรมการตรวจสอบ (AC)',score:'2.8667/5.00',items:[
+    {sub:'1.1 องค์ประกอบและคุณสมบัติ',
+     gap:'AC ได้รับมอบหมายให้เป็นอนุกรรมการชุดอื่นที่มีส่วนบริหารงานรัฐวิสาหกิจ กระทบต่อความเป็นอิสระของ AC',
+     act:'จัดสรรกรรมการรัฐวิสาหกิจให้ดูแลประเด็นสำคัญภายใต้คณะกรรมการชุดเดียวกัน เพื่อหลีกเลี่ยงการเป็นอนุกรรมการหลายชุดจนกระทบความเป็นอิสระ จัดเก็บหลักฐานและประเมิน Skill Matrix ให้เป็นปัจจุบัน',
+     best:'(รฟม.) ประเมินองค์ประกอบ คุณสมบัติ และทักษะ AC อย่างเป็นทางการอย่างน้อยปีละ 1 ครั้ง เพื่อเสนอคณะกรรมการรัฐวิสาหกิจ',
+     inputs:[{dept:'CG',docLabel:'คำสั่งแต่งตั้งคณะกรรมการ/คณะอนุกรรมการชุดต่างๆ ที่แสดงว่า AC ไม่ควบตำแหน่งบริหาร + ผล Skill Matrix'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลการประเมิน Skill Matrix AC สถานะความเป็นอิสระ และข้อเสนอแนะต่อบอร์ด'}]},
+    {sub:'1.2 การปฏิบัติหน้าที่',
+     gap:'AC ขาดบทบาทเชิงรุกในการสอบทานและส่งเสริมการดำเนินงานด้านความยั่งยืน (ESG)',
+     act:'นำงานด้าน ESG เข้าสู่กระบวนการตรวจสอบ จัดทำแผนตรวจสอบกระบวนการบริหารจัดการความยั่งยืน ติดตามผลต่อเนื่องและรายงานต่อ AC',
+     best:'(รฟม.) สอบทานการดำเนินงานในทุกประเด็นที่มีนัยสำคัญต่อสภาพแวดล้อมความเสี่ยงและเกณฑ์ Enablers ทั้ง 7 ด้าน',
+     inputs:[{dept:'CG',docLabel:'นโยบาย ทิศทาง และเป้าหมายด้าน ESG ขององค์กร จาก CG + แผนวิสาหกิจจาก SP'}],
+     outputs:[{dept:'CG',docLabel:'รายงานการประชุม AC ที่มีการพิจารณาผลการตรวจสอบด้าน ESG และข้อเสนอแนะยกระดับการกำกับดูแล'}]},
+    {sub:'1.3 การประชุมและองค์ประชุม',
+     gap:'ต้องรักษาระยะเวลาการจัดส่งเอกสารให้ AC ล่วงหน้าอย่างน้อย 7 วันอย่างต่อเนื่อง',
+     act:'กำหนดปฏิทินการประชุมวาระยุทธศาสตร์ล่วงหน้าตลอดปี ส่งเอกสารก่อนประชุมอย่างน้อย 7 วันทุกครั้ง',
+     best:'(รฟม.) กำหนดปฏิทินและวาระการประชุมล่วงหน้าชัดเจน องค์ประชุมเข้าร่วมไม่น้อยกว่าร้อยละ 75',
+     inputs:[],
+     outputs:[]},
+  ]},
+  {id:'ia-2',title:'2. หน่วยตรวจสอบภายใน (ด้านคุณสมบัติ)',score:'2.5358/5.00',items:[
+    {sub:'2.1 บทบาทและความรับผิดชอบ',
+     gap:'กฎบัตรยังไม่สอดคล้องกับมาตรฐานสากลใหม่ GIAS 2024 ครบถ้วน ต้องยกระดับบทบาทตรวจสอบเชิงรุก',
+     act:'ทบทวนและปรับปรุงกฎบัตรให้เป็นปัจจุบันตาม GIAS 2024 สื่อสารผ่าน Intranet และระบบ OA ยกระดับบทบาทงานตรวจสอบเชิงรุกตามมาตรฐานใหม่',
+     best:'(รฟม.) หารือความต้องการร่วมกับผู้ว่าการฯ นำความเห็นมาจัดทำกฎบัตร และสื่อสารให้บุคคลที่เกี่ยวข้องรับทราบครบถ้วน',
+     inputs:[{dept:'CG',docLabel:'นโยบายและข้อสั่งการคณะกรรมการด้านการกำกับดูแลงานตรวจสอบภายใน'}],
+     outputs:[{dept:'CG',docLabel:'กฎบัตรฉบับปรับปรุงตามมาตรฐาน GIAS 2024 และรายงานผลการสื่อสารกฎบัตรต่อผู้เกี่ยวข้อง'}]},
+    {sub:'2.2 ความเป็นอิสระและความเที่ยงธรรม',
+     gap:'ต้องประเมินและสำรวจการรับรู้ด้านความเป็นอิสระจากหน่วยรับตรวจอย่างต่อเนื่อง',
+     act:'ประเมินความพึงพอใจและการรับรู้ความเป็นอิสระจากหน่วยรับตรวจ รักษาการสับเปลี่ยนผู้ตรวจสอบทุก 3-5 ปี',
+     best:'(กทพ.) กำหนดความเป็นอิสระไว้ในกฎบัตรชัดเจน แผนปฏิบัติงานยืดหยุ่นและทันต่อเทคโนโลยีที่เปลี่ยนไป',
+     inputs:[{dept:'HCM',docLabel:'กรอบโครงสร้างองค์กรและนโยบายการสับเปลี่ยนหมุนเวียนผู้ตรวจสอบภายใน'}],
+     outputs:[{dept:'HCM',docLabel:'ผลสำรวจการรับรู้ความเป็นอิสระ IA จากหน่วยรับตรวจ และแผนสับเปลี่ยนผู้ตรวจสอบ'}]},
+    {sub:'2.3 ความเชี่ยวชาญและความสามารถ',
+     gap:'ผู้ตรวจสอบที่ได้รับวุฒิบัตรสากล (CIA) ยังมีจำนวนน้อยมาก ขาดนโยบายรักษาบุคลากรและแรงจูงใจ',
+     act:'เร่งพัฒนาบุคลากรให้ได้ CIA 3 คน/ปี จัดทำนโยบายค่าตอบแทนวิชาชีพและสวัสดิการจูงใจสำหรับผู้ได้วุฒิบัตร อบรม 40 ชม./คน/ปี',
+     best:'(รฟม.) มีแผนสรรหา พัฒนา รักษาบุคลากรครอบคลุมทั้ง Technical & Soft Skills มีระบบแรงจูงใจที่ชัดเจน',
+     inputs:[{dept:'HCM',docLabel:'เครื่องมือประเมิน Competency Gap กรอบอัตรากำลัง และแนวทางค่าตอบแทนวิชาชีพ'}],
+     outputs:[{dept:'HCM',docLabel:'แผน IDP ผู้ตรวจสอบภายใน + รายชื่อผู้เข้าสอบ CIA/CPIAT + ข้อเสนอนโยบายค่าตอบแทนวิชาชีพ'}]},
+    {sub:'2.4 การประเมินและปรับปรุงคุณภาพ',
+     gap:'ขาดเครื่องมือที่เป็นระบบในการทบทวนกระบวนการทำงาน (Systematic Review) เพื่อการเรียนรู้และปรับปรุงอย่างต่อเนื่อง',
+     act:'พัฒนาเครื่องมือประเมินและทบทวนกระบวนการปฏิบัติงาน Continuous Improvement โดยใช้ Feedback จากทั้งหน่วยรับตรวจและภายในทีม IA นำผลแนะนำจากการประเมินภายนอก (EY) มาปรับปรุงแบบ As-is สู่ To-be',
+     best:'(รฟม.) นำแนวทางการสอบทานคุณภาพไปพิจารณาวัดผลงานของผู้ตรวจสอบภายในโดยตรง',
+     inputs:[{dept:'KM',docLabel:'เครื่องมือ AAR/KM และแนวทางการทำ Systematic Review จาก KM สำหรับงาน IA'}],
+     outputs:[{dept:'KM',docLabel:'รายงาน SAR รายไตรมาสพร้อมแผนปรับปรุง (As-is สู่ To-be) + องค์ความรู้จากกระบวนการ QA เข้า KM'}]},
+  ]},
+  {id:'ia-3',title:'3. หน่วยตรวจสอบภายใน (ด้านปฏิบัติงานและผลงาน)',score:'2.4662/5.00',items:[
+    {sub:'3.1 การจัดทำคู่มือการปฏิบัติงาน',
+     gap:'ขาดเครื่องมือที่เป็นระบบในการทบทวนกระบวนการทำงาน ต้องนำคู่มือไปเชื่อมโยงกับระบบ A2S',
+     act:'นำคู่มือไปเชื่อมโยงกับการใช้งานระบบ A2S ปรับปรุงให้ทันต่อกฎระเบียบและเทคโนโลยีดิจิทัล พัฒนาเครื่องมือ Systematic Review',
+     best:'(กทพ.) ทบทวนคู่มือให้ทันต่อความเปลี่ยนแปลงด้านกฎระเบียบและเทคโนโลยีดิจิทัลอย่างสม่ำเสมอ',
+     inputs:[{dept:'KM',docLabel:'ระบบจัดเก็บความรู้ (KMS) และแนวทางการทำ AAR เพื่อปรับปรุงคู่มือ IA'}],
+     outputs:[{dept:'KM',docLabel:'คู่มือปฏิบัติงาน IA ฉบับปรับปรุง + Knowledge Base งานตรวจสอบที่จัดเก็บใน KMS'}]},
+    {sub:'3.2 การวางแผนการตรวจสอบ',
+     gap:'ขาดการประเมินความเสี่ยงทุจริต และขาดระบบ IT สนับสนุน ยังไม่ครอบคลุมโครงการในอนาคต เช่น Dry Port',
+     act:'ปรับปรุงเกณฑ์ประเมินความเสี่ยงจาก 4 ปัจจัย เป็น 12 ปัจจัยเสี่ยง (ครอบคลุม ESG ทุจริต ข้อมูลจาก สคร./สตง.) นำระบบ A2S มาใช้เต็มรูปแบบ กำหนดแผนตรวจสอบโครงการในอนาคต',
+     best:'(รฟม.) แผนตรวจสอบอิงกลยุทธ์ตามฐานความเสี่ยง ครอบคลุมทุกองค์ประกอบ และเชื่อมโยงฐานข้อมูล',
+     inputs:[
+       {dept:'SP',docLabel:'แผนวิสาหกิจ โครงการ Flagship (เช่น Dry Port) และทิศทางองค์กรในอนาคต (EA) จาก SP'},
+       {dept:'RM',docLabel:'Risk Profile แผนบริหารความเสี่ยง ทะเบียนทุจริต และ Risk Correlation Map จาก RM'}
+     ],
+     outputs:[
+       {dept:'SP',docLabel:'ข้อเสนอแนะเชิงกลยุทธ์จากการตรวจสอบที่ช่วยให้บรรลุเป้าหมายตามแผนวิสาหกิจ'},
+       {dept:'RM',docLabel:'ผลประเมินความเพียงพอของการควบคุมภายใน และจุดอ่อนที่ต้องแก้ไขส่ง RM'}
+     ]},
+    {sub:'3.3 การวางแผนการปฏิบัติงานในรายละเอียด',
+     gap:'การใช้ IT สนับสนุนแบบครบวงจรยังอยู่ระหว่างติดตั้งระบบ A2S คาดว่าใช้ได้ปี 69',
+     act:'เร่งรัดติดตั้งระบบ A2S ให้แล้วเสร็จในไตรมาส 2-3 ปี 69 ประยุกต์ใช้ Data Analytics ช่วยวิเคราะห์ข้อมูลก่อนลงพื้นที่ตรวจ',
+     best:'(รฟม.) จัดทำ Audit Program ตามความเสี่ยงทุกเรื่อง และสอบทานตามลำดับชั้นอย่างเคร่งครัด',
+     inputs:[{dept:'DT',docLabel:'โครงสร้างสถาปัตยกรรมองค์กร (EA) IT Security Policy และระบบ A2S จาก DT'}],
+     outputs:[{dept:'DT',docLabel:'ผลการตรวจสอบด้าน IT Audit และ Requirement การใช้งานระบบ A2S ส่งให้ DT'}]},
+    {sub:'3.4 การปฏิบัติงานตรวจสอบ',
+     gap:'ต้องบันทึกกระดาษทำการผ่านระบบ A2S อย่างเต็มรูปแบบ ครอบคลุม Planning Fieldwork Reporting',
+     act:'บันทึกกระดาษทำการทุกขั้นตอนผ่านระบบ A2S เต็มรูปแบบ ตรวจสอบ GRC และ IT Audit (PDPA) อย่างต่อเนื่อง',
+     best:'(รฟม.) กำหนด Audit Tools สอดคล้องกับวัตถุประสงค์ สรุปผลเบื้องต้น (Memo) ครบถ้วน โยงกระดาษทำการหลักและย่อยได้',
+     inputs:[{dept:'DT',docLabel:'ระบบสนับสนุนงานตรวจสอบ A2S และ Big Data จาก DT สำหรับ Data Analytics'}],
+     outputs:[{dept:'DT',docLabel:'ข้อมูลกระดาษทำการ Audit ที่จัดเก็บในระบบ A2S และผลการตรวจสอบ IT/PDPA'}]},
+    {sub:'3.5 การสรุปผลและจัดทำรายงาน',
+     gap:'รายงานต้องมีการวิเคราะห์ Root Cause Analysis เชิงลึก การจัดการ KM ของ IA ยังไม่เป็นระบบ ยังไม่กำหนดองค์ความรู้สำคัญชัดเจน',
+     act:'ปรับรูปแบบรายงานให้มีการวิเคราะห์ Root Cause และข้อเสนอแนะเชิงป้องกัน กำหนดองค์ความรู้ที่สำคัญให้ชัดเจน พัฒนากระบวนการถ่ายทอดองค์ความรู้ภายในที่เป็นระบบ',
+     best:'(รฟม.) ใช้ข้อมูลป้อนกลับจากการดำเนินงานมาทบทวนกระบวนการปฏิบัติงานร่วมกับหน่วยรับตรวจ',
+     inputs:[{dept:'KM',docLabel:'ระบบ KMS และแนวทางการทำ AAR สำหรับถอดบทเรียนจากงานตรวจสอบ'}],
+     outputs:[{dept:'KM',docLabel:'องค์ความรู้สำคัญ (Best Practice) และข้อควรระวัง (Preventive Controls) จากผลตรวจสอบเข้าสู่ KMS'}]},
+    {sub:'3.6 การให้ความเชื่อมั่น (Assurance)',
+     gap:'การสร้างมูลค่าเพิ่มยังเป็นเชิงตามแก้ไข (Reactive) ต้องยกระดับเป็นการควบคุมเชิงป้องกัน (Preventive Control)',
+     act:'ยกระดับผลงานให้เป็น Preventive Control อุดช่องโหว่ก่อนเกิดความผิดพลาด วัดผล KPI การให้ความเชื่อมั่น กำหนดเป้าหมายเชิงป้องกัน 4-5 เรื่อง/ปี',
+     best:'(รฟม.) แสดงความเชื่อมโยงระหว่างผลลัพธ์การตรวจสอบกับการเพิ่มมูลค่า/ยกระดับการปฏิบัติงานอย่างชัดเจน',
+     inputs:[
+       {dept:'SP',docLabel:'เป้าหมายยุทธศาสตร์และแผนปฏิบัติการองค์กรเพื่อกำหนดขอบเขต Assurance'},
+       {dept:'RM',docLabel:'Risk Universe, Risk Profile เพื่อกำหนดประเด็นสำคัญที่ต้องให้ความเชื่อมั่น'}
+     ],
+     outputs:[
+       {dept:'SP',docLabel:'รายงานผลการตรวจสอบเชิงป้องกัน (Preventive Assurance) ต่อผู้บริหารและ AC'},
+       {dept:'RM',docLabel:'รายงานประเมินประสิทธิผลระบบควบคุมภายใน GRC ส่ง RM'}
+     ]},
+    {sub:'3.7 การให้คำปรึกษา (Consulting)',
+     gap:'งานให้คำปรึกษาส่วนใหญ่ยังเป็นเชิงรับ (Reactive) ต้องจัดทำแผนให้คำปรึกษาเชิงรุก (Proactive) ที่เป็นรูปธรรม',
+     act:'จัดทำ "แผนการให้คำปรึกษาเชิงรุก (Proactive Consulting Plan)" กำหนดเป้าหมาย 4-5 เรื่อง/ปี วัดผลสำเร็จและเก็บแบบประเมินผู้รับคำปรึกษา',
+     best:'(รฟม.) มีการวางแผนการให้ข้อเสนอแนะเชิงกลยุทธ์ เพื่อมุ่งเน้นการสร้างมูลค่าเพิ่มให้องค์กร',
+     inputs:[{dept:'KM',docLabel:'เครื่องมือ KM/IM และ Best Practice เพื่อสนับสนุนการให้คำปรึกษาเชิงรุก'}],
+     outputs:[{dept:'KM',docLabel:'องค์ความรู้ (AAR) และ Lesson Learned จากงานให้คำปรึกษา IA เข้าสู่ KM Portal'}]},
+  ]},
+  {id:'ia-4',title:'4. หน่วยรับตรวจ',score:'4.2500/5.00',items:[
+    {sub:'4.1 ความรับผิดชอบของหน่วยรับตรวจ',
+     gap:'หน่วยรับตรวจให้ข้อมูลล่าช้า งานให้คำปรึกษาส่วนใหญ่ยังเป็นเชิงรับ ขาดเป้าหมายเชิงรุกที่ชัดเจน',
+     act:'กำหนดแผนและเป้าหมายการให้คำปรึกษาเชิงรุก (Proactive) อย่างเป็นรูปธรรม กำกับให้หน่วยรับตรวจปฏิบัติตาม SLA แจ้งล่วงหน้าไม่น้อยกว่า 60 วัน',
+     best:'(รฟม./กทพ.) แจ้งแผนล่วงหน้าไม่น้อยกว่า 60 วัน และมีระบบประเมินความพร้อมในการให้ความร่วมมืออย่างเป็นทางการ',
+     inputs:[{dept:'CG',docLabel:'นโยบายระดับองค์กรในการให้ความร่วมมือกับงาน IA และ SLA สำหรับหน่วยรับตรวจ'}],
+     outputs:[{dept:'CG',docLabel:'รายงานผลการปฏิบัติตาม SLA ของหน่วยรับตรวจ และผลการให้คำปรึกษาเชิงรุกรายปี'}]},
+  ]},
+]},
+SP:{criteria:[
+  {id:'sp-1',title:'1. วิเคราะห์สภาพแวดล้อม',score:'3.25/4.00',items:[
+    {sub:'1.1 รวบรวมและวิเคราะห์ปัจจัยนำเข้า',
+     gap:'ตรวจสอบเชิงลึกว่าแต่ละหน่วยงานนำข้อมูลไปวิเคราะห์ต่อยังไม่ชัดเจน',
+     act:'แสดง Work Sheet การเชื่อมโยง Value Driver ที่ส่งไปถึงแผนลูกให้ชัดเจน',
+     best:'(กทพ.) รวบรวมปัจจัยทันกาล บูรณาการเข้าแผนแม่บทครบถ้วน มีหลักฐาน Traceability',
+     inputs:[{dept:'SM',docLabel:'ผล VOC + Stakeholder Expectation Report'}],
+     outputs:[]},
+    {sub:'1.2 วิเคราะห์ SWOT',
+     gap:'การวิเคราะห์คู่เทียบ (Benchmark) ยังขาดความเป็นระบบ หาแบบ Apple-to-Apple ไม่ได้',
+     act:'เปรียบเทียบคู่เทียบด้าน Productivity และ Efficiency เพื่อหาช่องว่างพัฒนา',
+     best:'(กทพ.) วิเคราะห์ SWOT ด้วยข้อมูล Fact-based ทันกาล มีคู่เทียบระดับสากลชัดเจน',
+     inputs:[],
+     outputs:[]},
+    {sub:'1.3 วิเคราะห์ Core Competency และส่งต่อ HCM',
+     gap:'ขาด Timeline กระบวนการจาก CC ไปสู่แผนพัฒนาบุคลากรที่ชัดเจน',
+     act:'สรุป Future CC แตกย่อยสู่ Competency Gap และระบุเป็นแผน HRD รายโครงการ',
+     best:'(กทพ.) SC/SA/CC เป็นปัจจัยตั้งต้นทุกแผนแม่บท มีร่องรอยส่งต่อ HR ครบถ้วน',
+     inputs:[],
+     outputs:[{dept:'HCM',docLabel:'Future Competency + CC เพื่อจัดทำ IDP'}]},
+  ]},
+  {id:'sp-2',title:'2. ตำแหน่งทางยุทธศาสตร์',score:'2.25/4.00',items:[
+    {sub:'2.1 กำหนดตำแหน่งทางยุทธศาสตร์',
+     gap:'ยังไม่แสดงความเชื่อมโยงเป้าหมายทุกระยะกับแผนแม่บทอย่างชัดเจน',
+     act:'แสดงตัวชี้วัดรูปธรรมทุกระยะ เชื่อมโยงเป้าหมายลงสู่แผนแม่บทที่เกี่ยวข้อง',
+     best:'(กทพ.) กำหนด SP ทุกระยะพร้อมตัวชี้วัดรูปธรรม เชื่อมแผนแม่บทได้ครบถ้วน',
+     inputs:[],
+     outputs:[]},
+    {sub:'2.2 Business Model และ Intelligent Risk',
+     gap:'Business Model ขาดรายละเอียดการเปลี่ยนแปลงในระยะกลางและยาว',
+     act:'ติดตามผล Intelligent Risk ว่าทำให้เข้าถึงโอกาสทางธุรกิจได้จริงหรือไม่',
+     best:'(กทพ.) Business Model Canvas ครอบคลุมทุกระยะ ระบุ IR ชัดเจน มีผลลัพธ์รูปธรรม',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'ประเด็น Intelligent Risk เพื่อทำแผนบริหาร'}]},
+    {sub:'2.3 Scenario Planning',
+     gap:'ยังไม่จัดทำ Scenario Planning ครบ 3 รูปแบบ มีแค่ Base Case',
+     act:'จัดทำ Scenario Planning ครบ 3 กรณี (Best/Base/Worst) พร้อม Cost-Benefit',
+     best:'(กทพ.) คาดการณ์ราย 5 ปี ถึงปี 2580 ครบ 3 สถานการณ์ มี Financial Model',
+     inputs:[{dept:'RM',docLabel:'แผนบริหารความเสี่ยงประกอบ Scenario Planning'}],
+     outputs:[]},
+  ]},
+  {id:'sp-3',title:'3. วัตถุประสงค์และระบบงาน',score:'2.33/4.00',items:[
+    {sub:'3.1 กำหนด Strategic Objective (SO)',
+     gap:'ยังไม่แสดงความเชื่อมโยง SO ลงสู่แผนแม่บทอื่นๆ ที่เกี่ยวข้องได้ครบถ้วน',
+     act:'จัดทำเอกสารแสดงความเชื่อมโยง SO กับแผนแม่บทที่เกี่ยวข้องทุกฉบับ',
+     best:'(กทพ.) SO เชื่อมโยงทุกแผนแม่บทและนโยบายภาครัฐได้ครบถ้วน',
+     inputs:[{dept:'CG',docLabel:'นโยบายและข้อสั่งการคณะกรรมการ (Board Direction)'}],
+     outputs:[]},
+    {sub:'3.2 ความสมดุลและสอดคล้อง',
+     gap:'ยังอธิบายความสมดุลระหว่างปัจจัยนำเข้าระยะสั้น/ยาวกับตัวชี้วัดไม่ชัดเจน',
+     act:'แสดงวิธีจับคู่ปัจจัยนำเข้าระยะสั้นสู่ตัวชี้วัดและแผนงานระยะสั้น',
+     best:'(กทพ.) นำ Stakeholder Expectation มาตั้ง SO ได้ครบ มี Traceability ชัดเจน',
+     inputs:[{dept:'SM',docLabel:'ความคาดหวัง Stakeholders เพื่อตั้งเป้าหมาย SO'}],
+     outputs:[]},
+    {sub:'3.3 ออกแบบระบบงาน (Work System)',
+     gap:'เป้าหมาย SO บางตัวสูงมาก แต่ยังไม่วิเคราะห์ว่ากระบวนการเดิมเพียงพอหรือไม่',
+     act:'ระบุชัดว่า Work System หรือ Process ใดต้องรื้อ/ปรับปรุง หรือนำเทคโนโลยีใดมาใช้',
+     best:'(กทพ.) ปรับ Work System ทุกปีสอดคล้องแผน 5 ปี มีหลักฐาน Redesign Process',
+     inputs:[],
+     outputs:[
+       {dept:'HCM',docLabel:'โจทย์ Redesign งาน + อัตรากำลังใหม่ที่ต้องการ'},
+       {dept:'DT',docLabel:'โจทย์ Redesign ระบบรองรับ Work System ใหม่'}
+     ]},
+  ]},
+  {id:'sp-4',title:'4. กำหนดยุทธศาสตร์',score:'2.50/4.00',items:[
+    {sub:'4.1 กำหนดยุทธศาสตร์ระดับองค์กร',
+     gap:'แผนงานสำคัญในแต่ละกลยุทธ์ถ่ายทอดลงสู่แผนแม่บทได้ไม่ครบถ้วน',
+     act:'นำกลยุทธ์ระดับองค์กรถ่ายทอดลงเป็นแผนงานในทุกแผนแม่บทที่เกี่ยวข้อง',
+     best:'(กทพ.) กลยุทธ์ระดับองค์กรเชื่อมทุกแผนแม่บท มีหลักฐาน Alignment ครบถ้วน',
+     inputs:[],
+     outputs:[]},
+    {sub:'4.2 Strategy Map',
+     gap:'Strategy Map ใส่แค่ชื่อโครงการ ไม่เห็น Key Activities + Impact จากล่างขึ้นบน',
+     act:'ระบุ Key Activities + KPI ที่พิสูจน์ Impact เชื่อมโยงขึ้นถึงวิสัยทัศน์',
+     best:'(กทพ.) ผูกกลยุทธ์-แผน-ตัวชี้วัด-วิสัยทัศน์ครบ แสดง Lead/Lag Indicator ทุกกลยุทธ์',
+     inputs:[],
+     outputs:[
+       {dept:'HCM',docLabel:'KPI เป้าหมายระดับสายงาน/บุคคล ที่สอดคล้องยุทธศาสตร์'},
+       {dept:'DT',docLabel:'IT Projects ที่สอดคล้องและสนับสนุนแผนยุทธศาสตร์'}
+     ]},
+  ]},
+  {id:'sp-5',title:'5. แผนปฏิบัติการ',score:'2.33/4.00',items:[
+    {sub:'5.1 กระบวนการวางแผนปฏิบัติการ',
+     gap:'ความเสี่ยงระดับโครงการยังไม่ถูกสะท้อนกลับเป็นความเสี่ยงระดับองค์กร',
+     act:'นำความเสี่ยงระดับโครงการกลับไปเป็น Input ในแผนบริหารความเสี่ยงองค์กร',
+     best:'(รฟม.) แผนปฏิบัติการทุกรายการเชื่อมโยงความเสี่ยงและทรัพยากรครบถ้วน',
+     inputs:[],
+     outputs:[]},
+    {sub:'5.2 วิเคราะห์ความเสี่ยงแผนปฏิบัติการ',
+     gap:'โครงการใหญ่บางโครงการไม่มีการระบุการวิเคราะห์ความเสี่ยงในแบบฟอร์ม',
+     act:'ตรวจสอบให้ทุก Key Initiative ระบุความเสี่ยงครบ และยกระดับสู่ความเสี่ยงองค์กร',
+     best:'(รฟม.) ทุกโครงการมีการวิเคราะห์ความเสี่ยงครบถ้วนพร้อมมาตรการจัดการ',
+     inputs:[],
+     outputs:[{dept:'RM',docLabel:'ความเสี่ยงระดับโครงการ เพื่อยกระดับเป็นความเสี่ยงองค์กร'}]},
+    {sub:'5.3 จัดสรรทรัพยากร',
+     gap:'การวิเคราะห์ Cost-Benefit ก่อนจัดสรรทั้งตัวเงินและไม่ใช่ตัวเงินยังไม่ชัดเจน',
+     act:'วิเคราะห์ผลตอบแทนการเงินและไม่ใช่การเงิน (Cost-Benefit) ทุกโครงการก่อนจัดสรรงบ',
+     best:'(กทพ.) มีเกณฑ์จัดสรรทรัพยากรชัดเจน พร้อม Cost-Benefit Analysis ทุกโครงการ',
+     inputs:[],
+     outputs:[]},
+  ]},
+  {id:'sp-6',title:'6. ถ่ายทอดและ Cascade KPI',score:'2.88/4.00',items:[
+    {sub:'6.1 ถ่ายทอดแผนสู่คู่ค้า',
+     gap:'การถ่ายทอดแผนไปยังผู้ส่งมอบและคู่ค้าที่สำคัญยังไม่ครบถ้วน',
+     act:'ขยายการสื่อสารแผนงานสำคัญไปยังกลุ่มคู่ค้า (Suppliers/Partners)',
+     best:'(กทพ.) ถ่ายทอดแผนยุทธศาสตร์ไปยัง Stakeholder ทุกกลุ่มรวมคู่ค้า พร้อมประเมินการรับรู้',
+     inputs:[],
+     outputs:[{dept:'SM',docLabel:'ทิศทางและแผนปฏิบัติการ กทท. เพื่อสื่อสารคู่ค้า'}]},
+    {sub:'6.2 เชื่อมโยงยุทธศาสตร์สู่แผนแม่บท',
+     gap:'การบูรณาการระบบ IT เข้ามาช่วยติดตามความเชื่อมโยงยังไม่ชัดเจน',
+     act:'พัฒนาหรือใช้ระบบ IT ติดตามความเชื่อมโยงเป้าหมายองค์กรลงสู่แผนแม่บท Real-time',
+     best:'(รฟม.) ใช้ระบบ Dashboard IT ติดตาม Alignment ทุกระดับแบบ Real-time',
+     inputs:[{dept:'DT',docLabel:'ระบบ Dashboard สำหรับติดตาม Alignment'}],
+     outputs:[]},
+    {sub:'6.3 กำหนดและถ่ายทอดตัวชี้วัด (KPI Driver Tree)',
+     gap:'การใช้ KPI กำไรสุทธิร่วมกันทำให้ Cost Center ควบคุมได้ไม่จริง',
+     act:'กระจาย KPI ตามหลัก Driver Tree ให้แต่ละหน่วยงานได้ตัวชี้วัดที่ควบคุมได้จริง',
+     best:'(กทพ.) แยก KPI ตาม Driver Tree ชัดเจน แต่ละหน่วยงานได้ตัวชี้วัดที่ควบคุมได้จริง',
+     inputs:[],
+     outputs:[]},
+    {sub:'6.4 Bottom-up KPI Alignment',
+     gap:'ขาดตาราง Double Check ยืนยันว่าผลรวม KPI ระดับบุคคล = เป้าหมายองค์กร',
+     act:'จัดทำตาราง Alignment Check ว่าผลรวม Bottom-up เทียบเท่า Top-down',
+     best:'(กทพ.) ถ่ายทอด KPI ลงสายงานพร้อม Bottom-up Verification ผูกกับ Incentive',
+     inputs:[{dept:'HCM',docLabel:'ผล Bottom-up KPI Check + ตาราง Alignment'}],
+     outputs:[{dept:'HCM',docLabel:'KPI เป้าหมายองค์กรที่ Cascade ลงสู่บุคคลแล้ว'}]},
+  ]},
+  {id:'sp-7',title:'7. ติดตาม คาดการณ์ และปรับแผน',score:'2.50/4.00',items:[
+    {sub:'7.1 ติดตามผลสำเร็จ',
+     gap:'การติดตามยังไม่เชื่อมโยงกับแผนด้าน HR หรือ Risk อย่างเป็นรูปธรรม',
+     act:'บูรณาการข้อมูลติดตามแผนเข้ากับการประเมินผลพนักงาน (HR) และสถานะความเสี่ยง (RM)',
+     best:'(รฟม.) ระบบติดตามผลเชื่อมทั้ง HR และ RM แบบ Integrated Dashboard',
+     inputs:[
+       {dept:'HCM',docLabel:'ผลประเมินพนักงาน + KPI Scorecard ระดับสายงาน'},
+       {dept:'RM',docLabel:'สถานะความเสี่ยง + KRI ปัจจุบัน'}
+     ],
+     outputs:[]},
+    {sub:'7.2 คาดการณ์ (Forecasting)',
+     gap:'ทำ Forecast เฉพาะบางตัวชี้วัด ยังไม่ครอบคลุมทุกตัวชี้วัดสำคัญ',
+     act:'ขยาย Forecasting Model ให้ครอบคลุมทุกตัวชี้วัดเป้าหมายองค์กร',
+     best:'(กทพ.) Forecasting ครอบคลุมทุก KPI สำคัญทั้งการเงินและไม่ใช่การเงิน',
+     inputs:[],
+     outputs:[]},
+    {sub:'7.3 Trigger Point และปรับแผน',
+     gap:'Trigger Point ไม่ผูกกับ Leading Indicator ทุกแผนงาน',
+     act:'กำหนด Trigger Point จาก Leading Indicator ทุกแผนงานสำคัญ เตือนก่อนเกิดผลเสีย',
+     best:'(รฟม.) กำหนดสัญญาณเตือนจาก KPI หลัก มีมาตรฐานโหมดปรับแผนทันที',
+     inputs:[
+       {dept:'DT',docLabel:'Dashboard + Leading Indicator Data Real-time'},
+       {dept:'RM',docLabel:'KRI + Risk Trigger Point ที่กำหนดแล้ว'}
+     ],
+     outputs:[]},
+  ]},
+]},
+};
+
+const ECO_ZONES=[
+  {key:'CG',  label:'CG',    x:44, y:2,  w:16, h:10},
+  {key:'SP',  label:'SP',    x:39, y:14, w:21, h:18},
+  {key:'RM',  label:'RM&IC', x:0,  y:24, w:14, h:56},
+  {key:'HCM', label:'HCM',  x:10, y:28, w:24, h:28},
+  {key:'DT',  label:'DT',   x:30, y:40, w:22, h:24},
+  {key:'SM',  label:'SM',   x:62, y:20, w:22, h:24},
+  {key:'CM',  label:'CM',   x:62, y:44, w:22, h:24},
+  {key:'KM',  label:'KM',   x:37, y:57, w:20, h:22},
+  {key:'IM',  label:'IM',   x:59, y:62, w:20, h:22},
+  {key:'IA',  label:'IA',   x:26, y:87, w:46, h:13},
+];
+
+function buildEcoZones(){
+  const w=document.getElementById('ecoWrapper');
+  ECO_ZONES.forEach(z=>{
+    const b=document.createElement('button');
+    b.className='eco-zone';b.id='eco-'+z.key;
+    b.style.cssText='left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%';
+    b.innerHTML='<span class="eco-label">'+z.label+'</span>';
+    b.addEventListener('click',()=>selectEnabler(z.key));
+    w.appendChild(b);
+  });
+}
+
+function scoreColor(s){return s>=3?'hi':s>=2.5?'mid':'lo'}
+function buildScoreBar(){
+  document.getElementById('scoreBar').innerHTML=KEYS.map(k=>{
+    const e=ENABLERS[k];const c=scoreColor(e.score);
+    const dot=c==='hi'?'🟢':c==='mid'?'🟡':'🔴';
+    return '<div class="score-item" id="si-'+k+'" onclick="selectEnablerFromBar(\''+k+'\')">'
+      +'<span class="code">'+dot+' '+e.code+'</span>'
+      +'<span class="val '+c+'">'+e.score.toFixed(4)+'</span></div>';
+  }).join('');
+}
+
+function selectEnabler(key){
+  if(!ENABLERS[key])return;
+  selectedKey=key;
+  ECO_ZONES.forEach(z=>{const b=document.getElementById('eco-'+z.key);if(b)b.classList.toggle('active',z.key===key)});
+  document.querySelectorAll('.score-item').forEach(el=>el.classList.toggle('active',el.id==='si-'+key));
+  openPanel(key);
+}
+function selectEnablerFromBar(key){selectEnabler(key)}
+
+function openPanel(key){
+  const e=ENABLERS[key];
+  document.getElementById('detailPanel').classList.add('open');
+  const c=scoreColor(e.score);
+  const bg={hi:'rgba(34,197,94,0.12)',mid:'rgba(240,180,41,0.12)',lo:'rgba(239,68,68,0.12)'};
+  const tx={hi:'#22C55E',mid:'#F0B429',lo:'#EF4444'};
+  const badge=document.getElementById('panelBadge');
+  badge.style.background=bg[c];badge.style.color=tx[c];
+  document.getElementById('panelScore').textContent=e.score.toFixed(4);
+  document.getElementById('panelTitle').textContent=e.nameTH||e.name;
+  document.getElementById('panelSubtitle').textContent=e.name+(e.prevScore?' · ปี 67: '+e.prevScore.toFixed(4):'');
+  activeTab='overview';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  renderTab();
+}
+function closePanel(){
+  selectedKey=null;
+  document.getElementById('detailPanel').classList.remove('open');
+  ECO_ZONES.forEach(z=>{const b=document.getElementById('eco-'+z.key);if(b)b.classList.remove('active')});
+  document.querySelectorAll('.score-item').forEach(el=>el.classList.remove('active'));
+}
+function switchTab(tab,el){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');renderTab();
+}
+function renderTab(){
+  const c=document.getElementById('panelContent');
+  if(!selectedKey){c.innerHTML='';return}
+  const e=ENABLERS[selectedKey];
+  if(activeTab==='overview')renderOverview(e,c);
+  else if(activeTab==='gaps')renderGaps(e,c);
+  else if(activeTab==='plan69')renderPlan69(selectedKey,c);
+}
+
+function renderOverview(e,el){
+  const gd=e.gaps.map(g=>({...g,status:gapOverrides[g.id]||g.status}));
+  const nR=gd.filter(g=>g.status==='risk').length;
+  const nP=gd.filter(g=>g.status==='partial').length;
+  const nC=gd.filter(g=>g.status==='closed').length;
+  const chg=e.prevScore?(e.score-e.prevScore>=0?'+':'')+(e.score-e.prevScore).toFixed(4):null;
+  el.innerHTML='<div class="stat-pills">'
+    +(nR?'<div class="stat-pill risk">🔴 เสี่ยง '+nR+'</div>':'')
+    +(nP?'<div class="stat-pill partial">🟡 บางส่วน '+nP+'</div>':'')
+    +(nC?'<div class="stat-pill closed">🟢 ปิดแล้ว '+nC+'</div>':'')
+    +(chg?'<div class="stat-pill closed">↑ '+chg+'</div>':'')
+    +'</div><div class="section-label">Highlight ปี 2568</div>'
+    +e.highlights.map(h=>'<div class="highlight-item"><div class="hi-icon">✦</div><span>'+h+'</span></div>').join('')
+    +'<div class="section-label">การเชื่อมโยงหลัก</div>'
+    +'<div style="font-size:16px;color:var(--text-dim);line-height:1.8">'
+    +'<b style="color:var(--teal)">ส่งออกไปยัง →</b> '+(e.sends||[]).map(s=>(ENABLERS[s.to]&&ENABLERS[s.to].code)||s.to).join(' · ')+'<br>'
+    +'<b style="color:var(--gold)">รับข้อมูลจาก ←</b> '+(e.receives||[]).map(r=>(ENABLERS[r.from]&&ENABLERS[r.from].code)||r.from).join(' · ')
+    +'</div>';
+}
+
+function renderGaps(e,el){
+  const gd=e.gaps.map(g=>({...g,status:gapOverrides[g.id]||g.status}));
+  const nR=gd.filter(g=>g.status==='risk').length;
+  const nP=gd.filter(g=>g.status==='partial').length;
+  const nC=gd.filter(g=>g.status==='closed').length;
+  const nm={risk:'เสี่ยง',partial:'บางส่วน',closed:'ปิดแล้ว'};
+  const nx={risk:'partial',partial:'closed',closed:'risk'};
+  el.innerHTML='<div class="gap-legend">'
+    +'<div class="leg"><div class="leg-dot" style="background:var(--red)"></div>เสี่ยง ('+nR+')</div>'
+    +'<div class="leg"><div class="leg-dot" style="background:var(--orange)"></div>บางส่วน ('+nP+')</div>'
+    +'<div class="leg"><div class="leg-dot" style="background:var(--green)"></div>ปิดแล้ว ('+nC+')</div>'
+    +'</div>'
+    +gd.map(g=>'<div class="gap-item '+g.status+'" id="gap-'+g.id+'">'
+      +'<div class="gap-dot '+g.status+'"></div>'
+      +'<div class="gap-text">'+g.text+'</div>'
+      +'<button class="gap-toggle-btn '+g.status+'" onclick="toggleGap(\''+g.id+'\')">'+nm[nx[g.status]||'risk']+'</button>'
+      +'</div>').join('')
+    +(isAdmin?'<p style="font-size:15px;color:var(--text-dim);margin-top:8px">Hover → เปลี่ยนสถานะ</p>':'');
+}
+
+function renderLinkages(e,el){
+  el.innerHTML='<div class="link-note">ℹ️ <b>'+e.code+'</b> ส่งข้อมูล/ผลงานออกไปให้ด้านอื่น (→) '
+    +'และรับข้อมูล/ผลงานกลับมา (←) เพื่อนำไปพัฒนาต่อ ทำให้ทุกด้านเชื่อมโยงกันแทนที่จะทำงานแบบไซโล</div>'
+    +'<div class="link-flow"><div class="link-flow-title send">↗ '+e.code+' ส่งออกไปยัง ('+(e.sends||[]).length+' ด้าน)</div>'
+    +(e.sends||[]).map(s=>'<div class="link-row">'
+      +'<div class="link-row-code">→ '+((ENABLERS[s.to]&&ENABLERS[s.to].code)||s.to)+'</div>'
+      +'<div class="link-row-desc">'+s.desc+'</div>'
+      +'</div>').join('')
+    +'</div><div class="link-flow"><div class="link-flow-title recv">↙ '+e.code+' รับเข้าจาก ('+(e.receives||[]).length+' ด้าน)</div>'
+    +(e.receives||[]).map(r=>'<div class="link-row">'
+      +'<div class="link-row-code recv">← '+((ENABLERS[r.from]&&ENABLERS[r.from].code)||r.from)+'</div>'
+      +'<div class="link-row-desc">'+r.desc+'</div>'
+      +'</div>').join('')
+    +'</div>';
+}
+
+function getIK(key,cId,i){return key+'__'+cId+'__'+i}
+function getID(key,cId,i){return plan69Data[getIK(key,cId,i)]||{notes:'',saLink:'',saLinkLabel:'',inputs:{},outputs:{}}}
+function saveID(key,cId,i,d){plan69Data[getIK(key,cId,i)]=d;sbSet('cbe_plan69',plan69Data)}
+
+function getIS(item,d){
+  const isLinked=(item.inputs&&item.inputs.length>0)||(item.outputs&&item.outputs.length>0);
+  if(!isLinked){
+    // Case A: standalone - green if notes filled
+    return (d.notes&&d.notes.trim())?'done':'empty';
+  }
+  // Case B: check all input/output dept links + notes
+  let total=0,filled=0;
+  (item.inputs||[]).forEach(inp=>{
+    const dd=d.inputs[inp.dept]||{};
+    total+=2; // link + notes
+    if(dd.link&&dd.link.trim())filled++;
+    if(dd.notes&&dd.notes.trim())filled++;
+  });
+  (item.outputs||[]).forEach(out=>{
+    const dd=d.outputs[out.dept]||{};
+    total+=2;
+    if(dd.link&&dd.link.trim())filled++;
+    if(dd.notes&&dd.notes.trim())filled++;
+  });
+  if(total===0)return'empty';
+  if(filled===total)return'done';
+  if(filled>0)return'partial';
+  return'empty';
+}
+function getCS(key,cId,items){
+  const ss=items.map((item,i)=>getIS(item,getID(key,cId,i)));
+  return ss.every(s=>s==='done')?'done':ss.some(s=>s!=='empty')?'partial':'empty';
+}
+
+function renderLinkageBlock(e){
+  return '<div style="margin-bottom:14px;padding:8px 10px;border-radius:8px;'
+    +'background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07)">'
+    +'<div style="font-size:15px;font-weight:700;letter-spacing:.5px;color:var(--text-dim);'
+    +'text-transform:uppercase;margin-bottom:7px">🔗 การเชื่อมโยงกับด้านอื่น</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+    +(e.sends||[]).map(s=>'<div style="font-size:15px;padding:3px 9px;border-radius:5px;'
+      +'background:rgba(0,196,184,0.1);color:var(--teal);border:1px solid rgba(0,196,184,0.2)">'
+      +'→ '+((ENABLERS[s.to]&&ENABLERS[s.to].code)||s.to)+'</div>').join('')
+    +(e.receives||[]).map(r=>'<div style="font-size:15px;padding:3px 9px;border-radius:5px;'
+      +'background:rgba(240,180,41,0.1);color:var(--gold);border:1px solid rgba(240,180,41,0.2)">'
+      +'← '+((ENABLERS[r.from]&&ENABLERS[r.from].code)||r.from)+'</div>').join('')
+    +'</div></div>';
+}
+
+function renderPlan69(key,el){
+  const data=ZONE3[key];
+  const e=ENABLERS[key];
+  if(!data){
+    el.innerHTML=renderLinkageBlock(e)
+      +'<div style="padding:20px 0;text-align:center;color:var(--text-dim);font-size:18px">'
+      +'⏳ กำลังจัดทำข้อมูลสำหรับด้านนี้...<br>'
+      +'<span style="font-size:16px;display:block;margin-top:6px">ข้อมูล SP เป็นตัวอย่างนำร่อง</span></div>';
+    return;
+  }
+  // Summary
+  let h='<div class="z3-summary"><div class="z3-sum-title">📊 สรุปสถานะกิจกรรมทั้งหมด</div><div class="z3-sum-grid">';
+  data.criteria.forEach(c=>{
+    c.items.forEach((item,i)=>{
+      const d=getID(key,c.id,i);const s=getIS(item,d);
+      const sc=s==='done'?'done':s==='partial'?'partial':'empty';
+      const isLinked=(item.inputs&&item.inputs.length>0)||(item.outputs&&item.outputs.length>0);
+      const sl=s==='done'?'✅ เสร็จแล้ว':s==='partial'?'🟡 กำลังดำเนินการ':'⬜ ยังว่าง';
+      const col=s==='done'?'var(--green)':s==='partial'?'var(--gold)':'var(--text-dim)';
+      const typeTag=isLinked?'<span style="font-size:13px;padding:1px 5px;border-radius:3px;background:rgba(167,139,250,0.12);color:#c4b5fd;margin-left:4px">เชื่อมโยง</span>':'';
+      h+='<div class="z3-sum-row"><div class="z3-sum-dot '+sc+'"></div>'
+        +'<div class="z3-sum-name">'+item.sub+typeTag+'</div>'
+        +'<div class="z3-sum-status" style="color:'+col+'">'+sl+'</div></div>';
+    });
+  });
+  h+='</div></div>';
+  h+=renderLinkageBlock(e);
+  // Accordion
+  data.criteria.forEach(c=>{
+    const cs=getCS(key,c.id,c.items);
+    h+='<div class="z3-criterion"><div class="z3-crit-header" onclick="toggleZ3(\''+c.id+'\')">'
+      +'<div class="z3-crit-status '+cs+'"></div>'
+      +'<span class="z3-cnum">'+c.id+'</span>'
+      +'<span class="z3-ctitle">'+c.title+'</span>'
+      +'<span class="z3-cscore">'+c.score+'</span>'
+      +'<span class="z3-chevron">▶</span>'
+      +'</div><div class="z3-body" id="z3body-'+c.id+'">';
+    c.items.forEach((item,i)=>{
+      const d=getID(key,c.id,i);
+      const s=getIS(item,d);
+      const isLinked=(item.inputs&&item.inputs.length>0)||(item.outputs&&item.outputs.length>0);
+      const badgeLbl=s==='done'?'✅ เสร็จแล้ว':s==='partial'?'🟡 กำลังดำเนินการ':'⬜ ยังว่าง';
+      const typeLbl=isLinked?'เชื่อมโยง':'ภายในด้าน';
+      h+='<div class="z3-sub">'
+        +'<div class="z3-sub-hdr">'
+        +'<span class="z3-sub-name">'+item.sub+'</span>'
+        +'<span class="z3-sub-type '+(isLinked?'linked':'solo')+'">'+typeLbl+'</span>'
+        +'<span class="z3-sub-badge '+s+'">'+badgeLbl+'</span>'
+        +'</div>'
+        +'<div class="z3-row"><div class="z3-lbl gap">GAP</div><div class="z3-val">'+item.gap+'</div></div>'
+        +'<div class="z3-row"><div class="z3-lbl act">69</div><div class="z3-val">'+item.act+'</div></div>';
+
+      if(!isLinked){
+        // ── CASE A: Standalone ──
+        h+='<div class="z3-standalone status-'+s+'" id="pb-'+key+'-'+c.id+'-'+i+'">'
+          +'<div class="z3-sa-label">บันทึกความคืบหน้า</div>'
+          +'<textarea class="z3-ta" id="notes-'+key+'-'+c.id+'-'+i+'"'
+          +' placeholder="กรอกสถานะการดำเนินงาน..."'
+          +' onblur="saveNotes(\''+key+'\',\''+c.id+'\','+i+')">'+( d.notes||'')+'</textarea>'
+          +'<div class="z3-bp-hint"><b>Best Practice:</b> '+item.best+'</div>'
+          +'</div>';
+      } else {
+        // ── CASE B: Split-view ──
+        h+='<div class="z3-split status-'+s+'" id="pb-'+key+'-'+c.id+'-'+i+'">';
+        // LEFT: Inputs
+        h+='<div class="z3-col input-col">'
+          +'<div class="z3-col-hdr">'
+          +'<div class="z3-col-icon in">←</div>'
+          +'<span class="z3-col-title in">รับเข้า (Inputs)</span>'
+          +'</div>';
+        if(!item.inputs||item.inputs.length===0){
+          h+='<div style="font-size:15px;color:var(--text-dim);font-style:italic">ไม่มี Input จากภายนอก</div>';
+        } else {
+          (item.inputs||[]).forEach(inp=>{h+=renderDeptCard(key,c.id,i,'input',inp,d);});
+        }
+        h+='<div class="z3-bp-split"><b>Best Practice:</b> '+item.best+'</div>';
+        h+='</div>'; // end input col
+
+        // RIGHT: Outputs
+        h+='<div class="z3-col">'
+          +'<div class="z3-col-hdr">'
+          +'<div class="z3-col-icon out">→</div>'
+          +'<span class="z3-col-title out">ส่งต่อ (Outputs)</span>'
+          +'</div>';
+        if(!item.outputs||item.outputs.length===0){
+          h+='<div style="font-size:15px;color:var(--text-dim);font-style:italic">ผลงานข้อนี้ใช้ภายในด้าน SP</div>';
+        } else {
+          (item.outputs||[]).forEach(out=>{h+=renderDeptCard(key,c.id,i,'output',out,d);});
+        }
+        h+='</div>'; // end output col
+        h+='</div>'; // end split
+      }
+      h+='</div>'; // end sub
+    });
+    h+='</div></div>'; // end body + criterion
+  });
+  el.innerHTML=h;
+}
+
+
+function toggleZ3(id){
+  const hdr=document.querySelector('[onclick="toggleZ3(\''+id+'\')"]');
+  const body=document.getElementById('z3body-'+id);
+  if(!hdr||!body)return;
+  const o=body.classList.toggle('open');
+  hdr.classList.toggle('open',o);
+}
+
+function saveNotes(key,cId,i){
+  const el=document.getElementById('notes-'+key+'-'+cId+'-'+i);if(!el)return;
+  const item=ZONE3[key]&&(function(){var _cr=ZONE3[key]&&ZONE3[key].criteria;var _c=_cr&&_cr.find(function(c){return c.id===cId});return _c&&_c.items[i]})();if(!item)return;
+  const d=getID(key,cId,i);d.notes=el.value;saveID(key,cId,i,d);refreshSubStatus(key,cId,i,item);
+}
+
+function saveDeptLink(key,cId,i,dir,dept){
+  const dirCode=dir==='input'?'in':'out';
+  const urlEl=document.getElementById('durl-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+dept);
+  const lblEl=document.getElementById('dlbl-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+dept);
+  const url=urlEl&&urlEl.value&&urlEl.value.trim();if(!url)return;
+  const label=lblEl&&lblEl.value&&lblEl.value.trim()||url;
+  const d=getID(key,cId,i);
+  const side=dir==='input'?'inputs':'outputs';
+  if(!d[side])d[side]={};
+  if(!d[side][dept])d[side][dept]={};
+  d[side][dept].link=url;
+  d[side][dept].label=label;
+  saveID(key,cId,i,d);
+  if(selectedKey)renderPlan69(selectedKey,document.getElementById('panelContent'));
+}
+
+function clearDeptLink(key,cId,i,dir,dept){
+  const d=getID(key,cId,i);
+  const side=dir==='input'?'inputs':'outputs';
+  if(d[side]&&d[side][dept])d[side][dept].link='';
+  saveID(key,cId,i,d);
+  const item=ZONE3[key]&&(function(){var _cr=ZONE3[key]&&ZONE3[key].criteria;var _c=_cr&&_cr.find(function(c){return c.id===cId});return _c&&_c.items[i]})();
+  if(item)refreshSubStatus(key,cId,i,item);
+  // full re-render of sub
+  if(selectedKey)renderPlan69(selectedKey,document.getElementById('panelContent'));
+}
+
+function saveDeptNotes(key,cId,i,dir,dept){
+  const dirCode=dir==='input'?'in':'out';
+  const el=document.getElementById('notes-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+dept);if(!el)return;
+  const d=getID(key,cId,i);
+  const side=dir==='input'?'inputs':'outputs';
+  if(!d[side])d[side]={};
+  if(!d[side][dept])d[side][dept]={};
+  d[side][dept].notes=el.value;
+  saveID(key,cId,i,d);
+  const item=ZONE3[key]&&(function(){var _cr=ZONE3[key]&&ZONE3[key].criteria;var _c=_cr&&_cr.find(function(c){return c.id===cId});return _c&&_c.items[i]})();
+  if(item)refreshSubStatus(key,cId,i,item);
+}
+
+function refreshSubStatus(key,cId,i,item){
+  const d=getID(key,cId,i);const s=getIS(item,d);
+  // update pb box class
+  const pb=document.getElementById('pb-'+key+'-'+cId+'-'+i);
+  if(pb)pb.className=(item.inputs&&item.inputs.length>0)||(item.outputs&&item.outputs.length>0)?'z3-split status-'+s:'z3-standalone status-'+s;
+  // update sub badge
+  const subEl=pb&&pb.closest('.z3-sub');
+  if(subEl){const b=subEl.querySelector('.z3-sub-badge');if(b){b.className='z3-sub-badge '+s;b.textContent=s==='done'?'✅ เสร็จแล้ว':s==='partial'?'🟡 กำลังดำเนินการ':'⬜ ยังว่าง';}}
+  // update dept card border
+  if(item.inputs||item.outputs){
+    (item.inputs||[]).forEach(inp=>{
+      const dd=(d.inputs&&d.inputs[inp.dept])||{};
+      // find dept card by dept name - re-render is simplest
+    });
+  }
+  // update criterion dot
+  const z3=ZONE3[key];if(z3){const c=z3.criteria.find(c=>c.id===cId);if(c){
+    const cs=getCS(key,cId,c.items);
+    const hd=document.querySelector('[onclick="toggleZ3(\''+cId+'\')"]');
+    if(hd){const dot=hd.querySelector('.z3-crit-status');if(dot)dot.className='z3-crit-status '+cs;}
+  }}
+  // update summary
+  refreshSummary(key);
+}
+
+function refreshSummary(key){
+  const sg=document.querySelector('.z3-sum-grid');if(!sg)return;
+  const z3d=ZONE3[key];if(!z3d)return;
+  let h='';
+  z3d.criteria.forEach(c=>{c.items.forEach((item,ii)=>{
+    const dd=getID(key,c.id,ii);const ss=getIS(item,dd);
+    const sc=ss==='done'?'done':ss==='partial'?'partial':'empty';
+    const isLinked=(item.inputs&&item.inputs.length>0)||(item.outputs&&item.outputs.length>0);
+    const sl=ss==='done'?'✅ เสร็จแล้ว':ss==='partial'?'🟡 กำลังดำเนินการ':'⬜ ยังว่าง';
+    const col=ss==='done'?'var(--green)':ss==='partial'?'var(--gold)':'var(--text-dim)';
+    const typeTag=isLinked?'<span style="font-size:13px;padding:1px 5px;border-radius:3px;background:rgba(167,139,250,0.12);color:#c4b5fd;margin-left:4px">เชื่อมโยง</span>':'';
+    h+='<div class="z3-sum-row"><div class="z3-sum-dot '+sc+'"></div><div class="z3-sum-name">'+item.sub+typeTag+'</div><div class="z3-sum-status" style="color:'+col+'">'+sl+'</div></div>';
+  });});
+  sg.innerHTML=h;
+}
+
+function getDeptStatus(dd){
+  const hasLink=dd&&dd.link&&dd.link.trim();
+  const hasNotes=dd&&dd.notes&&dd.notes.trim();
+  if(hasLink&&hasNotes)return'done';
+  if(hasLink||hasNotes)return'partial';
+  return'empty';
+}
+
+function renderDeptCard(key,cId,i,dir,deptObj,d){
+  const side=dir==='input'?'inputs':'outputs';
+  const dd=(d[side]&&d[side][deptObj.dept])||{};
+  const ds=getDeptStatus(dd);
+  const hasLink=dd.link&&dd.link.trim();
+  const linkLabel=dd.label||dd.link||'';
+  const dirCode=dir==='input'?'in':'out';
+  return '<div class="z3-dept dept-'+ds+'" id="dcard-'+key+'-'+cId+'-'+i+'-'+dirCode+'-'+deptObj.dept+'">'
+    +'<div class="z3-dept-top">'
+    +'<div class="z3-dept-dot '+ds+'"></div>'
+    +'<span class="z3-dept-name">'+deptObj.dept+'</span>'
+    +'<span class="z3-dept-doc">'+deptObj.docLabel+'</span>'
+    +'</div>'
+    +(hasLink
+      ?'<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">'
+        +'<a href="'+dd.link+'" target="_blank" class="z3-link-btn linked">📎 '+linkLabel+'</a>'
+        +'<button class="z3-ldel" onclick="clearDeptLink(\''+key+'\',\''+cId+'\','+i+',\''+dir+'\',\''+deptObj.dept+'\')">✕</button>'
+        +'</div>'
+      :'<div class="z3-link-input-row" id="lrow-'+key+'-'+cId+'-'+i+'-'+dirCode+'-'+deptObj.dept+'" style="flex-direction:column;gap:5px">'
+        +'<div style="display:flex;gap:5px;flex-wrap:wrap">'
+        +'<input class="z3-di" id="dlbl-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+deptObj.dept+'" placeholder="ชื่อเอกสาร" style="flex:1 1 90px" />'
+        +'<input class="z3-di" id="durl-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+deptObj.dept+'" placeholder="Drive Link (ถ้ามี)" style="flex:2 1 120px" />'
+        +'<button class="z3-sb" onclick="saveDeptLink(\''+key+'\',\''+cId+'\','+i+',\''+dir+'\',\''+deptObj.dept+'\')">แนบลิงก์</button>'
+        +'</div>'
+        +'<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">'
+        +'<input type="file" id="dfile-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+deptObj.dept+'" style="flex:1 1 140px;min-width:0;font-size:12px;color:var(--text-dim)" />'
+        +'<button class="z3-sb" id="dfbtn-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+deptObj.dept+'" onclick="uploadDeptFile(\''+key+'\',\''+cId+'\','+i+',\''+dir+'\',\''+deptObj.dept+'\')">อัปโหลด</button>'
+        +'</div>'
+        +'</div>'
+    )
+    +'<textarea class="z3-ta-sm" id="notes-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+deptObj.dept+'"'
+    +' placeholder="'+(dir==='input'?'ได้รับข้อมูลแล้ว นำไปใช้อย่างไร...':'ส่งมอบให้ '+deptObj.dept+' เมื่อวันที่...')+'"'
+    +' onblur="saveDeptNotes(\''+key+'\',\''+cId+'\','+i+',\''+dir+'\',\''+deptObj.dept+'\')">'+( dd.notes||'')+'</textarea>'
+    +'</div>';
+}
+
+function toggleGap(gapId){
+  if(!isAdmin)return;
+  const nx={risk:'partial',partial:'closed',closed:'risk'};
+  let cur=gapOverrides[gapId];
+  if(!cur){for(const k of KEYS){const g=ENABLERS[k].gaps&&s.find(g=>g.id===gapId);if(g){cur=g.status;break;}}}
+  gapOverrides[gapId]=nx[cur||'risk'];
+  sbSet('cbe_gaps',gapOverrides);renderTab();
+}
+function openAdminModal(){
+  if(isAdmin){isAdmin=false;document.getElementById('adminBtn').classList.remove('active');
+    document.getElementById('adminBadge').classList.remove('visible');
+    document.querySelector('.app').classList.remove('admin-mode');return;}
+  document.getElementById('adminModal').classList.add('show');
+  setTimeout(()=>document.getElementById('adminPwd').focus(),100);
+}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('show');document.getElementById('adminPwd').value='';}
+function checkAdmin(){
+  const pwd=document.getElementById('adminPwd').value;
+  if(pwd==='admin2569'||pwd==='กทท2569'){
+    isAdmin=true;closeAdminModal();
+    document.getElementById('adminBtn').classList.add('active');
+    document.getElementById('adminBadge').classList.add('visible');
+    document.querySelector('.app').classList.add('admin-mode');
+    buildCbeDocs();
+    if(selectedKey)renderTab();
+  }else{document.getElementById('adminPwd').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('adminPwd').style.borderColor='',1000);}
+}
+// ── อัปโหลดไฟล์ขึ้น Supabase Storage ──
+async function uploadFile(file,stepId){
+  const ext=file.name.split('.').pop();
+  const path='uploads/'+stepId+'_'+Date.now()+'.'+ext;
+  const{data,error}=await db.storage.from('cbe-files').upload(path,file,{upsert:true});
+  if(error){alert('อัปโหลดไม่สำเร็จ: '+error.message);return null;}
+  const{data:urlData}=db.storage.from('cbe-files').getPublicUrl(path);
+  return{url:urlData.publicUrl,label:file.name};
+}
+
+// ── แนบไฟล์จริง (Supabase Storage) ──
+async function uploadMSFile(stepId){
+  const fi=document.getElementById('msfile-'+stepId);
+  if(!fi||!fi.files[0])return;
+  const btn=document.getElementById('msfbtn-'+stepId);
+  if(btn)btn.textContent='กำลังอัปโหลด...';
+  const result=await uploadFile(fi.files[0],stepId);
+  if(result){
+    const d=getMSD(stepId);if(!d.links)d.links=[];
+    d.links.push(result);saveMSD(stepId,d);
+    fi.value='';refreshMSLinks(stepId);
+  }
+  if(btn)btn.textContent='อัปโหลด';
+}
+
+// ── แนบไฟล์ใน dept card (Zone 3) ──
+async function uploadDeptFile(key,cId,i,dir,dept){
+  const dirCode=dir==='input'?'in':'out';
+  const fi=document.getElementById('dfile-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+dept);
+  if(!fi||!fi.files[0])return;
+  const btn=document.getElementById('dfbtn-'+dirCode+'-'+key+'-'+cId+'-'+i+'-'+dept);
+  if(btn)btn.textContent='กำลังอัปโหลด...';
+  const result=await uploadFile(fi.files[0],dept+'_'+key+'_'+cId+'_'+i);
+  if(result){
+    const d=getID(key,cId,i);
+    const side=dir==='input'?'inputs':'outputs';
+    if(!d[side])d[side]={};
+    if(!d[side][dept])d[side][dept]={};
+    d[side][dept].link=result.url;
+    d[side][dept].label=result.label;
+    saveID(key,cId,i,d);
+    if(selectedKey)renderPlan69(selectedKey,document.getElementById('panelContent'));
+  }
+  if(btn)btn.textContent='อัปโหลด';
+}
+
+// ── เริ่มต้น: โหลดข้อมูล → render ──
+// ── expose functions to global scope (required for onclick with type="module") ──
+window.toggleMSReport=toggleMSReport;
+window.toggleMegaStep=toggleMegaStep;
+window.saveMSNotes=saveMSNotes;
+window.saveMSLink=saveMSLink;
+window.delMSLink=delMSLink;
+window.uploadMSFile=uploadMSFile;
+window.selectEnabler=selectEnabler;
+window.selectEnablerFromBar=selectEnablerFromBar;
+window.closePanel=closePanel;
+window.switchTab=switchTab;
+window.toggleGap=toggleGap;
+window.openAdminModal=openAdminModal;
+window.closeAdminModal=closeAdminModal;
+window.checkAdmin=checkAdmin;
+window.saveNotes=saveNotes;
+window.saveDeptLink=saveDeptLink;
+window.clearDeptLink=clearDeptLink;
+window.saveDeptNotes=saveDeptNotes;
+window.uploadDeptFile=uploadDeptFile;
+window.toggleZ3=toggleZ3;
+window.cbeAttachDoc=cbeAttachDoc;
+window.closeCbeMPModal=closeCbeMPModal;
+window.cbeMPUpload=cbeMPUpload;
+window.cbeMPSaveLink=cbeMPSaveLink;
+window.cbeMPDelete=cbeMPDelete;
+
+// ── CBE LINKAGE MAP: link highlighting + master plan docs ──
+const CBE_DOCS={
+  CG:{code:'CG',name:'แผนแม่บทการกำกับดูแลกิจการที่ดี',color:'#60A5FA'},
+  SP:{code:'SP',name:'แผนแม่บทวิสาหกิจ ปี 2566–2570',color:'#A78BFA'},
+  RM:{code:'RM&IC',name:'แผนแม่บทบริหารความเสี่ยง (ERM)',color:'#FB923C'},
+  CM:{code:'CM',name:'แผนแม่บทบริหารลูกค้าสัมพันธ์ (CRM)',color:'#6EE7B7'},
+  SM:{code:'SM',name:'แผนแม่บทการตลาดองค์กร',color:'#34D399'},
+  DT:{code:'DT',name:'แผนแม่บทเทคโนโลยีสารสนเทศ (IT Master Plan)',color:'#60A5FA'},
+  HCM:{code:'HCM',name:'แผนแม่บทการบริหารทรัพยากรบุคคล',color:'#F472B6'},
+  KM:{code:'KM',name:'แผนแม่บทการจัดการความรู้ (KM)',color:'#FBBF24'},
+  IM:{code:'IM',name:'แผนแม่บทนวัตกรรมองค์กร',color:'#C084FC'},
+  IA:{code:'IA',name:'แผนการตรวจสอบประจำปีงบประมาณ 2569',color:'#6EE7B7'}
+};
+let cbeMode_current='all';
+
+// ── เก็บไฟล์แผนแม่บท (CBE master plan docs) ──
+let cbeMPData={}; // { CG:{url,label,type:'file'|'link'}, SP:{...}, ... }
+
+async function loadCbeMPData(){
+  const v=await sbGet('cbe_master_plans');
+  cbeMPData=v||{};
+}
+
+function buildCbeDocs(){
+  const el=document.getElementById('cbeDocs');
+  if(!el)return;
+  el.innerHTML=Object.entries(CBE_DOCS).map(([k,d])=>{
+    const att=cbeMPData[k];
+    const hasFile=att && att.url;
+    const btnLabel=hasFile?'✓ แนบแล้ว':'แนบ';
+    const btnStyle=hasFile?'background:var(--accent,var(--teal));color:var(--navy-deep)':'';
+    return '<div class="cbe-doc-card" style="--accent:'+d.color+'" onclick="cbeAttachDoc(\''+k+'\')" title="'+(hasFile?'คลิกเพื่อเปิดเอกสาร/จัดการ':'คลิกเพื่อแนบเอกสาร')+'">'
+    +'<div class="cbe-doc-icon"><span>PDF</span></div>'
+    +'<div class="cbe-doc-meta">'
+    +'<div class="cbe-doc-code">'+d.code+'</div>'
+    +'<div class="cbe-doc-name">'+d.name+(hasFile?' · <span style="color:var(--accent);font-size:10px">📎 '+(att.label||'ไฟล์แนบ').substring(0,30)+'</span>':'')+'</div>'
+    +'</div>'
+    +'<span class="cbe-doc-attach" style="'+btnStyle+'">'+btnLabel+'</span>'
+    +'</div>';
+  }).join('');
+}
+
+function cbeAttachDoc(k){
+  const d=CBE_DOCS[k];
+  if(!d)return;
+  const att=cbeMPData[k];
+  // เปิด modal จัดการไฟล์แนบ (ทุกคนจัดการได้ ไม่ต้องเป็น admin)
+  showCbeMPModal(k,d,att);
+}
+
+function showCbeMPModal(k,d,att){
+  // ลบ modal เดิมถ้ามี
+  const oldModal=document.getElementById('cbeMPModal');
+  if(oldModal)oldModal.remove();
+
+  const hasFile=att && att.url;
+  const m=document.createElement('div');
+  m.id='cbeMPModal';
+  m.className='admin-modal show';
+  m.innerHTML=
+    '<div class="admin-box" style="max-width:520px">'
+    +'<h3 style="color:'+d.color+';margin:0 0 6px">📄 '+d.code+'</h3>'
+    +'<p style="color:var(--text-dim);margin:0 0 16px;font-size:13px">'+d.name+'</p>'
+
+    +(hasFile?
+      '<div style="background:var(--navy);padding:12px;border-radius:8px;border:1px solid '+d.color+';margin-bottom:16px">'
+      +'<div style="font-size:11px;color:var(--text-dim);margin-bottom:4px">เอกสารที่แนบอยู่:</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+      +'<a href="'+att.url+'" target="_blank" style="color:'+d.color+';font-weight:600;text-decoration:none;font-size:13px;flex:1;word-break:break-all">'
+      +(att.type==='file'?'📎 ':'🔗 ')+(att.label||'เอกสาร')+'</a>'
+      +'<button onclick="cbeMPDelete(\''+k+'\')" style="background:var(--red,#EF4444);color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px">ลบ</button>'
+      +'</div></div>'
+    :'')
+
+    +'<div style="display:flex;flex-direction:column;gap:12px">'
+    +'<div>'
+    +'<label style="font-size:12px;color:var(--text-dim);display:block;margin-bottom:6px">📁 อัปโหลดไฟล์ PDF/เอกสาร:</label>'
+    +'<input type="file" id="cbeMPFile_'+k+'" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="width:100%;padding:8px;background:var(--navy);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px">'
+    +'<button onclick="cbeMPUpload(\''+k+'\')" id="cbeMPBtn_'+k+'" class="btn-primary" style="margin-top:8px;width:100%">อัปโหลด</button>'
+    +'</div>'
+    +'<div style="text-align:center;color:var(--text-dim);font-size:11px;position:relative">'
+    +'<span style="background:var(--navy-deep);padding:0 12px;position:relative;z-index:1">หรือ</span>'
+    +'<div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>'
+    +'</div>'
+    +'<div>'
+    +'<label style="font-size:12px;color:var(--text-dim);display:block;margin-bottom:6px">🔗 แนบลิงก์ (Google Drive, SharePoint ฯลฯ):</label>'
+    +'<input type="url" id="cbeMPLink_'+k+'" placeholder="https://..." value="'+(att && att.type==='link'?att.url:'')+'" style="width:100%;padding:8px;background:var(--navy);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;box-sizing:border-box">'
+    +'<input type="text" id="cbeMPLabel_'+k+'" placeholder="ชื่อเอกสาร (ไม่บังคับ)" value="'+(att && att.type==='link'?(att.label||''):'')+'" style="width:100%;padding:8px;background:var(--navy);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;box-sizing:border-box;margin-top:6px">'
+    +'<button onclick="cbeMPSaveLink(\''+k+'\')" class="btn-primary" style="margin-top:8px;width:100%">บันทึกลิงก์</button>'
+    +'</div>'
+    +'</div>'
+
+    +'<div style="margin-top:16px;text-align:right">'
+    +'<button class="btn-secondary" onclick="closeCbeMPModal()">ปิด</button>'
+    +'</div>'
+    +'</div>';
+  document.body.appendChild(m);
+}
+
+function closeCbeMPModal(){
+  const m=document.getElementById('cbeMPModal');
+  if(m)m.remove();
+}
+
+async function cbeMPUpload(k){
+  const fi=document.getElementById('cbeMPFile_'+k);
+  if(!fi||!fi.files[0]){alert('กรุณาเลือกไฟล์ก่อน');return;}
+  const btn=document.getElementById('cbeMPBtn_'+k);
+  if(btn){btn.disabled=true;btn.textContent='กำลังอัปโหลด...';}
+  const result=await uploadFile(fi.files[0],'masterplan_'+k);
+  if(result){
+    cbeMPData[k]={url:result.url,label:result.label,type:'file',at:Date.now()};
+    await sbSet('cbe_master_plans',cbeMPData);
+    closeCbeMPModal();
+    buildCbeDocs();
+    alert('✓ อัปโหลดสำเร็จ: '+result.label);
+  }
+  if(btn){btn.disabled=false;btn.textContent='อัปโหลด';}
+}
+
+async function cbeMPSaveLink(k){
+  const url=document.getElementById('cbeMPLink_'+k).value.trim();
+  const label=document.getElementById('cbeMPLabel_'+k).value.trim();
+  if(!url){alert('กรุณาใส่ลิงก์');return;}
+  if(!/^https?:\/\//.test(url)){alert('ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://');return;}
+  cbeMPData[k]={url,label:label||url,type:'link',at:Date.now()};
+  await sbSet('cbe_master_plans',cbeMPData);
+  closeCbeMPModal();
+  buildCbeDocs();
+  alert('✓ บันทึกลิงก์สำเร็จ');
+}
+
+async function cbeMPDelete(k){
+  if(!confirm('ลบเอกสารที่แนบไว้?'))return;
+  delete cbeMPData[k];
+  await sbSet('cbe_master_plans',cbeMPData);
+  closeCbeMPModal();
+  buildCbeDocs();
+}
+
+function cbeHighlightLinks(id){
+  const e=ENABLERS[id]; if(!e)return;
+  const outIds=(e.sends||[]).map(s=>s.to);
+  const inIds=(e.receives||[]).map(r=>r.from);
+  const outKeys=outIds.flatMap(t=>[id+'-'+t, t+'-'+id]);
+  const inKeys=inIds.flatMap(s=>[s+'-'+id, id+'-'+s]);
+  let show=[];
+  if(cbeMode_current==='out') show=outKeys;
+  else if(cbeMode_current==='in') show=inKeys;
+  else show=[...outKeys, ...inKeys];
+
+  document.querySelectorAll('#cbeLinks .cbe-link').forEach(l=>{
+    l.classList.remove('active','flow','dim');
+    const k=l.getAttribute('data-link');
+    if(show.includes(k)){ l.classList.add('active','flow'); }
+    else { l.classList.add('dim'); }
+  });
+  document.querySelectorAll('.cbe-node-g').forEach(n=>{
+    const nid=n.getAttribute('data-cbe-id');
+    const related=nid===id || outIds.includes(nid) || inIds.includes(nid);
+    n.style.opacity = related ? '1' : '.3';
+    n.style.transition='opacity .3s';
+  });
+  const hint=document.getElementById('cbeHint');
+  if(hint) hint.textContent='🔗 กำลังดู '+(e.code||id)+' · ส่งออก '+(e.sends||[]).length+' ด้าน · รับเข้า '+(e.receives||[]).length+' ด้าน';
+}
+
+function cbeMode(m){
+  cbeMode_current=m;
+  document.querySelectorAll('.cbe-toggle button').forEach(b=>b.classList.toggle('on', b.getAttribute('data-mode')===m));
+  const active=document.querySelector('.cbe-node-g[style*="opacity: 1"]');
+  // Re-apply highlight if something is selected
+  const openPanel=document.getElementById('detailPanel');
+  if(openPanel&&openPanel.classList.contains('open')){
+    // Find currently selected enabler from panel title
+    const curKey=Object.keys(ENABLERS).find(k=>ENABLERS[k].code===document.getElementById('panelTitle').textContent);
+    if(curKey) cbeHighlightLinks(curKey);
+  }
+}
+window.cbeMode=cbeMode;
+window.cbeAttachDoc=cbeAttachDoc;
+
+// Hook into existing selectEnabler to also highlight SVG links
+const _origSelectEnabler=window.selectEnabler;
+if(typeof _origSelectEnabler==='function'){
+  window.selectEnabler=function(key){
+    _origSelectEnabler(key);
+    // Mark active SVG node
+    document.querySelectorAll('.cbe-node-g').forEach(n=>{
+      n.classList.toggle('cbe-active', n.getAttribute('data-cbe-id')===key);
+    });
+    cbeHighlightLinks(key);
+  };
+}
+
+// ── เริ่มต้น: โหลดข้อมูล → render ──
+loadAllData().then(()=>{
+  buildScoreBar();buildMegaBar();
+  buildCbeDocs();
+  // Auto-select KM as default focus
+  setTimeout(()=>selectEnabler('KM'),300);
+});
+</script>
+</body>
+</html>
